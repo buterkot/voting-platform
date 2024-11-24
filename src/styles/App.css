@@ -1,0 +1,42 @@
+header {
+    display:flex;
+    background-color: blue;
+    color: azure;
+    justify-content: space-between;
+}
+
+.form-frame {
+    display: flex;
+    background-color: rgb(255, 0, 149);
+    max-width: 50%;
+    border-radius: 12px;
+    padding: 12px;
+    justify-content: center;
+    flex-direction: column;
+    color: azure;
+}
+
+form {
+    display: flex;
+    background-color: rgb(0, 255, 8);
+    width: 100%;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.form-up {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.form-title {
+    /*color: azure;*/
+    font-size: 1;
+}
+
+.form-bottom {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
