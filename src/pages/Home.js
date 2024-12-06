@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 function Home(){
     return(
-        <div>
+        <div className="home-frame">
             Добро пожаловать!<br/>
             Для доступа к платформе требуется войти в аккаунт или создать его.<br/>
             <Link to="/login" className="">Войти в аккаунт!</Link>

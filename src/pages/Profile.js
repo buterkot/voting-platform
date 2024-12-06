@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from "react";
 import Header from "../components/Header.js";
+import CreateVote from "../components/forms/CreateVote.js";
 import "../styles/App.css";
 
 function Profile() {
     useEffect(() => {
-        document.title = "Профиль"; 
-      }, []);
+        document.title = "Профиль";
+    }, []);
 
-    return(
-        <Header/>
+    return (
+        <div>
+            <Header />
+            <CreateVote />
+        </div>
+
     )
 }
 
-export  default Profile
+export default Profile

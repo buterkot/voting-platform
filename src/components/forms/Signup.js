@@ -22,7 +22,7 @@ function Signup() {
             </div>
             <div className="form-bottom">
                 <div className="">Есть аккаунт?</div>
-                <Link to="/registration" className="">Войдите!</Link>
+                <Link to="/login" className="">Войдите!</Link>
             </div>
         </div>
     )
