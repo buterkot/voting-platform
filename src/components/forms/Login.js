@@ -12,14 +12,14 @@ function Login() {
                 <form className="form">
                     <input className="login-input" type="email" placeholder="Введите почту"></input>
                     <input className="login-input" type="password" placeholder="Введите пароль"></input>
-                    <button className="login-button">
+                    <button className="form-button">
                         <span className="login-button-text">Войти</span>
                     </button>
                 </form>
             </div>
             <div className="form-bottom">
-                <div className="">Нет аккаунта?</div>
-                <Link to="/signup" className="">Зарегистрируйтесь!</Link>
+                <div className="form-bottom-text">Нет аккаунта?</div>
+                <Link to="/signup" className="text-link">Зарегистрируйтесь!</Link>
             </div>
         </div>
     )

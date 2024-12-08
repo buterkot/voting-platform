@@ -3,15 +3,20 @@ import { Link } from 'react-router-dom';
 
 const NotFound = () => {
   return (
-    <div>
-      <h1>404</h1>
-      <h2>Страница не найдена</h2>
-      <p>
-        Страница не найдена....
-      </p>
-      <Link to="/">
-        На главную
-      </Link>
+    <div className='main'>
+      <div className='home-frame'><div className="home-frame-up">
+        <div className="form-title">
+          Не найдено...
+        </div>
+        Запрашиваемая вами страница недоступна или не существует.
+      </div>
+        <div className="home-frame-bottom">
+          <Link to="/" className="text-link">
+            На главную
+          </Link>
+        </div>
+      </div>
+
     </div>
   );
 };

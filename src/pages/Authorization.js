@@ -7,7 +7,9 @@ function Authorization() {
       }, []);
 
     return (
-        <Login/>
+        <div className="main">
+            <Login/>
+        </div>
     )
 
 }

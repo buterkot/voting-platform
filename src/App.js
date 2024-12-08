@@ -4,6 +4,7 @@ import Authorization from "./pages/Authorization.js";
 import Registration from "./pages/Registration.js";
 import Home from "./pages/Home.js";
 import Profile from "./pages/Profile.js";
+import Admin from "./pages/Admin.js";
 import "./styles/App.css";
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/admin" element={<Admin />} />
       </Routes>
     </Router>
   );

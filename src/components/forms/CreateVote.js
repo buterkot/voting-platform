@@ -66,13 +66,13 @@ const CreateVote = () => {
     };
 
     return (
-        <div>
+        <div className='form-frame'>
             <h2>Создать голосование</h2>
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>
                         Название голосования:
-                        <input
+                        <input className='login-input'
                             type="text"
                             name="title"
                             value={title}
@@ -84,7 +84,7 @@ const CreateVote = () => {
                 <div>
                     <label>
                         Дата начала:
-                        <input
+                        <input className='login-input'
                             type="datetime-local"
                             name="startDate"
                             value={startDate}
@@ -96,7 +96,7 @@ const CreateVote = () => {
                 <div>
                     <label>
                         Дата окончания:
-                        <input
+                        <input className='login-input'
                             type="datetime-local"
                             name="endDate"
                             value={endDate}
@@ -108,7 +108,7 @@ const CreateVote = () => {
                 <div>
                     <label>
                         Статус голосования:
-                        <select
+                        <select className='login-input'
                             name="status"
                             value={status}
                             onChange={(e) => handleChange(e)}
@@ -122,7 +122,7 @@ const CreateVote = () => {
                     <h3>Варианты голосования</h3>
                     {options.map((option, index) => (
                         <div key={index}>
-                            <input
+                            <input className='login-input'
                                 type="text"
                                 name="optionText"
                                 value={option.optionText}
@@ -130,13 +130,13 @@ const CreateVote = () => {
                                 required
                                 placeholder={`Вариант ${index + 1}`}
                             />
-                            <button type="button" onClick={() => removeOption(index)}>Удалить</button>
+                            <button className='form-button' type="button" onClick={() => removeOption(index)}>Удалить</button>
                         </div>
                     ))}
-                    <button type="button" onClick={addOption}>Добавить вариант</button>
+                    <button className='form-button' type="button" onClick={addOption}>Добавить вариант</button>
                 </div>
                 <div>
-                    <button type="submit">Создать голосование</button>
+                    <button className='form-button' type="submit">Создать голосование</button>
                 </div>
             </form>
         </div>

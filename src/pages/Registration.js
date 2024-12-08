@@ -7,7 +7,10 @@ function Registration() {
       }, []);
 
     return (
-        <Signup/>
+        <div className="main">
+            <Signup/>
+        </div>
+        
     )
 
 }

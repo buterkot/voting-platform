@@ -15,14 +15,14 @@ function Signup() {
                     <input className="login-input" type="email" placeholder="Почта"></input>
                     <input className="login-input" type="password" placeholder="Пароль"></input>
                     <input className="login-input" type="password" placeholder="Повтор пароля"></input>
-                    <button className="login-button">
-                        <span className="login-button-text">Зарегестрироваться</span>
+                    <button className="form-button">
+                        <span className="login-button-text">Регистрация</span>
                     </button>
                 </form>
             </div>
             <div className="form-bottom">
-                <div className="">Есть аккаунт?</div>
-                <Link to="/login" className="">Войдите!</Link>
+                <div className="form-bottom-text">Есть аккаунт?</div>
+                <Link to="/login" className="text-link">Войдите!</Link>
             </div>
         </div>
     )

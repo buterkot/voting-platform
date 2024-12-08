@@ -9,7 +9,7 @@ function Profile() {
     }, []);
 
     return (
-        <div>
+        <div className="main">
             <Header />
             <CreateVote />
         </div>
