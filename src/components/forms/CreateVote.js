@@ -4,8 +4,8 @@ const CreateVote = () => {
     const [title, setTitle] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
-    const [options, setOptions] = useState([{ optionText: '' }]); 
-    const [status, setStatus] = useState('active'); 
+    const [options, setOptions] = useState([{ optionText: '' }]);
+    const [status, setStatus] = useState('active');
 
     const handleChange = (e, index) => {
         const { name, value } = e.target;
@@ -23,9 +23,6 @@ const CreateVote = () => {
                     break;
                 case 'endDate':
                     setEndDate(value);
-                    break;
-                case 'status':
-                    setStatus(value);
                     break;
                 default:
                     break;
@@ -58,8 +55,7 @@ const CreateVote = () => {
             title,
             startDate,
             endDate,
-            status,
-            options: options.map(option => option.optionText), 
+            options: options.map(option => option.optionText),
         };
 
         console.log('Голосование создано:', voteData);
@@ -69,59 +65,40 @@ const CreateVote = () => {
         <div className='form-frame'>
             <h2>Создать голосование</h2>
             <form onSubmit={handleSubmit}>
-                <div>
-                    <label>
-                        Название голосования:
-                        <input className='login-input'
-                            type="text"
-                            name="title"
-                            value={title}
-                            onChange={(e) => handleChange(e)}
-                            required
-                        />
-                    </label>
+                <div className='form-case'>
+                    Название голосования:
+                    <input className='login-input'
+                        type="text"
+                        name="title"
+                        value={title}
+                        onChange={(e) => handleChange(e)}
+                        required
+                    />
                 </div>
-                <div>
-                    <label>
-                        Дата начала:
-                        <input className='login-input'
-                            type="datetime-local"
-                            name="startDate"
-                            value={startDate}
-                            onChange={(e) => handleChange(e)}
-                            required
-                        />
-                    </label>
+                <div className='form-case'>
+                    Дата начала:
+                    <input className='login-input'
+                        type="datetime-local"
+                        name="startDate"
+                        value={startDate}
+                        onChange={(e) => handleChange(e)}
+                        required
+                    />
                 </div>
-                <div>
-                    <label>
-                        Дата окончания:
-                        <input className='login-input'
-                            type="datetime-local"
-                            name="endDate"
-                            value={endDate}
-                            onChange={(e) => handleChange(e)}
-                            required
-                        />
-                    </label>
+                <div className='form-case'>
+                    Дата окончания:
+                    <input className='login-input'
+                        type="datetime-local"
+                        name="endDate"
+                        value={endDate}
+                        onChange={(e) => handleChange(e)}
+                        required
+                    />
                 </div>
-                <div>
-                    <label>
-                        Статус голосования:
-                        <select className='login-input'
-                            name="status"
-                            value={status}
-                            onChange={(e) => handleChange(e)}
-                        >
-                            <option value="active">Активное</option>
-                            <option value="completed">Завершенное</option>
-                        </select>
-                    </label>
-                </div>
-                <div>
-                    <h3>Варианты голосования</h3>
+                <div className='form-case'>
+                    Варианты голосования
                     {options.map((option, index) => (
-                        <div key={index}>
+                        <div className='vote-option' key={index}>
                             <input className='login-input'
                                 type="text"
                                 name="optionText"
