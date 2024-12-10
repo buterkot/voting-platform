@@ -11,7 +11,31 @@ function Profile() {
     return (
         <div className="main">
             <Header />
-            <CreateVote />
+            <div className="main-content">
+                <div className="create-vote">
+                    <div className="block-title">
+                        Создать голосование
+                    </div>
+                    <CreateVote />
+                </div>
+                <div className="my-votes">
+                    <div className="block-title">
+                        Мои голосования
+                    </div>
+                    <div className="my-votes-content">
+
+                    </div>
+
+                </div>
+                <div className="other-votes">
+                    <div className="block-title">
+                        Доступные голосования
+                    </div>
+                    <div className="other-votes-content">
+
+                    </div>
+                </div>
+            </div>
         </div>
 
     )
