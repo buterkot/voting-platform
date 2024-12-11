@@ -39,45 +39,64 @@ const MyVote = () => {
         }
     };
 
+    const calculateTotalVotes = (options) => {
+        return options.reduce((total, option) => total + option.vote_count, 0);
+    };
+
     return (
         <div className="my-votes-list">
             {myVotes.length === 0 ? (
-                <p>Нет созданных вами голосований.</p>
+                <div>Нет созданных вами голосований.</div>
             ) : (
-                myVotes.map((vote) => (
-                    <div key={vote.id} className="my-vote-item">
-                        <div className="my-vote-title">
-                            <strong>{vote.title}</strong>
-                        </div>
-                        <div className="my-vote-status">
-                            Статус: {vote.status === "A" ? "Активно" : "Остановлено"}
-                        </div>
-                        <div className="my-vote-options">
-                            <strong>Варианты:</strong>
-                            <ul>
-                                {/* Добавлена проверка на наличие options */}
+                myVotes.map((vote) => {
+                    const totalVotes = calculateTotalVotes(vote.options);
+                    return (
+                        <div key={vote.id} className="form-frame">
+                            <div className="form-title">
+                                <strong>{vote.title}</strong>
+                            </div>
+                            <div className="my-vote-status">
+                                Статус: {vote.status === "A" ? "Активно" : "Остановлено"}
+                            </div>
+                            <div className="my-vote-options">
                                 {Array.isArray(vote.options) && vote.options.length > 0 ? (
-                                    vote.options.map((option) => (
-                                        <li key={option.id}>
-                                            {option.option_text} - {option.vote_count} голосов
-                                        </li>
-                                    ))
+                                    vote.options.map((option) => {
+                                        const votePercentage = totalVotes
+                                            ? (option.vote_count / totalVotes) * 100
+                                            : 0;
+                                        return (
+                                            <div key={option.id} className="vote-option">
+                                                <div className='vote-option-up'>
+                                                    <div className="vote-option-text">
+                                                        {option.option_text} - {option.vote_count} голосов
+                                                    </div>
+                                                </div>
+
+                                                <div className="vote-option-bar">
+                                                    <div
+                                                        className="vote-bar"
+                                                        style={{ width: `${votePercentage}%` }}
+                                                    ></div>
+                                                </div>
+                                            </div>
+                                        );
+                                    })
                                 ) : (
-                                    <li>Нет доступных вариантов.</li>
+                                    <div>Нет доступных вариантов.</div>
                                 )}
-                            </ul>
+                            </div>
+                            {vote.status === "A" && (
+                                <button
+                                    className="form-button"
+                                    onClick={() => handleStopVote(vote.id)}
+                                >
+                                    Завершить
+                                </button>
+                            )}
+                            {error && <div className="error-message">{error}</div>}
                         </div>
-                        {vote.status === "A" && (
-                            <button
-                                className="stop-vote-button"
-                                onClick={() => handleStopVote(vote.id)}
-                            >
-                                Остановить
-                            </button>
-                        )}
-                        {error && <div className="error-message">{error}</div>}
-                    </div>
-                ))
+                    );
+                })
             )}
         </div>
     );

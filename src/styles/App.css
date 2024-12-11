@@ -1,4 +1,4 @@
-.error-message{
+.error-message {
     color: red;
     padding-bottom: 2px;
     text-align: center;
@@ -9,37 +9,37 @@
     background: linear-gradient(150deg, #00d2ff, #3a7bd5);
     color: azure;
     justify-content: space-between;
-    align-items: center; 
-    position: fixed; 
-    top: 0; 
-    width: 100%; 
+    align-items: center;
+    position: fixed;
+    top: 0;
+    width: 100%;
     height: 60px;
-    z-index: 1000; 
+    z-index: 1000;
     box-shadow: 0px 5px 30px rgba(0, 0, 0, 0.5);
 }
 
-.header-left{
+.header-left {
     margin-left: 20px;
     display: flex;
     align-items: center;
     font-size: 30px;
 }
 
-.logo{
-    width: 40px;  
-    height: 40px; 
-    object-fit: contain; 
+.logo {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
     margin-right: 10px;
 }
 
-.header-right{
+.header-right {
     margin-right: 20px;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
 }
 
-.header-button{
+.header-button {
     text-decoration: underline;
     color: azure;
     padding: 0px;
@@ -49,20 +49,20 @@
 }
 
 ::-webkit-scrollbar {
-    width: 10px;  
-    height: 10px; 
+    width: 10px;
+    height: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: #00d2ff; 
-    border-radius: 10px;    
+    background-color: #00d2ff;
+    border-radius: 10px;
 }
 
 ::-webkit-scrollbar-track {
     background-color: #3a7bd5;
 }
 
-.main{
+.main {
     width: 100%;
     min-height: 100vh;
     background: linear-gradient(150deg, #00d2ff, #3a7bd5);
@@ -72,7 +72,7 @@
     flex-direction: column;
 }
 
-.main-content{
+.main-content {
     width: 100%;
     min-height: 100vh;
     display: flex;
@@ -82,28 +82,32 @@
     margin-top: 70px;
 }
 
-.my-votes, .other-votes{
+.my-votes,
+.other-votes {
+    margin-top: 10px;
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.create-vote{
+.create-vote {
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
 }
 
-.block-title{
+.block-title {
     color: azure;
     font-size: 40px;
     font-weight: bold;
     margin: 5px;
+    margin-bottom: 15px;
+    border-bottom: #ddeeff solid;
 }
 
-.home-frame{
+.home-frame {
     display: flex;
     background-color: rgb(255, 255, 255);
     width: 420px;
@@ -119,22 +123,24 @@
     font-size: 17px;
 }
 
-.home-frame-up{
+.home-frame-up {
     margin: 5px;
     font-weight: bold;
 }
 
-.home-frame-bottom{
+.home-frame-bottom {
     display: flex;
 }
 
 .form-frame {
     display: flex;
     background-color: rgb(255, 255, 255);
+    height: auto;
     width: 400px;
     max-width: 50%;
     border-radius: 12px;
     padding: 12px;
+    /*margin: 20px;*/
     justify-content: center;
     flex-direction: column;
     color: rgb(0, 0, 0);
@@ -164,34 +170,63 @@ form {
     font-weight: bold;
 }
 
-.form-subtitle{
+.form-subtitle {
     margin-left: 5px;
     font-size: 18px;
 }
 
-.form-case, .form-case-checkbox{
+.form-case,
+.form-case-checkbox {
     width: 100%;
     display: flex;
     flex-direction: column;
 }
 
-.form-case-checkbox{
+.form-case-checkbox {
     display: flex;
     flex-direction: row;
 }
 
-.checkbox{
+.checkbox {
     margin: 0;
     margin-left: 10px;
     height: 27px;
 }
 
-.vote-option{
+.vote-option-create {
     display: flex;
     flex-direction: row;
 }
 
-.login-input{
+.vote-option-up{
+    display: flex;
+    flex-direction: row;
+}
+
+.vote-option-bar {
+    background-color: #e0e0e0; 
+    border-radius: 5px;
+    overflow: hidden;
+    height: 10px; 
+    margin: 5px 0;
+}
+
+.vote-bar {
+    background: linear-gradient(270deg, #00d2ff, #3a7bd5);
+    height: 10px;
+    transition: width 0.3s ease-in-out; 
+}
+
+.vote-author {
+    margin-bottom: 5px;
+}
+
+.vote-option-text {
+    font-size: 17px;
+    font-weight: 500;
+}
+
+.login-input {
     margin: 5px;
     height: 30px;
     border-radius: 5px;
@@ -204,12 +239,13 @@ form {
     max-width: 380px;
 }
 
-.login-input::placeholder{
+.login-input::placeholder {
     font-size: 17px;
     color: #9d9d9d;
 }
 
-.form-button, .form-button-delete{
+.form-button,
+.form-button-delete {
     margin: 5px;
     height: 30px;
     width: 100%;
@@ -222,7 +258,7 @@ form {
     font-size: 17px;
 }
 
-.form-button-delete{
+.form-button-delete {
     max-width: 77px;
 }
 
@@ -233,12 +269,27 @@ form {
     justify-content: center;
 }
 
-.form-bottom-text{
+.form-bottom-text {
     margin-right: 5px;
 }
 
-.text-link{
+.text-link {
     text-decoration: underline;
     color: rgb(0, 0, 0);
     margin-right: 5px;
+}
+
+.my-votes-content,
+.other-votes-content {
+    width: 100%;
+}
+
+.my-votes-list,
+.votes-list {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-around;
+    align-items: flex-start
 }

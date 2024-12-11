@@ -90,7 +90,7 @@ const CreateVote = () => {
                 <div className='form-case'>
                     <div className='form-subtitle'>Варианты:</div>
                     {options.map((option, index) => (
-                        <div className='vote-option' key={index}>
+                        <div className='vote-option-create' key={index}>
                             <input
                                 className='login-input'
                                 type="text"

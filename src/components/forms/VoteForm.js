@@ -51,45 +51,65 @@ const VoteForm = () => {
         }
     };
 
+    const calculateTotalVotes = (options) => {
+        return options.reduce((total, option) => total + option.vote_count, 0);
+    };
+
     return (
-        <div className="vote-forms">
+        <div className="votes-list">
             {votes.length === 0 ? (
-                <p>Нет доступных голосований</p>
+                <div>Нет доступных голосований</div>
             ) : (
-                votes.map((vote) => (
-                    <div key={vote.id} className="vote-item">
-                        <div className="vote-title">
-                            <strong>{vote.title}</strong>
+                votes.map((vote) => {
+                    const totalVotes = calculateTotalVotes(vote.options);
+                    return (
+                        <div key={vote.id} className="form-frame">
+                            <div className="form-title">
+                                {vote.title}
+                            </div>
+                            <div className="vote-author">
+                                <div className="form-subtitle">Автор: {vote.anonymous ? "Анонимно" : vote.user_name}</div>
+                            </div>
+                            <div className="vote-options">
+                                {vote.options.map((option) => {
+                                    const votePercentage = totalVotes
+                                        ? (option.vote_count / totalVotes) * 100
+                                        : 0;
+                                    return (
+                                        <div key={option.id} className="vote-option">
+                                            <div className="vote-option-up">
+                                                <input
+                                                    type="radio"
+                                                    id={`option-${option.id}`}
+                                                    name={`vote-${vote.id}`}
+                                                    value={option.id}
+                                                    checked={selectedOptions[vote.id] === option.id}
+                                                    onChange={() => handleOptionChange(vote.id, option.id)}
+                                                />
+                                                <div className="vote-option-text">
+                                                    {option.option_text} - {option.vote_count} голосов
+                                                </div>
+                                            </div>
+                                            <div className="vote-option-bar">
+                                                <div
+                                                    className="vote-bar"
+                                                    style={{ width: `${votePercentage}%` }}
+                                                ></div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                            {error && <div className="error-message">{error}</div>}
+                            <button
+                                className="form-button"
+                                onClick={() => handleVoteSubmit(vote.id)}
+                            >
+                                Проголосовать
+                            </button>
                         </div>
-                        <div className="vote-author">
-                            <span>Автор: {vote.anonymous ? "Анонимно" : vote.user_name}</span>
-                        </div>
-                        <div className="vote-options">
-                            {vote.options.map((option) => (
-                                <div key={option.id} className="vote-option">
-                                    <input
-                                        type="radio"
-                                        id={`option-${option.id}`}
-                                        name={`vote-${vote.id}`}
-                                        value={option.id}
-                                        checked={selectedOptions[vote.id] === option.id}
-                                        onChange={() => handleOptionChange(vote.id, option.id)}
-                                    />
-                                    <label htmlFor={`option-${option.id}`}>
-                                        {option.option_text} - {option.vote_count} голосов
-                                    </label>
-                                </div>
-                            ))}
-                        </div>
-                        {error && <div className="error-message">{error}</div>}
-                        <button
-                            className="submit-vote-button"
-                            onClick={() => handleVoteSubmit(vote.id)}
-                        >
-                            Отправить голос
-                        </button>
-                    </div>
-                ))
+                    );
+                })
             )}
         </div>
     );
