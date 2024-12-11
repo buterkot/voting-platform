@@ -4,6 +4,7 @@ import axios from 'axios';
 const CreateVote = () => {
     const [title, setTitle] = useState('');
     const [options, setOptions] = useState([{ optionText: '' }, { optionText: '' }]);
+    const [anonymous, setAnonymous] = useState(false);
     const [error, setError] = useState('');
 
     const handleChange = (e, index) => {
@@ -54,6 +55,7 @@ const CreateVote = () => {
             startDate: new Date().toISOString(),
             endDate: null,
             userId: user.id,
+            anonymous: anonymous ? 1 : 0,
             options: options.map(option => option.optionText),
         };
 
@@ -62,6 +64,7 @@ const CreateVote = () => {
             alert('Голосование успешно создано!');
             setTitle('');
             setOptions([{ optionText: '' }, { optionText: '' }]);
+            setAnonymous(false);
         } catch (error) {
             setError(error.response?.data?.message || 'Ошибка при создании голосования.');
         }
@@ -115,8 +118,16 @@ const CreateVote = () => {
                         Добавить вариант
                     </button>
                 </div>
+                <div className='form-case-checkbox'>
+                    <div className='form-subtitle'>Анонимное:</div>
+                    <input className='checkbox'
+                        type="checkbox"
+                        checked={anonymous}
+                        onChange={() => setAnonymous(!anonymous)}
+                    />
+                </div>
                 {error && <div className='error-message'>{error}</div>}
-                <div>
+                <div className='button-block'>
                     <button className='form-button' type="submit">Создать голосование</button>
                 </div>
             </form>
