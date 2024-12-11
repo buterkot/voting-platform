@@ -105,6 +105,8 @@
     margin: 5px;
     margin-bottom: 15px;
     border-bottom: #ddeeff solid;
+    width: 600px;
+    text-align: center;
 }
 
 .home-frame {
@@ -140,7 +142,6 @@
     max-width: 50%;
     border-radius: 12px;
     padding: 12px;
-    /*margin: 20px;*/
     justify-content: center;
     flex-direction: column;
     color: rgb(0, 0, 0);
@@ -226,7 +227,7 @@ form {
     font-weight: 500;
 }
 
-.login-input {
+.login-input, .search-input {
     margin: 5px;
     height: 30px;
     border-radius: 5px;
@@ -284,6 +285,12 @@ form {
     width: 100%;
 }
 
+.my-votes-frame, .votes-frame{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .my-votes-list,
 .votes-list {
     width: 100%;
@@ -292,4 +299,21 @@ form {
     gap: 20px;
     justify-content: space-around;
     align-items: flex-start
+}
+
+.search-block{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: rgb(255, 255, 255);
+    padding: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+}
+
+.search-input{
+    max-width: 200px;
 }
