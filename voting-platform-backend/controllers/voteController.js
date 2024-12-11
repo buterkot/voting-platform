@@ -3,7 +3,8 @@ const {
     getAvailableVotes,
     castVote,
     stopVote,
-    getUserVotes
+    getUserVotes,
+    getVoteParticipants 
 } = require('../models/voteModel');
 
 const createVoteController = async (req, res) => {
@@ -84,10 +85,27 @@ const getUserVotesController = async (req, res) => {
     }
 };
 
+const getVoteParticipantsController = async (req, res) => {
+    const { voteId } = req.params;
+
+    if (!voteId) {
+        return res.status(400).send('ID голосования обязателен.');
+    }
+
+    try {
+        const participants = await getVoteParticipants(voteId);
+        res.status(200).json(participants);
+    } catch (error) {
+        console.error('Ошибка при получении участников голосования:', error.message);
+        res.status(500).send('Ошибка сервера');
+    }
+};
+
 module.exports = {
     createVoteController,
     getVotesController,
     castVoteController,
     stopVoteController,
-    getUserVotesController
+    getUserVotesController,
+    getVoteParticipantsController 
 };

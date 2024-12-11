@@ -72,7 +72,7 @@ const CreateVote = () => {
 
     return (
         <div className='form-frame'>
-            <div className='form-title'>Создать голосование</div>
+            <div className='form-title'>Новое голосование</div>
             <form onSubmit={handleSubmit}>
                 <div className='form-case'>
                     <div className='form-subtitle'>Вопрос:</div>

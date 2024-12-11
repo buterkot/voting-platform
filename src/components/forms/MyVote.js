@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import VotesTable from '../tables/VotesModal';
 
 const MyVote = () => {
     const [myVotes, setMyVotes] = useState([]);
     const [filteredVotes, setFilteredVotes] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [error, setError] = useState("");
+    const [selectedParticipants, setSelectedParticipants] = useState([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         const fetchVotes = async () => {
@@ -57,6 +60,22 @@ const MyVote = () => {
         }
     };
 
+    const handleViewParticipants = async (voteId) => {
+        try {
+            const response = await axios.get(`http://localhost:3000/votes/participants/${voteId}`);
+            setSelectedParticipants(response.data);
+            setIsModalOpen(true);
+        } catch (error) {
+            setError("Ошибка при загрузке участников голосования.");
+            console.error(error);
+        }
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedParticipants([]);
+    };
+
     const calculateTotalVotes = (options) => {
         return options.reduce((total, option) => total + option.vote_count, 0);
     };
@@ -76,7 +95,6 @@ const MyVote = () => {
                 </div>
             </div>
             <div className="my-votes-list">
-
                 {filteredVotes.length === 0 ? (
                     <div>Нет созданных вами голосований.</div>
                 ) : (
@@ -125,12 +143,23 @@ const MyVote = () => {
                                         Завершить
                                     </button>
                                 )}
+                                {!vote.anonymous && (
+                                    <button
+                                        className="form-button"
+                                        onClick={() => handleViewParticipants(vote.id)}
+                                    >
+                                        Посмотреть голоса
+                                    </button>
+                                )}
                                 {error && <div className="error-message">{error}</div>}
                             </div>
                         );
                     })
                 )}
             </div>
+            {isModalOpen && (
+                <VotesTable participants={selectedParticipants} onClose={closeModal} />
+            )}
         </div>
     );
 };

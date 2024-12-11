@@ -33,7 +33,7 @@ function Profile() {
                         Доступные голосования
                     </div>
                     <div className="other-votes-content">
-                        <VoteForm /> {/* Здесь мы используем компонент VoteForm */}
+                        <VoteForm /> 
                     </div>
                 </div>
             </div>

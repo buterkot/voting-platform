@@ -232,12 +232,35 @@ const getUserVotes = (userId) => {
     });
 };
 
+const getVoteParticipants = (voteId) => {
+    return new Promise((resolve, reject) => {
+        db.getConnection((err, connection) => {
+            if (err) return reject(err);
 
+            const query = `
+                SELECT u.firstname, u.lastname, u.email, vo.option_text
+                FROM votes_cast vc
+                JOIN users u ON vc.user_id = u.id
+                JOIN vote_options vo ON vc.option_id = vo.id
+                WHERE vo.vote_id = ?
+            `;
+
+            connection.query(query, [voteId], (err, results) => {
+                connection.release();
+
+                if (err) return reject(err);
+
+                resolve(results);
+            });
+        });
+    });
+};
 
 module.exports = {
     createVote,
     getAvailableVotes,
     castVote,
     stopVote,
-    getUserVotes
+    getUserVotes,
+    getVoteParticipants
 };
