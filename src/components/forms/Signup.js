@@ -112,7 +112,7 @@ function Signup() {
                     />
                     {error && <div className="error-message">{error}</div>} {}
                     <button className="form-button" type="submit">
-                        <span className="login-button-text">Зарегестрироваться</span>
+                        <span className="login-button-text">Зарегистрироваться</span>
                     </button>
                 </form>
             </div>

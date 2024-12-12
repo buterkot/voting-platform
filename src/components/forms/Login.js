@@ -25,14 +25,24 @@ function Login() {
 
             if (response.status === 200) {
                 const { user } = response.data;
-                
+
+                if (user.ban === 1) {
+                    setError("Ваш аккаунт заблокирован. Обратитесь к администратору.");
+                    return;
+                }
+
                 sessionStorage.setItem('user', JSON.stringify(user));
 
                 setError('');
-                navigate('/profile'); 
+                
+                if (user.role === 'A') {
+                    navigate('/admin'); 
+                } else {
+                    navigate('/profile'); 
+                }
             }
         } catch (error) {
-            setError(error.response?.data?.message || 'Что-то пошло не так');
+            setError(error.response?.data?.message || 'Неверный логин или пароль');
         }
     };
 
