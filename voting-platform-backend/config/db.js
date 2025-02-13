@@ -4,7 +4,7 @@ const db = mysql.createPool({
     host: process.env.DB_HOST || '127.127.126.26',
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'voting_platform',
+    database: process.env.DB_NAME || 'test',        //поменял имя voting_platform -> test лень переносить таблицы
     connectionLimit: 10,  
 });
 
