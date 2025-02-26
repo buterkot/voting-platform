@@ -2,6 +2,7 @@ const express = require('express');
 const { 
     createVoteController, 
     getVotesController, 
+    getVoteByIdController,
     castVoteController, 
     stopVoteController,
     getUserVotesController,
@@ -16,5 +17,6 @@ router.post('/vote', castVoteController);
 router.post('/stop', stopVoteController); 
 router.get('/user/:userId', getUserVotesController);
 router.get('/participants/:voteId', getVoteParticipantsController);
+router.get('/:voteId', getVoteByIdController);
 
 module.exports = router;

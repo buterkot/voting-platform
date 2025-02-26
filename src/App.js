@@ -5,6 +5,7 @@ import Registration from "./pages/Registration.js";
 import Home from "./pages/Home.js";
 import Profile from "./pages/Profile.js";
 import Admin from "./pages/Admin.js";
+import Vote from "./pages/Vote.js";
 import "./styles/App.css";
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/vote/:voteId" element={<Vote />} />
       </Routes>
     </Router>
   );

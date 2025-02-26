@@ -1,6 +1,7 @@
 const { 
     createVote,
     getAvailableVotes,
+    getVoteById,
     castVote,
     stopVote,
     getUserVotes,
@@ -32,6 +33,18 @@ const getVotesController = async (req, res) => {
     } catch (error) {
         console.error('Ошибка при получении голосований:', error.message);
         res.status(500).send('Ошибка сервера');
+    }
+};
+
+const getVoteByIdController = async (req, res) => {
+    const { voteId } = req.params;
+
+    try {
+        const vote = await getVoteById(voteId);
+        res.status(200).json(vote);
+    } catch (error) {
+        console.error('Ошибка при получении голосования:', error.message);
+        res.status(404).send(error.message);
     }
 };
 
@@ -104,6 +117,7 @@ const getVoteParticipantsController = async (req, res) => {
 module.exports = {
     createVoteController,
     getVotesController,
+    getVoteByIdController,
     castVoteController,
     stopVoteController,
     getUserVotesController,

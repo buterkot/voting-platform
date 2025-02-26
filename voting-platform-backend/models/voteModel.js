@@ -173,6 +173,57 @@ const stopVote = (voteId) => {
     });
 };
 
+const getVoteById = (voteId) => {
+    return new Promise((resolve, reject) => {
+        db.getConnection((err, connection) => {
+            if (err) return reject(err);
+
+            const query = `
+                SELECT v.id, v.title, v.user_id, v.anonymous, v.status, v.start_date, v.end_date,
+                       u.firstname, u.lastname, 
+                       o.id AS option_id, o.option_text, COUNT(vc.option_id) AS vote_count
+                FROM votes v
+                LEFT JOIN users u ON v.user_id = u.id
+                LEFT JOIN vote_options o ON v.id = o.vote_id
+                LEFT JOIN votes_cast vc ON o.id = vc.option_id
+                WHERE v.id = ?
+                GROUP BY v.id, o.id
+            `;
+
+            connection.query(query, [voteId], (err, results) => {
+                if (err) {
+                    connection.release();
+                    return reject(err);
+                }
+
+                if (results.length === 0) {
+                    connection.release();
+                    return reject(new Error('Голосование не найдено.'));
+                }
+
+                const vote = {
+                    id: results[0].id,
+                    title: results[0].title,
+                    user_id: results[0].user_id,
+                    user_name: `${results[0].firstname} ${results[0].lastname}`,
+                    anonymous: results[0].anonymous,
+                    status: results[0].status,
+                    start_date: results[0].start_date,
+                    end_date: results[0].end_date,
+                    options: results.map(row => ({
+                        id: row.option_id,
+                        option_text: row.option_text,
+                        vote_count: row.vote_count || 0
+                    }))
+                };
+
+                connection.release();
+                resolve(vote);
+            });
+        });
+    });
+};
+
 const getUserVotes = (userId) => {
     return new Promise((resolve, reject) => {
         db.getConnection((err, connection) => {
@@ -259,6 +310,7 @@ const getVoteParticipants = (voteId) => {
 module.exports = {
     createVote,
     getAvailableVotes,
+    getVoteById,
     castVote,
     stopVote,
     getUserVotes,
