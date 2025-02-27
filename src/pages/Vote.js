@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Header from "../components/Header";
 import "../styles/App.css";
+import "../styles/Comments.css";
 
 const Vote = () => {
     const { voteId } = useParams();
@@ -67,13 +68,16 @@ const Vote = () => {
                 return;
             }
 
-            const response = await axios.post("http://localhost:3000/comments/add", {
+            const commentData = {
                 text: newComment,
-                userId: user.id,
-                voteId
-            });
+                date: new Date().toISOString().slice(0, 19).replace("T", " "), 
+                user_id: user.id,
+                vote_id: voteId
+            };
 
-            setComments([...comments, response.data]);
+            const response = await axios.post("http://localhost:3000/comments/add", commentData);
+
+            setComments([...comments, { ...commentData, id: response.data.id, user_name: user.firstname }]);
             setNewComment("");
         } catch (error) {
             console.error("Ошибка при добавлении комментария:", error);
@@ -86,38 +90,45 @@ const Vote = () => {
         <div className="main">
             <Header />
             <div className="main-content">
-                <h2>{vote.title}</h2>
-                <p>Автор: {vote.anonymous ? "Аноним" : vote.user_name}</p>
-                <div className="vote-options">
-                    {vote.options.map(option => (
-                        <div key={option.id}>
-                            <input
-                                type="radio"
-                                id={`option-${option.id}`}
-                                name="vote"
-                                value={option.id}
-                                onChange={() => setSelectedOption(option.id)}
-                            />
-                            <label htmlFor={`option-${option.id}`}>{option.option_text} ({option.vote_count} голосов)</label>
-                        </div>
-                    ))}
+
+                <div className="block-title">{vote.title}</div>
+                <div className="form-frame">
+                    <div className="vote-author">
+                        <div className="form-subtitle">Автор: {vote.anonymous ? "Аноним" : vote.user_name}</div>
+                    </div>
+                    <div className="vote-options">
+                        {vote.options.map(option => (
+                            <div key={option.id}>
+                                <input
+                                    type="radio"
+                                    id={`option-${option.id}`}
+                                    name="vote"
+                                    value={option.id}
+                                    onChange={() => setSelectedOption(option.id)}
+                                />
+                                <label htmlFor={`option-${option.id}`}>{option.option_text} ({option.vote_count} голосов)</label>
+                            </div>
+                        ))}
+                    </div>
+                    {error && <div className="error-message">{error}</div>}
+                    <button onClick={handleVoteSubmit}>Проголосовать</button>
                 </div>
-                {error && <div className="error-message">{error}</div>}
-                <button onClick={handleVoteSubmit}>Проголосовать</button>
+
 
                 {/* Блок комментариев */}
                 <div className="comments-section">
-                    <h3>Комментарии</h3>
+                    <div className="block-title">Комментарии</div>
                     <div className="comments-list">
                         {comments.length > 0 ? (
                             comments.map(comment => (
                                 <div key={comment.id} className="comment">
-                                    <p><strong>{comment.user_name}</strong>: {comment.text}</p>
-                                    <small>{new Date(comment.date).toLocaleString()}</small>
+                                    <div className="user-name">{comment.user_name || "Аноним"}:</div>
+                                    <div className="comment-text">{comment.text}</div>
+                                    <div className="comment-date">{new Date(comment.date).toLocaleString()}</div>
                                 </div>
                             ))
                         ) : (
-                            <p>Пока нет комментариев.</p>
+                            <div>Пока нет комментариев.</div>
                         )}
                     </div>
                     <textarea

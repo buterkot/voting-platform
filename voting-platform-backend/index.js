@@ -5,6 +5,7 @@ const db = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const voteRoutes = require('./routes/voteRoutes');
 const userRoutes = require('./routes/userRoutes');
+const commentRoutes = require('./routes/commentRoutes');
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.use(cors(corsOptions));
 app.use('/auth', authRoutes);
 app.use('/votes', voteRoutes);
 app.use('/users', userRoutes);
+app.use('/comments', commentRoutes);
 
 app.get('/', (req, res) => {
     res.send('Hello, World!');

@@ -1,0 +1,32 @@
+.comments-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 600px;
+}
+
+.comments-list {
+    
+}
+
+.comment {
+    max-width: 600px;
+    word-wrap: break-word;  
+    overflow-wrap: break-word;
+    white-space: normal;
+    margin-bottom: 10px;
+}
+
+.comment-text {
+    line-height: 18px;
+    font-family: cursive;
+}
+
+.user-name {
+    font-weight: bold;
+}
+
+.comment-date {
+    margin-top: 2px;
+    font-size: small;
+}
