@@ -70,21 +70,21 @@ const Vote = () => {
 
             const commentData = {
                 text: newComment,
-                date: new Date().toISOString().slice(0, 19).replace("T", " "), 
+                date: new Date().toISOString().slice(0, 19).replace("T", " "),
                 user_id: user.id,
                 vote_id: voteId
             };
 
             const response = await axios.post("http://localhost:3000/comments/add", commentData);
 
-            setComments([...comments, { ...commentData, id: response.data.id, user_name: user.firstname }]);
+            setComments([{ ...commentData, id: response.data.id, user_name: user.firstname + ' ' + user.lastname }, ...comments]);
             setNewComment("");
         } catch (error) {
             console.error("Ошибка при добавлении комментария:", error);
         }
     };
 
-    if (!vote) return <div>Загрузка...</div>;
+    if (!vote) return <div>Проблема...</div>;
 
     return (
         <div className="main">
@@ -111,7 +111,10 @@ const Vote = () => {
                         ))}
                     </div>
                     {error && <div className="error-message">{error}</div>}
-                    <button onClick={handleVoteSubmit}>Проголосовать</button>
+                    <button
+                        className="form-button"
+                        onClick={handleVoteSubmit}>Проголосовать
+                    </button>
                 </div>
 
 
@@ -122,7 +125,7 @@ const Vote = () => {
                         {comments.length > 0 ? (
                             comments.map(comment => (
                                 <div key={comment.id} className="comment">
-                                    <div className="user-name">{comment.user_name || "Аноним"}:</div>
+                                    <div className="comment-user-name">{comment.user_name || "Аноним"}:</div>
                                     <div className="comment-text">{comment.text}</div>
                                     <div className="comment-date">{new Date(comment.date).toLocaleString()}</div>
                                 </div>
@@ -130,13 +133,22 @@ const Vote = () => {
                         ) : (
                             <div>Пока нет комментариев.</div>
                         )}
+                        <div className="comment-add">
+                            <textarea
+                                className="comment-area"
+                                placeholder="Оставьте комментарий..."
+                                value={newComment}
+                                maxLength={256}
+                                rows={3}
+                                cols={70}
+                                onChange={(e) => setNewComment(e.target.value)}
+                            />
+                            <button
+                                className="form-button"
+                                onClick={handleCommentSubmit}>Добавить</button>
+                        </div>
                     </div>
-                    <textarea
-                        placeholder="Оставьте комментарий..."
-                        value={newComment}
-                        onChange={(e) => setNewComment(e.target.value)}
-                    />
-                    <button onClick={handleCommentSubmit}>Добавить</button>
+
                 </div>
             </div>
         </div>
