@@ -27,7 +27,7 @@
 }
 
 .comment-add {
-    /*max-width: 600px;*/
+    width: 600px;
     display: flex;
     flex-direction: column;
     background-color: white;

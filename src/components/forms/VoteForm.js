@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import VotesTable from '../tables/VotesModal';
 
 const VoteForm = () => {
     const [votes, setVotes] = useState([]);
     const [filteredVotes, setFilteredVotes] = useState([]);
-    const [selectedOptions, setSelectedOptions] = useState({});
     const [searchQuery, setSearchQuery] = useState("");
-    const [error, setError] = useState("");
-    const [selectedParticipants, setSelectedParticipants] = useState([]);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         axios.get("http://localhost:3000/votes")
@@ -18,8 +15,7 @@ const VoteForm = () => {
                 setFilteredVotes(response.data);
             })
             .catch((error) => {
-                setError("Ошибка загрузки голосований.");
-                console.error(error);
+                console.error("Ошибка загрузки голосований:", error);
             });
     }, []);
 
@@ -31,56 +27,6 @@ const VoteForm = () => {
             vote.title.toLowerCase().includes(query)
         );
         setFilteredVotes(filtered);
-    };
-
-    const handleOptionChange = (voteId, optionId) => {
-        setSelectedOptions((prev) => ({
-            ...prev,
-            [voteId]: optionId
-        }));
-    };
-
-    const handleVoteSubmit = async (voteId) => {
-        if (!selectedOptions[voteId]) {
-            setError("Пожалуйста, выберите вариант.");
-            return;
-        }
-
-        try {
-            const user = JSON.parse(sessionStorage.getItem("user"));
-            if (!user || !user.id) {
-                setError("Не удалось определить пользователя. Авторизуйтесь заново.");
-                return;
-            }
-
-            const voteData = {
-                optionId: selectedOptions[voteId],
-                userId: user.id
-            };
-
-            await axios.post("http://localhost:3000/votes/vote", voteData);
-            setError("");
-            alert("Ваш голос учтен!");
-        } catch (error) {
-            setError("Ошибка при отправке голоса.");
-            console.error(error);
-        }
-    };
-
-    const handleViewParticipants = async (voteId) => {
-        try {
-            const response = await axios.get(`http://localhost:3000/votes/participants/${voteId}`);
-            setSelectedParticipants(response.data);
-            setIsModalOpen(true);
-        } catch (error) {
-            setError("Ошибка при загрузке участников голосования.");
-            console.error(error);
-        }
-    };
-
-    const closeModal = () => {
-        setIsModalOpen(false);
-        setSelectedParticipants([]);
     };
 
     const calculateTotalVotes = (options) => {
@@ -109,11 +55,11 @@ const VoteForm = () => {
                         const totalVotes = calculateTotalVotes(vote.options);
                         return (
                             <div key={vote.id} className="form-frame">
-                                <div className="form-title">
-                                    {vote.title}
-                                </div>
+                                <div className="form-title">{vote.title}</div>
                                 <div className="vote-author">
-                                    <div className="form-subtitle">Автор: {vote.anonymous ? "Аноним" : vote.user_name}</div>
+                                    <div className="form-subtitle">
+                                        Автор: {vote.anonymous ? "Аноним" : vote.user_name}
+                                    </div>
                                 </div>
                                 <div className="vote-options">
                                     {vote.options.map((option) => {
@@ -122,18 +68,8 @@ const VoteForm = () => {
                                             : 0;
                                         return (
                                             <div key={option.id} className="vote-option">
-                                                <div className="vote-option-up">
-                                                    <input
-                                                        type="radio"
-                                                        id={`option-${option.id}`}
-                                                        name={`vote-${vote.id}`}
-                                                        value={option.id}
-                                                        checked={selectedOptions[vote.id] === option.id}
-                                                        onChange={() => handleOptionChange(vote.id, option.id)}
-                                                    />
-                                                    <div className="vote-option-text">
-                                                        {option.option_text} - {option.vote_count} голосов
-                                                    </div>
+                                                <div className="vote-option-text">
+                                                    {option.option_text} - {option.vote_count} голосов
                                                 </div>
                                                 <div className="vote-option-bar">
                                                     <div
@@ -145,29 +81,17 @@ const VoteForm = () => {
                                         );
                                     })}
                                 </div>
-                                {error && <div className="error-message">{error}</div>}
                                 <button
                                     className="form-button"
-                                    onClick={() => handleVoteSubmit(vote.id)}
+                                    onClick={() => navigate(`/vote/${vote.id}`)}
                                 >
-                                    Проголосовать
+                                    Подробнее
                                 </button>
-                                {!vote.anonymous && (
-                                    <button
-                                        className="form-button"
-                                        onClick={() => handleViewParticipants(vote.id)}
-                                    >
-                                        Посмотреть голоса
-                                    </button>
-                                )}
                             </div>
                         );
                     })
                 )}
             </div>
-            {isModalOpen && (
-                <VotesTable participants={selectedParticipants} onClose={closeModal} />
-            )}
         </div>
     );
 };

@@ -4,30 +4,28 @@ import axios from "axios";
 import Header from "../components/Header";
 import "../styles/App.css";
 import "../styles/Comments.css";
+import VotesTable from '../components/tables/VotesModal';
 
 const Vote = () => {
     const { voteId } = useParams();
     const navigate = useNavigate();
     const [vote, setVote] = useState(null);
     const [selectedOption, setSelectedOption] = useState(null);
-    const [error, setError] = useState("");
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState("");
+    const [selectedParticipants, setSelectedParticipants] = useState([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         axios.get(`http://localhost:3000/votes/${voteId}`)
-            .then(response => {
-                setVote(response.data);
-            })
+            .then(response => setVote(response.data))
             .catch(error => {
-                setError("Ошибка загрузки голосования");
+                alert("Ошибка загрузки голосования");
                 console.error(error);
             });
 
         axios.get(`http://localhost:3000/comments/${voteId}`)
-            .then(response => {
-                setComments(response.data);
-            })
+            .then(response => setComments(response.data))
             .catch(error => {
                 console.error("Ошибка загрузки комментариев", error);
             });
@@ -35,14 +33,14 @@ const Vote = () => {
 
     const handleVoteSubmit = async () => {
         if (!selectedOption) {
-            setError("Выберите вариант перед голосованием");
+            alert("Выберите вариант перед голосованием");
             return;
         }
 
         try {
             const user = JSON.parse(sessionStorage.getItem("user"));
             if (!user || !user.id) {
-                setError("Не удалось определить пользователя. Авторизуйтесь заново.");
+                alert("Не удалось определить пользователя. Авторизуйтесь заново.");
                 return;
             }
 
@@ -50,10 +48,11 @@ const Vote = () => {
                 optionId: selectedOption,
                 userId: user.id
             });
+
             alert("Ваш голос учтен!");
             navigate("/profile");
         } catch (error) {
-            setError("Ошибка при голосовании.");
+            alert("Ошибка при голосовании.");
             console.error(error);
         }
     };
@@ -64,7 +63,7 @@ const Vote = () => {
         try {
             const user = JSON.parse(sessionStorage.getItem("user"));
             if (!user || !user.id) {
-                setError("Не удалось определить пользователя. Авторизуйтесь заново.");
+                alert("Не удалось определить пользователя. Авторизуйтесь заново.");
                 return;
             }
 
@@ -80,8 +79,29 @@ const Vote = () => {
             setComments([{ ...commentData, id: response.data.id, user_name: user.firstname + ' ' + user.lastname }, ...comments]);
             setNewComment("");
         } catch (error) {
-            console.error("Ошибка при добавлении комментария:", error);
+            alert("Ошибка при добавлении комментария.");
+            console.error(error);
         }
+    };
+
+    const handleViewParticipants = async () => {
+        try {
+            const response = await axios.get(`http://localhost:3000/votes/participants/${voteId}`);
+            setSelectedParticipants(response.data);
+            setIsModalOpen(true);
+        } catch (error) {
+            alert("Ошибка при загрузке участников голосования.");
+            console.error(error);
+        }
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedParticipants([]);
+    };
+
+    const calculateTotalVotes = () => {
+        return vote.options.reduce((total, option) => total + option.vote_count, 0);
     };
 
     if (!vote) return <div>Проблема...</div>;
@@ -90,33 +110,42 @@ const Vote = () => {
         <div className="main">
             <Header />
             <div className="main-content">
-
                 <div className="block-title">{vote.title}</div>
                 <div className="form-frame">
                     <div className="vote-author">
                         <div className="form-subtitle">Автор: {vote.anonymous ? "Аноним" : vote.user_name}</div>
                     </div>
                     <div className="vote-options">
-                        {vote.options.map(option => (
-                            <div key={option.id}>
-                                <input
-                                    type="radio"
-                                    id={`option-${option.id}`}
-                                    name="vote"
-                                    value={option.id}
-                                    onChange={() => setSelectedOption(option.id)}
-                                />
-                                <label htmlFor={`option-${option.id}`}>{option.option_text} ({option.vote_count} голосов)</label>
-                            </div>
-                        ))}
-                    </div>
-                    {error && <div className="error-message">{error}</div>}
-                    <button
-                        className="form-button"
-                        onClick={handleVoteSubmit}>Проголосовать
-                    </button>
-                </div>
+                        {vote.options.map(option => {
+                            const totalVotes = calculateTotalVotes();
+                            const votePercentage = totalVotes ? (option.vote_count / totalVotes) * 100 : 0;
 
+                            return (
+                                <div key={option.id} className="vote-option">
+                                    <div className="vote-option-up">
+                                        <input
+                                            type="radio"
+                                            id={`option-${option.id}`}
+                                            name="vote"
+                                            value={option.id}
+                                            onChange={() => setSelectedOption(option.id)}
+                                        />
+                                        <label htmlFor={`option-${option.id}`}>
+                                            {option.option_text} ({option.vote_count} голосов)
+                                        </label>
+                                    </div>
+                                    <div className="vote-option-bar">
+                                        <div className="vote-bar" style={{ width: `${votePercentage}%` }}></div>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <button className="form-button" onClick={handleVoteSubmit}>Проголосовать</button>
+                    {!vote.anonymous && (
+                        <button className="form-button" onClick={handleViewParticipants}>Посмотреть голоса</button>
+                    )}
+                </div>
 
                 {/* Блок комментариев */}
                 <div className="comments-section">
@@ -143,14 +172,14 @@ const Vote = () => {
                                 cols={70}
                                 onChange={(e) => setNewComment(e.target.value)}
                             />
-                            <button
-                                className="form-button"
-                                onClick={handleCommentSubmit}>Добавить</button>
+                            <button className="form-button" onClick={handleCommentSubmit}>Добавить</button>
                         </div>
                     </div>
-
                 </div>
             </div>
+
+            {/* Модальное окно с участниками голосования */}
+            {isModalOpen && <VotesTable participants={selectedParticipants} onClose={closeModal} />}
         </div>
     );
 };
