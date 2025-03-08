@@ -49,6 +49,68 @@
     background: none;
 }
 
+.user-menu {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+}
+
+.menu-icon {
+    font-size: 24px;
+    margin-left: 10px;
+    cursor: pointer;
+    color: white;
+    transition: transform 0.2s;
+}
+
+.menu-icon:hover {
+    transform: scale(1.1);
+}
+
+.dropdown-menu {
+    position: absolute;
+    right: 0;
+    top: 40px;
+    background: white;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    overflow: hidden;
+    z-index: 100;
+    width: 150px;
+}
+
+.dropdown-item {
+    display: block;
+    padding: 10px 15px;
+    color: #333;
+    text-decoration: none;
+    background: white;
+    transition: background 0.3s;
+    text-align: left;
+    border: none;
+    width: 100%;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background: #f0f0f0;
+}
+
+.logout {
+    color: red;
+    font-weight: bold;
+}
+
+
 ::-webkit-scrollbar {
     width: 10px;
     height: 10px;

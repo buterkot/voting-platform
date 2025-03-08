@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Link} from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/App.css";
 import logo from '../styles/logo512.png';
+import { FiMenu } from "react-icons/fi"; // Импорт иконки бургер-меню
 
 function Header() {
     const [user, setUser] = useState(null);
+    const [menuOpen, setMenuOpen] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -33,12 +34,19 @@ function Header() {
             </div>
             <div className="header-right">
                 {user ? (
-                    <>
-                        <div className="user-name">
+                    <div className="user-menu">
+                        <div className="user-info">
                             {user.firstname} {user.lastname}
+                            <FiMenu className="menu-icon" onClick={() => setMenuOpen(!menuOpen)} />
                         </div>
-                        <button className="header-button" onClick={handleLogout}>Выйти</button>
-                    </>
+                        {menuOpen && (
+                            <div className="dropdown-menu">
+                                <Link to="/profile" className="dropdown-item">Профиль</Link>
+                                <Link to="/catalog" className="dropdown-item">Каталог</Link>
+                                <button className="dropdown-item logout" onClick={handleLogout}>Выйти</button>
+                            </div>
+                        )}
+                    </div>
                 ) : (
                     <Link to="/login" className="text-link">Войти</Link>
                 )}
