@@ -36,7 +36,7 @@ const VoteForm = () => {
     return (
         <div className="votes-frame">
             <div className='search-block'>
-                <div className='form-subtitle'>Поиск по названию:</div>
+                <div className='search'>Поиск по названию:</div>
                 <div className="search-bar">
                     <input
                         className="search-input"
@@ -57,7 +57,7 @@ const VoteForm = () => {
                             <div key={vote.id} className="form-frame">
                                 <div className="form-title">{vote.title}</div>
                                 <div className="vote-author">
-                                    <div className="form-subtitle">
+                                    <div className="author">
                                         Автор: {vote.anonymous ? "Аноним" : vote.user_name}
                                     </div>
                                 </div>

@@ -83,7 +83,7 @@ const MyVote = () => {
     return (
         <div className='my-votes-frame'>
             <div className='search-block'>
-                <div className='form-subtitle'>Поиск по названию:</div>
+                <div className='search'>Поиск по названию:</div>
                 <div className="search-bar">
                     <input
                         className="search-input"

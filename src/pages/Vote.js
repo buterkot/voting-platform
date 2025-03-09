@@ -113,7 +113,7 @@ const Vote = () => {
                 <div className="block-title">{vote.title}</div>
                 <div className="form-frame">
                     <div className="vote-author">
-                        <div className="form-subtitle">Автор: {vote.anonymous ? "Аноним" : vote.user_name}</div>
+                        <div className="author">Автор: {vote.anonymous ? "Аноним" : vote.user_name}</div>
                     </div>
                     <div className="vote-options">
                         {vote.options.map(option => {
