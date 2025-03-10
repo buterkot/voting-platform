@@ -1,3 +1,14 @@
+@font-face {
+    font-family: 'Nunito';
+    src: url('../assets/fonts/Nunito-VariableFont_wght.ttf') format('truetype');
+    font-weight: 100 900; 
+    font-style: normal;
+}
+
+body {
+    font-family: 'Nunito', sans-serif;
+}
+
 .comments-section {
     display: flex;
     flex-direction: column;
@@ -22,8 +33,9 @@
 }
 
 .comment-text {
+    margin-left: 5px;
     line-height: 18px;
-    font-family: cursive;
+    margin-top: 4px;
 }
 
 .comment-add {
@@ -47,13 +59,57 @@
 }
 
 .comment-user-name {
+    margin-left: 5px;
     font-weight: bold;
-    /*background-color: rgb(201, 201, 201);
-    padding: 5px;
-    border-radius: 5px;*/
+    font-size: 20px;
 }
 
 .comment-date {
-    margin-top: 4px;
+    margin-left: 5px;
+    margin-top: 6px;
+    margin-bottom: 3px;
     font-size: small;
+}
+
+.comment-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.comment-options {
+    position: relative;
+}
+
+.options-button {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.options-menu {
+    position: absolute;
+    top: 20px;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 5px;
+    z-index: 10;
+}
+
+.options-menu button {
+    background: none;
+    border: none;
+    padding: 5px 10px;
+    width: 100%;
+    cursor: pointer;
+    text-align: left;
+}
+
+.options-menu button:hover {
+    background: #f0f0f0;
 }

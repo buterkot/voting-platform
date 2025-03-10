@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams} from "react-router-dom";
 import axios from "axios";
 import Header from "../components/Header";
 import "../styles/App.css";
 import "../styles/Comments.css";
 import VotesTable from '../components/tables/VotesModal';
+import Comments from "../components/Comments";
 
 const Vote = () => {
     const { voteId } = useParams();
-    const navigate = useNavigate();
     const [vote, setVote] = useState(null);
     const [selectedOption, setSelectedOption] = useState(null);
     const [comments, setComments] = useState([]);
-    const [newComment, setNewComment] = useState("");
     const [selectedParticipants, setSelectedParticipants] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -50,36 +49,10 @@ const Vote = () => {
             });
 
             alert("Ваш голос учтен!");
-            navigate("/profile");
+            window.location.reload();
+
         } catch (error) {
             alert("Ошибка при голосовании.");
-            console.error(error);
-        }
-    };
-
-    const handleCommentSubmit = async () => {
-        if (!newComment.trim()) return;
-
-        try {
-            const user = JSON.parse(sessionStorage.getItem("user"));
-            if (!user || !user.id) {
-                alert("Не удалось определить пользователя. Авторизуйтесь заново.");
-                return;
-            }
-
-            const commentData = {
-                text: newComment,
-                date: new Date().toISOString().slice(0, 19).replace("T", " "),
-                user_id: user.id,
-                vote_id: voteId
-            };
-
-            const response = await axios.post("http://localhost:3000/comments/add", commentData);
-
-            setComments([{ ...commentData, id: response.data.id, user_name: user.firstname + ' ' + user.lastname }, ...comments]);
-            setNewComment("");
-        } catch (error) {
-            alert("Ошибка при добавлении комментария.");
             console.error(error);
         }
     };
@@ -124,6 +97,7 @@ const Vote = () => {
                                 <div key={option.id} className="vote-option">
                                     <div className="vote-option-up">
                                         <input
+                                            className="vote-option-radio"
                                             type="radio"
                                             id={`option-${option.id}`}
                                             name="vote"
@@ -147,38 +121,9 @@ const Vote = () => {
                     )}
                 </div>
 
-                {/* Блок комментариев */}
-                <div className="comments-section">
-                    <div className="block-title">Комментарии</div>
-                    <div className="comments-list">
-                        {comments.length > 0 ? (
-                            comments.map(comment => (
-                                <div key={comment.id} className="comment">
-                                    <div className="comment-user-name">{comment.user_name || "Аноним"}:</div>
-                                    <div className="comment-text">{comment.text}</div>
-                                    <div className="comment-date">{new Date(comment.date).toLocaleString()}</div>
-                                </div>
-                            ))
-                        ) : (
-                            <div>Пока нет комментариев.</div>
-                        )}
-                        <div className="comment-add">
-                            <textarea
-                                className="comment-area"
-                                placeholder="Оставьте комментарий..."
-                                value={newComment}
-                                maxLength={256}
-                                rows={3}
-                                cols={70}
-                                onChange={(e) => setNewComment(e.target.value)}
-                            />
-                            <button className="form-button" onClick={handleCommentSubmit}>Добавить</button>
-                        </div>
-                    </div>
-                </div>
+                <Comments voteId={voteId} />
             </div>
 
-            {/* Модальное окно с участниками голосования */}
             {isModalOpen && <VotesTable participants={selectedParticipants} onClose={closeModal} />}
         </div>
     );

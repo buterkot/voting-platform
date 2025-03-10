@@ -16,6 +16,23 @@ const addComment = async (req, res) => {
     }
 };
 
+const deleteComment = async (req, res) => {
+    try {
+        const { commentId } = req.body;
+
+        if (!commentId) {
+            return res.status(400).json({ error: "ID пустой." });
+        }
+
+        const result = await Comment.deleteComment({ commentId });
+        res.status(201).json({ id: result.id });
+    } catch (error) {
+        console.error("Ошибка при удалении комментария:", error);
+        res.status(500).json({ error: "Ошибка сервера при удалении комментария." });
+    }
+};
+
+
 const getCommentsByVoteId = async (req, res) => {
     try {
         const { voteId } = req.params;
@@ -29,5 +46,6 @@ const getCommentsByVoteId = async (req, res) => {
 
 module.exports = {
     addComment,
+    deleteComment,
     getCommentsByVoteId
 };

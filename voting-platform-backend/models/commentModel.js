@@ -38,7 +38,24 @@ const getCommentsByVoteId = async (voteId) => {
     });
 };
 
+const deleteComment = async (commentId) => {
+    return new Promise((resolve, reject) => {
+        const query = `DELETE FROM comments WHERE id = ?`;
+
+        db.query(query, [commentId], (err, result) => {
+            if (err) return reject(err);
+
+            if (result.affectedRows === 0) {
+                return reject(new Error("Комментарий не найден."));
+            }
+
+            resolve({ success: true });
+        });
+    });
+};
+
 module.exports = {
     addComment,
-    getCommentsByVoteId
+    getCommentsByVoteId,
+    deleteComment
 };

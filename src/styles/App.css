@@ -1,7 +1,7 @@
 @font-face {
     font-family: 'Nunito';
     src: url('../assets/fonts/Nunito-VariableFont_wght.ttf') format('truetype');
-    font-weight: 100 900; 
+    font-weight: 100 900;
     font-style: normal;
 }
 
@@ -249,7 +249,8 @@ form {
     font-weight: bold;
 }
 
-.author, .search{
+.author,
+.search {
     font-size: 18px;
 }
 
@@ -281,28 +282,45 @@ form {
     flex-direction: row;
 }
 
-.vote-options, .my-vote-options{
+.vote-options,
+.my-vote-options {
     width: 80%;
     margin-bottom: 10px;
 }
 
-.vote-option-up{
+.vote-option-up {
     display: flex;
     flex-direction: row;
 }
 
+.vote-option-radio {
+    appearance: none;
+
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+
+    border: 2px solid #999;
+    transition: 0.2s all linear;
+    margin-right: 5px;
+}
+
+.vote-option-radio:checked {
+    border: 6px solid #3a7bd5;
+}
+
 .vote-option-bar {
-    background-color: #e0e0e0; 
+    background-color: #e0e0e0;
     border-radius: 5px;
     overflow: hidden;
-    height: 10px; 
+    height: 10px;
     margin: 5px 0;
 }
 
 .vote-bar {
     background: linear-gradient(270deg, #00d2ff, #3a7bd5);
     height: 10px;
-    transition: width 0.3s ease-in-out; 
+    transition: width 0.3s ease-in-out;
 }
 
 .vote-author {
@@ -314,7 +332,8 @@ form {
     font-weight: 500;
 }
 
-.login-input, .search-input {
+.login-input,
+.search-input {
     margin: 5px;
     height: 30px;
     border-radius: 5px;
@@ -377,7 +396,8 @@ form {
     width: 100%;
 }
 
-.my-votes-frame, .votes-frame{
+.my-votes-frame,
+.votes-frame {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -394,7 +414,7 @@ form {
     margin-bottom: 20px;
 }
 
-.search-block{
+.search-block {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -407,12 +427,12 @@ form {
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
 }
 
-.search-input{
+.search-input {
     max-width: 200px;
     margin-right: 20px;
 }
 
-.admin-panel{
+.admin-panel {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -420,11 +440,13 @@ form {
 
 .users-table {
     border-collapse: collapse;
-    width: 100%; 
+    width: 100%;
 }
 
-.users-table, td, th {
-    border: 2px solid white; 
+.users-table,
+td,
+th {
+    border: 2px solid white;
     color: azure;
     min-width: 160px;
     text-align: center;
@@ -432,9 +454,11 @@ form {
 }
 
 
-.ban, .unban {
+.ban,
+.unban {
     max-width: 150px;
 }
+
 /*****************************************************/
 
 .modal {
@@ -478,7 +502,8 @@ form {
     border-collapse: collapse;
 }
 
-.votes-table th, .votes-table td {
+.votes-table th,
+.votes-table td {
     border: 1px solid #000000;
     padding: 8px;
     color: #000000;

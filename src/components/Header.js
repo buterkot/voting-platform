@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/App.css";
 import logo from '../styles/logo512.png';
-import { FiMenu } from "react-icons/fi"; // Импорт иконки бургер-меню
+import { FiMenu } from "react-icons/fi"; 
 
 function Header() {
     const [user, setUser] = useState(null);
