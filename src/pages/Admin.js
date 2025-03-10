@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Header from "../components/Header.js";
 import "../styles/App.css";
@@ -6,11 +7,19 @@ import "../styles/App.css";
 function Admin() {
     const [users, setUsers] = useState([]);
     const [error, setError] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
+        const storedUser = sessionStorage.getItem("user");
+        const user = JSON.parse(storedUser);
+        if (!storedUser || user.role !== "A") {
+            navigate("/"); 
+            return;
+        }
+
         document.title = "Администратор";
         fetchUsers();
-    }, []);
+    }, [navigate]);
 
     const fetchUsers = async () => {
         try {
