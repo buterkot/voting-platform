@@ -14,10 +14,24 @@ body {
     flex-direction: column;
     align-items: center;
     max-width: 600px;
+    margin-top: 10px;
 }
 
 .comments-list {
     margin-bottom: 20px;
+}
+
+.sort-button {
+    background: none;
+    border: none;
+    font-size: 25px;
+    cursor: pointer;
+    color: #ffffff;
+    transition: color 0.2s ease-in-out;
+}
+
+.sort-button:hover {
+    color: #007bff;
 }
 
 .comment {
@@ -45,7 +59,7 @@ body {
     background-color: white;
     align-items: center;
     border-radius: 10px;
-    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 .comment-area {
@@ -56,7 +70,13 @@ body {
     margin-top: 10px;
     padding: 10px;
     border: none;
+    font-size: 15px;
+    font-family: Nunito;
 }
+
+/*.comment-area::placeholder {
+    font-size: 15px;
+}*/
 
 .comment-user-name {
     margin-left: 5px;

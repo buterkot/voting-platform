@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { FaSortAmountDownAlt, FaSortAmountUpAlt } from "react-icons/fa";
 import "../styles/Comments.css";
 
 const Comments = ({ voteId }) => {
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState("");
     const [menuOpen, setMenuOpen] = useState(null);
+    const [sortOrder, setSortOrder] = useState("desc");
     const user = JSON.parse(sessionStorage.getItem("user"));
 
     useEffect(() => {
@@ -44,6 +46,7 @@ const Comments = ({ voteId }) => {
         try {
             await axios.delete(`http://localhost:3000/comments/delete/${commentId}`);
             setComments(comments.filter(comment => comment.id !== commentId));
+            alert("Вы удалили свой комментарий.");
         } catch (error) {
             alert("Ошибка при удалении комментария.");
             console.error(error);
@@ -54,12 +57,37 @@ const Comments = ({ voteId }) => {
         alert(`Вы отправили жалобу на комментарий #${commentId}`);
     };
 
+    const handleSortToggle = () => {
+        setSortOrder(sortOrder === "desc" ? "asc" : "desc");
+    };
+
+    const sortedComments = [...comments].sort((a, b) =>
+        sortOrder === "desc" ? new Date(b.date) - new Date(a.date) : new Date(a.date) - new Date(b.date)
+    );
+
     return (
         <div className="comments-section">
-            <div className="block-title">Комментарии</div>
+            <div className="block-title">Комментарии ({comments.length})
+                <button className="sort-button" onClick={handleSortToggle} title="Изменить порядок сортировки">
+                    {sortOrder === "desc" ? <FaSortAmountDownAlt /> : <FaSortAmountUpAlt />}
+                </button>
+            </div>
+
+            <div className="comment-add">
+                <textarea
+                    className="comment-area"
+                    placeholder="Напишите комментарий..."
+                    value={newComment}
+                    maxLength={256}
+                    rows={3}
+                    cols={70}
+                    onChange={(e) => setNewComment(e.target.value)}
+                />
+                <button className="form-button" onClick={handleCommentSubmit}>Добавить</button>
+            </div>
             <div className="comments-list">
-                {comments.length > 0 ? (
-                    comments.map(comment => (
+                {sortedComments.length > 0 ? (
+                    sortedComments.map(comment => (
                         <div key={comment.id} className="comment">
                             <div className="comment-content">
                                 <div>
@@ -87,18 +115,6 @@ const Comments = ({ voteId }) => {
                 ) : (
                     <div>Пока нет комментариев.</div>
                 )}
-                <div className="comment-add">
-                    <textarea
-                        className="comment-area"
-                        placeholder="Оставьте комментарий..."
-                        value={newComment}
-                        maxLength={256}
-                        rows={3}
-                        cols={70}
-                        onChange={(e) => setNewComment(e.target.value)}
-                    />
-                    <button className="form-button" onClick={handleCommentSubmit}>Добавить</button>
-                </div>
             </div>
         </div>
     );

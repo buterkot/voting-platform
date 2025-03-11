@@ -49,7 +49,7 @@ const deleteComment = async (commentId) => {
                 return reject(new Error("Комментарий не найден."));
             }
 
-            resolve({ success: true });
+            resolve({ message: "Комментарий удален" });
         });
     });
 };

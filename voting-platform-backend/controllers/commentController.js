@@ -16,23 +16,6 @@ const addComment = async (req, res) => {
     }
 };
 
-const deleteComment = async (req, res) => {
-    try {
-        const { commentId } = req.body;
-
-        if (!commentId) {
-            return res.status(400).json({ error: "ID пустой." });
-        }
-
-        const result = await Comment.deleteComment({ commentId });
-        res.status(201).json({ id: result.id });
-    } catch (error) {
-        console.error("Ошибка при удалении комментария:", error);
-        res.status(500).json({ error: "Ошибка сервера при удалении комментария." });
-    }
-};
-
-
 const getCommentsByVoteId = async (req, res) => {
     try {
         const { voteId } = req.params;
@@ -41,6 +24,22 @@ const getCommentsByVoteId = async (req, res) => {
     } catch (error) {
         console.error("Ошибка при получении комментариев:", error);
         res.status(500).json({ error: "Ошибка сервера при получении комментариев." });
+    }
+};
+
+const deleteComment = async (req, res) => {
+    try {
+        const { commentId } = req.params;
+
+        if (!commentId) {
+            return res.status(400).json({ error: "ID комментария обязателен." });
+        }
+
+        await Comment.deleteComment(commentId);
+        res.status(200).json({ message: "Комментарий успешно удален." });
+    } catch (error) {
+        console.error("Ошибка при удалении комментария:", error);
+        res.status(500).json({ error: "Ошибка сервера при удалении комментария." });
     }
 };
 
