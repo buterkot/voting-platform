@@ -5,6 +5,9 @@ const CreateVote = () => {
     const [title, setTitle] = useState('');
     const [options, setOptions] = useState([{ optionText: '' }, { optionText: '' }]);
     const [anonymous, setAnonymous] = useState(false);
+    const [multiple, setMultiple] = useState(false);
+    const [isTemporary, setIsTemporary] = useState(false);
+    const [endDate, setEndDate] = useState('');
     const [error, setError] = useState('');
 
     const handleChange = (e, index) => {
@@ -20,7 +23,7 @@ const CreateVote = () => {
 
     const addOption = () => {
         if (options.length >= 10) {
-            setError('Максимальное количество вариантов — 10.');
+            alert('Максимальное количество вариантов — 10.');
             return;
         }
         setOptions([...options, { optionText: '' }]);
@@ -28,7 +31,7 @@ const CreateVote = () => {
 
     const removeOption = (index) => {
         if (options.length <= 2) {
-            setError('Минимальное количество вариантов — 2.');
+            alert('Минимальное количество вариантов — 2.');
             return;
         }
         const newOptions = options.filter((_, i) => i !== index);
@@ -40,22 +43,28 @@ const CreateVote = () => {
         setError('');
 
         if (!title || options.some(option => !option.optionText)) {
-            setError('Пожалуйста, заполните все обязательные поля.');
+            alert('Пожалуйста, заполните все обязательные поля.');
+            return;
+        }
+
+        if (isTemporary && !endDate) {
+            alert('Пожалуйста, выберите дату окончания голосования.');
             return;
         }
 
         const user = JSON.parse(sessionStorage.getItem('user'));
         if (!user || !user.id) {
-            setError('Не удалось определить пользователя. Авторизуйтесь заново.');
+            alert('Не удалось определить пользователя. Авторизуйтесь заново.');
             return;
         }
 
         const voteData = {
             title,
             startDate: new Date().toISOString(),
-            endDate: null,
+            endDate: isTemporary ? new Date(endDate).toISOString() : null,
             userId: user.id,
             anonymous: anonymous ? 1 : 0,
+            multiple: multiple ? 1 : 0,
             options: options.map(option => option.optionText),
         };
 
@@ -65,6 +74,9 @@ const CreateVote = () => {
             setTitle('');
             setOptions([{ optionText: '' }, { optionText: '' }]);
             setAnonymous(false);
+            setMultiple(false);
+            setIsTemporary(false);
+            setEndDate('');
         } catch (error) {
             setError(error.response?.data?.message || 'Ошибка при создании голосования.');
         }
@@ -119,13 +131,47 @@ const CreateVote = () => {
                     </button>
                 </div>
                 <div className='form-case-checkbox'>
-                    <div className='form-subtitle'>Анонимное:</div>
-                    <input className='checkbox'
-                        type="checkbox"
-                        checked={anonymous}
-                        onChange={() => setAnonymous(!anonymous)}
-                    />
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked={anonymous}
+                            onChange={() => setAnonymous(!anonymous)}
+                        />
+                        Анонимное голосование
+                    </label>
                 </div>
+                <div className='form-case-checkbox'>
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked={multiple}
+                            onChange={() => setMultiple(!multiple)}
+                        />
+                        Несколько вариантов
+                    </label>
+                </div>
+                <div className='form-case-checkbox'>
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked={isTemporary}
+                            onChange={() => setIsTemporary(!isTemporary)}
+                        />
+                        Временное голосование
+                    </label>
+                </div>
+                {isTemporary && (
+                    <div className='form-case'>
+                        <div className='form-subtitle'>Дата окончания:</div>
+                        <input
+                            className='login-input'
+                            type="datetime-local"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                            required
+                        />
+                    </div>
+                )}
                 {error && <div className='error-message'>{error}</div>}
                 <div className='button-block'>
                     <button className='form-button' type="submit">Создать голосование</button>
