@@ -32,7 +32,24 @@ const updateUserBan = (id, ban) => {
     });
 };
 
+const updateUserRole = (id, role) => {
+    const query = `
+        UPDATE users
+        SET role = ?
+        WHERE id = ?
+    `;
+    return new Promise((resolve, reject) => {
+        db.query(query, [role, id], (error, results) => {
+            if (error) {
+                return reject(error);
+            }
+            resolve(results);
+        });
+    });
+};
+
 module.exports = {
     fetchAllUsers,
-    updateUserBan
+    updateUserBan,
+    updateUserRole
 };

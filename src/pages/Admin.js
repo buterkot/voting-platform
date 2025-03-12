@@ -13,7 +13,7 @@ function Admin() {
         const storedUser = sessionStorage.getItem("user");
         const user = JSON.parse(storedUser);
         if (!storedUser || user.role !== "A") {
-            navigate("/"); 
+            navigate("/");
             return;
         }
 
@@ -49,6 +49,25 @@ function Admin() {
         }
     };
 
+    const toggleUserRole = async (userId, currentRole) => {
+        const newRole = currentRole === "M" ? "U" : "M";
+        try {
+            await axios.patch(`http://localhost:3000/users/${userId}/role`, {
+                role: newRole,
+            });
+            setUsers((prevUsers) =>
+                prevUsers.map((user) =>
+                    user.id === userId
+                        ? { ...user, role: newRole }
+                        : user
+                )
+            );
+        } catch (error) {
+            setError("Ошибка обновления роли пользователя.");
+            console.error(error);
+        }
+    };
+
     return (
         <div className="main">
             <Header />
@@ -64,7 +83,8 @@ function Admin() {
                                 <th>Фамилия</th>
                                 <th>Email</th>
                                 <th>Статус</th>
-                                <th>Действие</th>
+                                <th>Бан</th>
+                                <th>Роль</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -77,9 +97,8 @@ function Admin() {
                                     <td>{user.ban === 1 ? "Заблокирован" : "Активен"}</td>
                                     <td>
                                         <button
-                                            className={`form-button ${
-                                                user.ban === 1 ? "unban" : "ban"
-                                            }`}
+                                            className={`form-button ${user.ban === 1 ? "unban" : "ban"
+                                                }`}
                                             onClick={() =>
                                                 toggleBanStatus(user.id, user.ban)
                                             }
@@ -87,6 +106,14 @@ function Admin() {
                                             {user.ban === 1
                                                 ? "Разблокировать"
                                                 : "Заблокировать"}
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button
+                                            className="form-button role-change"
+                                            onClick={() => toggleUserRole(user.id, user.role)}
+                                        >
+                                            {user.role === "M" ? "Понизить" : "Повысить"}
                                         </button>
                                     </td>
                                 </tr>

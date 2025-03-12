@@ -1,4 +1,4 @@
-const { fetchAllUsers, updateUserBan } = require('../models/userModel');
+const { fetchAllUsers, updateUserBan, updateUserRole } = require('../models/userModel');
 
 const getUsers = async (req, res) => {
     try {
@@ -30,7 +30,28 @@ const updateUserBanStatus = async (req, res) => {
     }
 };
 
+const updateUserRoleStatus = async (req, res) => {
+    const { id } = req.params;
+    const { role } = req.body;
+
+    if (!['U', 'M'].includes(role)) {
+        return res.status(400).send('Неверное значение для поля "role".');
+    }
+
+    try {
+        const result = await updateUserRole(id, role);
+        if (result.affectedRows === 0) {
+            return res.status(404).send('Пользователь не найден.');
+        }
+        res.status(200).send({ message: 'Роль пользователя успешно обновлена.' });
+    } catch (error) {
+        console.error('Ошибка при обновлении роли пользователя:', error.message);
+        res.status(500).send('Ошибка сервера при обновлении роли пользователя.');
+    }
+};
+
 module.exports = {
     getUsers,
-    updateUserBanStatus
+    updateUserBanStatus,
+    updateUserRoleStatus
 };

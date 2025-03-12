@@ -43,12 +43,14 @@ function Header() {
                             <div className="dropdown-menu">
                                 <Link to="/profile" className="dropdown-item">Профиль</Link>
                                 <Link to="/catalog" className="dropdown-item">Каталог</Link>
+                                {user.role === "A" && <Link to="/admin" className="dropdown-item">Админ-панель</Link>}
+                                {user.role === "M" && <Link to="/moder" className="dropdown-item">Модерация</Link>}
                                 <button className="dropdown-item logout" onClick={handleLogout}>Выйти</button>
                             </div>
                         )}
                     </div>
                 ) : (
-                    <Link to="/login" className="text-link">Войти</Link>
+                    <Link to="/login" className="text-link1">Войти</Link>
                 )}
             </div>
         </div>

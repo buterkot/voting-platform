@@ -34,12 +34,7 @@ function Login() {
                 sessionStorage.setItem('user', JSON.stringify(user));
 
                 setError('');
-                
-                if (user.role === 'A') {
-                    navigate('/admin'); 
-                } else {
-                    navigate('/profile'); 
-                }
+                navigate('/profile');
             }
         } catch (error) {
             setError(error.response?.data?.message || 'Неверный логин или пароль');
