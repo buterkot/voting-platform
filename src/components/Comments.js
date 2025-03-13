@@ -53,9 +53,25 @@ const Comments = ({ voteId }) => {
         }
     };
 
-    const handleReportComment = (commentId) => {
-        alert(`Вы отправили жалобу на комментарий #${commentId}`);
+    const handleReportComment = async (commentId) => {
+        if (!user || !user.id) {
+            alert("Ошибка: не удалось определить пользователя. Авторизуйтесь заново.");
+            return;
+        }
+    
+        try {
+            await axios.post("http://localhost:3000/complaints/comments", {
+                user_id: user.id,
+                comment_id: commentId
+            });
+    
+            alert("Жалоба отправлена.");
+        } catch (error) {
+            console.error("Ошибка при отправке жалобы:", error);
+            alert("Ошибка при отправке жалобы.");
+        }
     };
+    
 
     const handleSortToggle = () => {
         setSortOrder(sortOrder === "desc" ? "asc" : "desc");
