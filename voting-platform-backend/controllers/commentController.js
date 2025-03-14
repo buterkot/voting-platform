@@ -43,8 +43,24 @@ const deleteComment = async (req, res) => {
     }
 };
 
+const removeComment = async (req, res) => {
+    const { commentId } = req.params;
+
+    try {
+        const result = await Comment.markCommentAsRemoved(commentId);
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: "Комментарий не найден." });
+        }
+        res.status(200).json({ message: "Комментарий помечен как удалённый." });
+    } catch (error) {
+        console.error("Ошибка при удалении комментария:", error);
+        res.status(500).json({ message: "Ошибка сервера." });
+    }
+};
+
 module.exports = {
     addComment,
     deleteComment,
-    getCommentsByVoteId
+    getCommentsByVoteId,
+    removeComment
 };

@@ -3,6 +3,7 @@
     flex-direction: column;
     align-items: center;
     gap: 10px;
+    width: 90%;
 }
 
 .complaint-card {

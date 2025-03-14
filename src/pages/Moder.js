@@ -23,15 +23,21 @@ function Moder() {
         }
     };
 
-    const handleComplaintAction = async (complaintId, status) => {
+    const handleComplaintAction = async (complaintId, commentId, status) => {
         try {
+            if (status === "accepted") {
+                await axios.patch(`http://localhost:3000/comments/remove/${commentId}`);
+            }
+
             await axios.patch(`http://localhost:3000/complaints/comments/${complaintId}`, { status });
+
             setCommentComplaints(prevComplaints => prevComplaints.filter(complaint => complaint.id !== complaintId));
         } catch (error) {
-            setError("Ошибка при обновлении статуса жалобы.");
+            setError("Ошибка при обработке жалобы.");
             console.error(error);
         }
     };
+
 
     return (
         <div className="main">
@@ -51,9 +57,10 @@ function Moder() {
                                     <div><strong>Дата жалобы:</strong> {new Date(complaint.created_at).toLocaleString()}</div>
                                 </div>
                                 <div className="complaint-actions">
-                                    <button className="accept-btn" onClick={() => handleComplaintAction(complaint.id, "accepted")}>
+                                    <button className="accept-btn" onClick={() => handleComplaintAction(complaint.id, complaint.comment_id, "accepted")}>
                                         Принять
                                     </button>
+
                                     <button className="decline-btn" onClick={() => handleComplaintAction(complaint.id, "declined")}>
                                         Отклонить
                                     </button>

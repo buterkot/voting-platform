@@ -14,7 +14,7 @@ const addComment = async (commentData) => {
 const getCommentsByVoteId = async (voteId) => {
     return new Promise((resolve, reject) => {
         const query = `
-            SELECT c.id, c.text, c.date, c.user_id, c.vote_id, u.firstname, u.lastname
+            SELECT c.id, c.text, c.date, c.user_id, c.vote_id, c.removed, u.firstname, u.lastname
             FROM comments c
             JOIN users u ON c.user_id = u.id
             WHERE c.vote_id = ?
@@ -30,6 +30,7 @@ const getCommentsByVoteId = async (voteId) => {
                 date: comment.date,
                 user_id: comment.user_id,
                 vote_id: comment.vote_id,
+                removed: comment.removed,
                 user_name: `${comment.firstname} ${comment.lastname}`
             }));
 
@@ -54,8 +55,21 @@ const deleteComment = async (commentId) => {
     });
 };
 
+const markCommentAsRemoved = (commentId) => {
+    const query = `UPDATE comments SET removed = 1 WHERE id = ?`;
+    return new Promise((resolve, reject) => {
+        db.query(query, [commentId], (error, results) => {
+            if (error) {
+                return reject(error);
+            }
+            resolve(results);
+        });
+    });
+};
+
 module.exports = {
     addComment,
     getCommentsByVoteId,
-    deleteComment
+    deleteComment,
+    markCommentAsRemoved,
 };

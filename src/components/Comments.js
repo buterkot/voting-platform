@@ -12,9 +12,12 @@ const Comments = ({ voteId }) => {
 
     useEffect(() => {
         axios.get(`http://localhost:3000/comments/${voteId}`)
-            .then(response => setComments(response.data))
+            .then(response => {
+                const filteredComments = response.data.filter(comment => comment.removed !== 1);
+                setComments(filteredComments);
+            })
             .catch(error => console.error("Ошибка загрузки комментариев", error));
-    }, [voteId]);
+    }, [voteId]);    
 
     const handleCommentSubmit = async () => {
         if (!newComment.trim()) return;

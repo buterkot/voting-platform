@@ -15,10 +15,12 @@ body {
     align-items: center;
     max-width: 600px;
     margin-top: 10px;
+    width: 80%;
 }
 
 .comments-list {
     margin-bottom: 20px;
+    width: 100%;
 }
 
 .sort-button {
