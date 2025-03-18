@@ -132,7 +132,7 @@ const Comments = ({ voteId }) => {
                         </div>
                     ))
                 ) : (
-                    <div>Пока нет комментариев.</div>
+                    <div className="no-comments">Пока нет комментариев.</div>
                 )}
             </div>
         </div>

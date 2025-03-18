@@ -76,6 +76,10 @@ body {
     font-family: Nunito;
 }
 
+.no-comments {
+    text-align: center;
+}
+
 /*.comment-area::placeholder {
     font-size: 15px;
 }*/

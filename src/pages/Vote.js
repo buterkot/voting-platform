@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams} from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import Header from "../components/Header";
 import "../styles/App.css";
@@ -11,9 +11,10 @@ const Vote = () => {
     const { voteId } = useParams();
     const [vote, setVote] = useState(null);
     const [selectedOption, setSelectedOption] = useState(null);
-    const [comments, setComments] = useState([]);
     const [selectedParticipants, setSelectedParticipants] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false);
+    const user = JSON.parse(sessionStorage.getItem("user"));
 
     useEffect(() => {
         axios.get(`http://localhost:3000/votes/${voteId}`)
@@ -21,12 +22,6 @@ const Vote = () => {
             .catch(error => {
                 alert("Ошибка загрузки голосования");
                 console.error(error);
-            });
-
-        axios.get(`http://localhost:3000/comments/${voteId}`)
-            .then(response => setComments(response.data))
-            .catch(error => {
-                console.error("Ошибка загрузки комментариев", error);
             });
     }, [voteId]);
 
@@ -37,7 +32,6 @@ const Vote = () => {
         }
 
         try {
-            const user = JSON.parse(sessionStorage.getItem("user"));
             if (!user || !user.id) {
                 alert("Не удалось определить пользователя. Авторизуйтесь заново.");
                 return;
@@ -50,7 +44,6 @@ const Vote = () => {
 
             alert("Ваш голос учтен!");
             window.location.reload();
-
         } catch (error) {
             alert("Ошибка при голосовании.");
             console.error(error);
@@ -65,6 +58,25 @@ const Vote = () => {
         } catch (error) {
             alert("Ошибка при загрузке участников голосования.");
             console.error(error);
+        }
+    };
+
+    const handleReportVote = async () => {
+        if (!user || !user.id) {
+            alert("Ошибка: не удалось определить пользователя. Авторизуйтесь заново.");
+            return;
+        }
+
+        try {
+            await axios.post("http://localhost:3000/complaints/votes", {
+                user_id: user.id,
+                vote_id: voteId
+            });
+
+            alert("Жалоба на голосование отправлена.");
+        } catch (error) {
+            console.error("Ошибка при отправке жалобы:", error);
+            alert("Ошибка при отправке жалобы.");
         }
     };
 
@@ -83,11 +95,26 @@ const Vote = () => {
         <div className="main">
             <Header />
             <div className="main-content">
-                <div className="block-title">{vote.title}</div>
+                <div className="block-title">
+                    {vote.title}
+                </div>
+
                 <div className="form-frame">
                     <div className="vote-author">
                         <div className="author">Автор: {vote.anonymous ? "Аноним" : vote.user_name}</div>
+                        <div className="vote-options-button">
+                            <button className="options-button" onClick={() => setMenuOpen(!menuOpen)}>
+                                ⋮
+                            </button>
+                            {menuOpen && (
+                                <div className="options-menu">
+                                    <button onClick={handleReportVote}>Пожаловаться</button>
+                                    {!vote.anonymous && <button onClick={handleViewParticipants}>Посмотреть голоса</button>}
+                                </div>
+                            )}
+                        </div>
                     </div>
+
                     <div className="vote-options">
                         {vote.options.map(option => {
                             const totalVotes = calculateTotalVotes();
@@ -116,9 +143,6 @@ const Vote = () => {
                         })}
                     </div>
                     <button className="form-button" onClick={handleVoteSubmit}>Проголосовать</button>
-                    {!vote.anonymous && (
-                        <button className="form-button" onClick={handleViewParticipants}>Посмотреть голоса</button>
-                    )}
                 </div>
 
                 <Comments voteId={voteId} />
