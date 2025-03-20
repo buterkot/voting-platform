@@ -66,19 +66,20 @@ const Vote = () => {
             alert("Ошибка: не удалось определить пользователя. Авторизуйтесь заново.");
             return;
         }
-
+    
         try {
-            await axios.post("http://localhost:3000/complaints/votes", {
+            await axios.post("http://localhost:3000/complaints", {
                 user_id: user.id,
-                vote_id: voteId
+                target_id: voteId,  
+                type: "vote" 
             });
-
+    
             alert("Жалоба на голосование отправлена.");
         } catch (error) {
             console.error("Ошибка при отправке жалобы:", error);
             alert("Ошибка при отправке жалобы.");
         }
-    };
+    };    
 
     const closeModal = () => {
         setIsModalOpen(false);

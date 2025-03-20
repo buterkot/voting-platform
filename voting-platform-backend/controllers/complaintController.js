@@ -1,14 +1,23 @@
-const { createCommentComplaint, getAllComplaints, updateComplaintStatus } = require('../models/complaintModel');
+const { 
+    createCommentComplaint, 
+    createVoteComplaint, 
+    getAllComplaints, 
+    updateComplaintStatus 
+} = require('../models/complaintModel');
 
 const fileComplaint = async (req, res) => {
-    const { user_id, comment_id } = req.body;
+    const { user_id, target_id, type } = req.body; 
 
-    if (!user_id || !comment_id) {
-        return res.status(400).json({ error: "Отсутствует user_id или comment_id" });
+    if (!user_id || !target_id || !["comment", "vote"].includes(type)) {
+        return res.status(400).json({ error: "Некорректные данные (user_id, target_id, type)" });
     }
 
     try {
-        await createCommentComplaint(user_id, comment_id);
+        if (type === "comment") {
+            await createCommentComplaint(user_id, target_id);
+        } else if (type === "vote") {
+            await createVoteComplaint(user_id, target_id);
+        }
         res.status(201).json({ message: "Жалоба успешно отправлена" });
     } catch (error) {
         console.error("Ошибка при подаче жалобы:", error.message);
@@ -28,14 +37,14 @@ const getComplaints = async (req, res) => {
 
 const changeComplaintStatus = async (req, res) => {
     const { id } = req.params;
-    const { status } = req.body;
+    const { status, type } = req.body; 
 
-    if (!["active", "accepted", "declined"].includes(status)) {
-        return res.status(400).json({ error: "Некорректный статус" });
+    if (!["active", "accepted", "declined"].includes(status) || !["comment", "vote"].includes(type)) {
+        return res.status(400).json({ error: "Некорректный статус или тип жалобы" });
     }
 
     try {
-        const result = await updateComplaintStatus(id, status);
+        const result = await updateComplaintStatus(id, status, type);
         if (result.affectedRows === 0) {
             return res.status(404).json({ error: "Жалоба не найдена" });
         }

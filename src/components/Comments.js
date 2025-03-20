@@ -17,7 +17,7 @@ const Comments = ({ voteId }) => {
                 setComments(filteredComments);
             })
             .catch(error => console.error("Ошибка загрузки комментариев", error));
-    }, [voteId]);    
+    }, [voteId]);
 
     const handleCommentSubmit = async () => {
         if (!newComment.trim()) return;
@@ -61,20 +61,20 @@ const Comments = ({ voteId }) => {
             alert("Ошибка: не удалось определить пользователя. Авторизуйтесь заново.");
             return;
         }
-    
+
         try {
-            await axios.post("http://localhost:3000/complaints/comments", {
+            await axios.post("http://localhost:3000/complaints", {
                 user_id: user.id,
-                comment_id: commentId
+                target_id: commentId,
+                type: "comment"
             });
-    
+
             alert("Жалоба отправлена.");
         } catch (error) {
             console.error("Ошибка при отправке жалобы:", error);
             alert("Ошибка при отправке жалобы.");
         }
     };
-    
 
     const handleSortToggle = () => {
         setSortOrder(sortOrder === "desc" ? "asc" : "desc");
