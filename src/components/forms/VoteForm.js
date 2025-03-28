@@ -11,8 +11,9 @@ const VoteForm = () => {
     useEffect(() => {
         axios.get("http://localhost:3000/votes")
             .then((response) => {
-                setVotes(response.data);
-                setFilteredVotes(response.data);
+                const activeVotes = response.data.filter(vote => !vote.removed);
+                setVotes(activeVotes);
+                setFilteredVotes(activeVotes);
             })
             .catch((error) => {
                 console.error("Ошибка загрузки голосований:", error);

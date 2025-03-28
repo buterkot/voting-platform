@@ -5,7 +5,8 @@ const {
     castVote,
     stopVote,
     getUserVotes,
-    getVoteParticipants 
+    getVoteParticipants,
+    removeVote
 } = require('../models/voteModel');
 
 const createVoteController = async (req, res) => {
@@ -114,6 +115,22 @@ const getVoteParticipantsController = async (req, res) => {
     }
 };
 
+const removeVoteController = async (req, res) => {
+    const { voteId } = req.params;
+
+    if (!voteId) {
+        return res.status(400).send('ID голосования обязателен.');
+    }
+
+    try {
+        await removeVote(voteId);
+        res.status(200).send({ message: 'Голосование успешно удалено.' });
+    } catch (error) {
+        console.error('Ошибка при удалении голосования:', error.message);
+        res.status(500).send('Ошибка сервера');
+    }
+};
+
 module.exports = {
     createVoteController,
     getVotesController,
@@ -121,5 +138,6 @@ module.exports = {
     castVoteController,
     stopVoteController,
     getUserVotesController,
-    getVoteParticipantsController 
+    getVoteParticipantsController,
+    removeVoteController
 };

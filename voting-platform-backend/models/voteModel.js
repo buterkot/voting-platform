@@ -46,7 +46,7 @@ const getAvailableVotes = () => {
             if (err) return reject(err);
 
             const query = `
-                SELECT v.id, v.title, v.user_id, v.anonymous, u.firstname, u.lastname, 
+                SELECT v.id, v.title, v.user_id, v.anonymous, v.removed, u.firstname, u.lastname, 
                        o.id AS option_id, o.option_text, COUNT(votes.option_id) AS vote_count
                 FROM votes v
                 LEFT JOIN vote_options o ON v.id = o.vote_id
@@ -71,6 +71,7 @@ const getAvailableVotes = () => {
                             user_id: row.user_id,
                             user_name: `${row.firstname} ${row.lastname}`,
                             anonymous: row.anonymous,
+                            removed: row.removed,
                             options: [
                                 {
                                     id: row.option_id,
@@ -307,6 +308,29 @@ const getVoteParticipants = (voteId) => {
     });
 };
 
+const removeVote = (voteId) => {
+    return new Promise((resolve, reject) => {
+        db.getConnection((err, connection) => {
+            if (err) return reject(err);
+
+            const query = `UPDATE votes SET removed = 1 WHERE id = ?`;
+
+            connection.query(query, [voteId], (err, results) => {
+                connection.release();
+
+                if (err) return reject(err);
+
+                if (results.affectedRows === 0) {
+                    return reject(new Error('Голосование не найдено.'));
+                }
+
+                resolve();
+            });
+        });
+    });
+};
+
+
 module.exports = {
     createVote,
     getAvailableVotes,
@@ -314,5 +338,6 @@ module.exports = {
     castVote,
     stopVote,
     getUserVotes,
-    getVoteParticipants
+    getVoteParticipants,
+    removeVote
 };

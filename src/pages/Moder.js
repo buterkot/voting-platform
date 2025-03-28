@@ -18,7 +18,6 @@ function Moder() {
             const response = await axios.get("http://localhost:3000/complaints");
             const activeComplaints = response.data.filter(complaint => complaint.status === "active");
 
-            // Разделение жалоб по типу
             setCommentComplaints(activeComplaints.filter(c => c.type === "comment"));
             setVoteComplaints(activeComplaints.filter(c => c.type === "vote"));
         } catch (error) {
