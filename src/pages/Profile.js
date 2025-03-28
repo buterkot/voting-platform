@@ -1,16 +1,14 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import Header from "../components/Header.js";
 import "../styles/App.css";
 
 function Catalog() {
-    const navigate = useNavigate();;
-
     return (
         <div className="main">
             <Header />
             <div className="main-content">
-                <div className="block-title">Профиль</div>
+                <div className="block-title">Личные данные</div>
+                <div className="block-title">Уведомления</div>
             </div>
         </div>
     );

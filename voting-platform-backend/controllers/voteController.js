@@ -2,6 +2,7 @@ const {
     createVote,
     getAvailableVotes,
     getVoteById,
+    getVoteIdByOptionId,
     castVote,
     stopVote,
     getUserVotes,
@@ -10,16 +11,17 @@ const {
 } = require('../models/voteModel');
 
 const createVoteController = async (req, res) => {
-    const { title, userId, options, anonymous } = req.body;
+    const { title, userId, options, anonymous, multiple } = req.body;
 
     if (!title || !userId || !options || options.length < 2) {
         return res.status(400).send('Все поля обязательны, минимум 2 варианта.');
     }
 
     const isAnonymous = anonymous ? 1 : 0;
+    const isMultiple = multiple ? 1 : 0; 
 
     try {
-        const voteId = await createVote({ title, userId, anonymous: isAnonymous }, options);
+        const voteId = await createVote({ title, userId, anonymous: isAnonymous, multiple: isMultiple }, options);
         res.status(201).send({ message: 'Голосование успешно создано', voteId });
     } catch (error) {
         console.error('Ошибка при создании голосования:', error.message);
@@ -50,23 +52,31 @@ const getVoteByIdController = async (req, res) => {
 };
 
 const castVoteController = async (req, res) => {
-    const { userId, optionId } = req.body;
+    const { userId, optionIds } = req.body;
 
-    if (!userId || !optionId) {
-        return res.status(400).send('Все поля обязательны.');
+    if (!userId || !optionIds || !Array.isArray(optionIds) || optionIds.length === 0) {
+        return res.status(400).send('Все поля обязательны. Должен быть выбран хотя бы один вариант.');
     }
 
     try {
-        await castVote(userId, optionId);
-        res.status(200).send({ message: 'Ваш голос успешно учтен.' });
-    } catch (error) {
-        if (error.message === 'Пользователь уже голосовал в этом опросе.') {
-            return res.status(400).send(error.message);
+        const voteId = await getVoteIdByOptionId(optionIds[0]); 
+        const hasVoted = await checkIfUserVoted(userId, voteId);
+
+        if (hasVoted) {
+            return res.status(400).send('Пользователь уже голосовал в этом опросе.');
         }
+
+        for (const optionId of optionIds) {
+            await castVote(userId, optionId);
+        }
+
+        res.status(200).send({ message: 'Ваши голоса успешно учтены.' });
+    } catch (error) {
         console.error('Ошибка при голосовании:', error.message);
         res.status(500).send('Ошибка сервера');
     }
 };
+
 
 const stopVoteController = async (req, res) => {
     const { voteId } = req.body;

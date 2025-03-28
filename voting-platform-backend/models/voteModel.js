@@ -12,8 +12,8 @@ const createVote = async (voteData, options) => {
                 }
 
                 try {
-                    const voteQuery = `INSERT INTO votes (title, start_date, end_date, user_id, anonymous, status) VALUES (?, NOW(), NULL, ?, ?, 'A')`;
-                    const [voteResult] = await connection.promise().query(voteQuery, [voteData.title, voteData.userId, voteData.anonymous]);
+                    const voteQuery = `INSERT INTO votes (title, start_date, end_date, user_id, anonymous, multiple, status) VALUES (?, NOW(), NULL, ?, ?, ?, 'A')`;
+                    const [voteResult] = await connection.promise().query(voteQuery, [voteData.title, voteData.userId, voteData.anonymous, voteData.multiple]);
 
                     const voteId = voteResult.insertId;
 
@@ -46,7 +46,7 @@ const getAvailableVotes = () => {
             if (err) return reject(err);
 
             const query = `
-                SELECT v.id, v.title, v.user_id, v.anonymous, v.removed, u.firstname, u.lastname, 
+                SELECT v.id, v.title, v.user_id, v.anonymous, v.multiple, v.removed, u.firstname, u.lastname, 
                        o.id AS option_id, o.option_text, COUNT(votes.option_id) AS vote_count
                 FROM votes v
                 LEFT JOIN vote_options o ON v.id = o.vote_id
@@ -71,6 +71,7 @@ const getAvailableVotes = () => {
                             user_id: row.user_id,
                             user_name: `${row.firstname} ${row.lastname}`,
                             anonymous: row.anonymous,
+                            multiple: row.multiple,
                             removed: row.removed,
                             options: [
                                 {
@@ -180,7 +181,7 @@ const getVoteById = (voteId) => {
             if (err) return reject(err);
 
             const query = `
-                SELECT v.id, v.title, v.user_id, v.anonymous, v.status, v.start_date, v.end_date,
+                SELECT v.id, v.title, v.user_id, v.anonymous, v.removed, v.multiple, v.status, v.start_date, v.end_date,
                        u.firstname, u.lastname, 
                        o.id AS option_id, o.option_text, COUNT(vc.option_id) AS vote_count
                 FROM votes v
@@ -208,6 +209,8 @@ const getVoteById = (voteId) => {
                     user_id: results[0].user_id,
                     user_name: `${results[0].firstname} ${results[0].lastname}`,
                     anonymous: results[0].anonymous,
+                    removed: results[0].removed,
+                    multiple: results[0].multiple,
                     status: results[0].status,
                     start_date: results[0].start_date,
                     end_date: results[0].end_date,
@@ -223,6 +226,17 @@ const getVoteById = (voteId) => {
             });
         });
     });
+};
+
+const getVoteIdByOptionId = async (optionId) => {
+    const query = `SELECT vote_id FROM vote_options WHERE id = ?`; 
+    const [rows] = await db.execute(query, [optionId]);
+
+    if (rows.length === 0) {
+        throw new Error("Вариант ответа не найден.");
+    }
+
+    return rows[0].vote_id; 
 };
 
 const getUserVotes = (userId) => {
@@ -335,6 +349,7 @@ module.exports = {
     createVote,
     getAvailableVotes,
     getVoteById,
+    getVoteIdByOptionId,
     castVote,
     stopVote,
     getUserVotes,

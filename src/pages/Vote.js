@@ -11,6 +11,7 @@ const Vote = () => {
     const { voteId } = useParams();
     const [vote, setVote] = useState(null);
     const [selectedOption, setSelectedOption] = useState(null);
+    const [selectedOptions, setSelectedOptions] = useState([]);
     const [selectedParticipants, setSelectedParticipants] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
@@ -26,9 +27,16 @@ const Vote = () => {
     }, [voteId]);
 
     const handleVoteSubmit = async () => {
-        if (!selectedOption) {
-            alert("Выберите вариант перед голосованием");
-            return;
+        if (vote.multiple) {
+            if (selectedOptions.length === 0) {
+                alert("Выберите хотя бы один вариант перед голосованием");
+                return;
+            }
+        } else {
+            if (!selectedOption) {
+                alert("Выберите вариант перед голосованием");
+                return;
+            }
         }
 
         try {
@@ -37,10 +45,14 @@ const Vote = () => {
                 return;
             }
 
-            await axios.post("http://localhost:3000/votes/vote", {
-                optionId: selectedOption,
-                userId: user.id
-            });
+            const voteData = vote.multiple
+                ? selectedOptions.map(optionId => ({
+                    optionId,
+                    userId: user.id
+                }))
+                : [{ optionId: selectedOption, userId: user.id }];
+
+            await axios.post("http://localhost:3000/votes/vote", voteData);
 
             alert("Ваш голос учтен!");
             window.location.reload();
@@ -48,6 +60,14 @@ const Vote = () => {
             alert("Ошибка при голосовании.");
             console.error(error);
         }
+    };
+
+    const handleCheckboxChange = (optionId) => {
+        setSelectedOptions(prevSelected =>
+            prevSelected.includes(optionId)
+                ? prevSelected.filter(id => id !== optionId)
+                : [...prevSelected, optionId]
+        );
     };
 
     const handleViewParticipants = async () => {
@@ -66,20 +86,20 @@ const Vote = () => {
             alert("Ошибка: не удалось определить пользователя. Авторизуйтесь заново.");
             return;
         }
-    
+
         try {
             await axios.post("http://localhost:3000/complaints", {
                 user_id: user.id,
-                target_id: voteId,  
-                type: "vote" 
+                target_id: voteId,
+                type: "vote"
             });
-    
+
             alert("Жалоба на голосование отправлена.");
         } catch (error) {
             console.error("Ошибка при отправке жалобы:", error);
             alert("Ошибка при отправке жалобы.");
         }
-    };    
+    };
 
     const closeModal = () => {
         setIsModalOpen(false);
@@ -96,9 +116,7 @@ const Vote = () => {
         <div className="main">
             <Header />
             <div className="main-content">
-                <div className="block-title">
-                    {vote.title}
-                </div>
+                <div className="block-title">{vote.title}</div>
 
                 <div className="form-frame">
                     <div className="vote-author">
@@ -124,14 +142,22 @@ const Vote = () => {
                             return (
                                 <div key={option.id} className="vote-option">
                                     <div className="vote-option-up">
-                                        <input
-                                            className="vote-option-radio"
-                                            type="radio"
-                                            id={`option-${option.id}`}
-                                            name="vote"
-                                            value={option.id}
-                                            onChange={() => setSelectedOption(option.id)}
-                                        />
+                                        {vote.multiple ? (
+                                            <input
+                                                type="checkbox"
+                                                id={`option-${option.id}`}
+                                                checked={selectedOptions.includes(option.id)}
+                                                onChange={() => handleCheckboxChange(option.id)}
+                                            />
+                                        ) : (
+                                            <input
+                                                type="radio"
+                                                id={`option-${option.id}`}
+                                                name="vote"
+                                                value={option.id}
+                                                onChange={() => setSelectedOption(option.id)}
+                                            />
+                                        )}
                                         <label htmlFor={`option-${option.id}`}>
                                             {option.option_text} ({option.vote_count} голосов)
                                         </label>
