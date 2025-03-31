@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const db = require('../config/db');
+const { updateLastOnline } = require('../models/userModel');
 
 const registerUser = async (req, res) => {
     const { firstname, lastname, email, password } = req.body;
@@ -59,6 +60,8 @@ const loginUser = async (req, res) => {
             if (!isMatch) {
                 return res.status(400).send('Неверный пароль');
             }
+
+            await updateLastOnline(user.id);
 
             res.status(200).json({ message: 'Авторизация прошла успешно', user });
         });

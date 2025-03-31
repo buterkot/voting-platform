@@ -2,7 +2,7 @@ const db = require('../config/db');
 
 const fetchAllUsers = () => {
     const query = `
-        SELECT id, email, firstname, lastname, role, ban
+        SELECT id, email, firstname, lastname, role, ban, address, phone_number, last_online
         FROM users
         WHERE role != 'A'
     `;
@@ -48,8 +48,25 @@ const updateUserRole = (id, role) => {
     });
 };
 
+const updateLastOnline = (id) => {
+    const query = `
+        UPDATE users
+        SET last_online = NOW()
+        WHERE id = ?
+    `;
+    return new Promise((resolve, reject) => {
+        db.query(query, [id], (error, results) => {
+            if (error) {
+                return reject(error);
+            }
+            resolve(results);
+        });
+    });
+};
+
 module.exports = {
     fetchAllUsers,
     updateUserBan,
-    updateUserRole
+    updateUserRole,
+    updateLastOnline
 };

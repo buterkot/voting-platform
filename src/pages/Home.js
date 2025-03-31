@@ -17,7 +17,6 @@ function Home() {
                     <Link to="/signup" className="text-link">Создать аккаунт!</Link>
                 </div>
             </div>
-            <Reviews/>
         </div>
 
     )

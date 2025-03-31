@@ -1,5 +1,5 @@
-# Йоу
-## Команды
+# yo
+## comands
 
-### `npm start` В папке фронта
-### `node index.js` В папке бека
+### `npm start` frontend start
+### `node index.js` backend start

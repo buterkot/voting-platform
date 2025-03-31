@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: MySQL-8.0
--- Время создания: Мар 30 2025 г., 14:24
+-- Время создания: Мар 31 2025 г., 19:48
 -- Версия сервера: 8.0.35
 -- Версия PHP: 8.1.28
 
@@ -135,6 +135,30 @@ INSERT INTO `invitations` (`id`, `invitation_date`, `team_id`, `user_id`, `statu
 -- --------------------------------------------------------
 
 --
+-- Структура таблицы `membership`
+--
+
+CREATE TABLE `membership` (
+  `id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `team_id` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `notifications`
+--
+
+CREATE TABLE `notifications` (
+  `id` int NOT NULL,
+  `note` text NOT NULL,
+  `user_id` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Структура таблицы `teams`
 --
 
@@ -165,24 +189,27 @@ CREATE TABLE `users` (
   `lastname` varchar(64) NOT NULL DEFAULT '',
   `firstname` varchar(64) NOT NULL DEFAULT '',
   `role` varchar(1) NOT NULL DEFAULT 'U',
-  `ban` tinyint(1) NOT NULL DEFAULT '0'
+  `ban` tinyint(1) NOT NULL DEFAULT '0',
+  `address` varchar(255) DEFAULT NULL,
+  `phone_number` varchar(20) DEFAULT NULL,
+  `last_online` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Дамп данных таблицы `users`
 --
 
-INSERT INTO `users` (`id`, `email`, `password`, `lastname`, `firstname`, `role`, `ban`) VALUES
-(1, 'miheynikita@gmail.com', '$2b$10$9ILgGG2LMmpPytkdkdGtBuuf3/KRWKaSnviRo.6V6/oNVL15Pct9C', 'Михейка', 'Никита', 'U', 0),
-(2, 'oleg@wasd.ru', '$2b$10$ywBk8Ym2Kp6FcNlumopdQeaW4j3k2jUbE6hKK0UqvpRVxBcljsWVu', 'Монгол', 'Олег', 'U', 0),
-(3, 'a@a.com', '$2b$10$2G5xNSQZLeViZiQJQ7NKPuLETorVKUnRnBmZaOC7StDCe51ihO7bS', 'A', 'A', 'U', 0),
-(4, 'pasha@mail.ru', '$2b$10$CX1qpYoKTKU9k/uap.Fsm.0aSpdN5isrQcZPdCdGgUgL1ns7zevVC', 'Дуров', 'Павел', 'U', 0),
-(5, 'irina@gmail.com', '$2b$10$CWCAwctVp5IRpuAzXIPfC.UD/m.Usjo9a1vzvGeHhYNTnH0lieCii', 'Гращенко', 'Ирина', 'U', 1),
-(6, 'admin@admin.com', '$2b$10$Y4leV7b.fr3f3Urk/Nf4repgm92mAPK1tu/kOaBEApgr7Kd1mweTm', 'Пич', 'Джо', 'A', 0),
-(7, 'prime@gmail.com', '$2b$10$jFb.C2BmyKplWiaTpV/GC.AsWarThgI9OUomxt6LH0qV/XLjNdtAG', 'Прайм', 'Оптимус', 'M', 0),
-(8, 'qwertyuiop@qwertyuiop.com', '$2b$10$aXJ725U/YDi6H7UJk/wQnuKqyI9AtWP3LCW20.uYDcKUY0TbQqK3y', 'qwertyuiop', 'qwertyuiop', 'U', 0),
-(9, 'kirill@mail.ru', '$2b$10$akNz7DUyuRXcNxf7n0IRUuiCX7TqJTBjiSeVhsr73AKbeMiRFqVka', 'Митько', 'Кирилл', 'U', 0),
-(10, 'roma@mail.ru', '$2b$10$JLzy3S6pNTg8JiqKsVN8geBlPG/cceP4kPGrMGguMUY.rvM9sk572', 'Борисюк', 'Роман', 'U', 0);
+INSERT INTO `users` (`id`, `email`, `password`, `lastname`, `firstname`, `role`, `ban`, `address`, `phone_number`, `last_online`) VALUES
+(1, 'miheynikita@gmail.com', '$2b$10$9ILgGG2LMmpPytkdkdGtBuuf3/KRWKaSnviRo.6V6/oNVL15Pct9C', 'Михейка', 'Никита', 'U', 0, NULL, NULL, NULL),
+(2, 'oleg@wasd.ru', '$2b$10$ywBk8Ym2Kp6FcNlumopdQeaW4j3k2jUbE6hKK0UqvpRVxBcljsWVu', 'Монгол', 'Олег', 'U', 0, NULL, NULL, NULL),
+(3, 'a@a.com', '$2b$10$2G5xNSQZLeViZiQJQ7NKPuLETorVKUnRnBmZaOC7StDCe51ihO7bS', 'A', 'A', 'U', 0, NULL, NULL, NULL),
+(4, 'pasha@mail.ru', '$2b$10$CX1qpYoKTKU9k/uap.Fsm.0aSpdN5isrQcZPdCdGgUgL1ns7zevVC', 'Дуров', 'Павел', 'U', 0, NULL, NULL, NULL),
+(5, 'irina@gmail.com', '$2b$10$CWCAwctVp5IRpuAzXIPfC.UD/m.Usjo9a1vzvGeHhYNTnH0lieCii', 'Гращенко', 'Ирина', 'U', 1, NULL, NULL, NULL),
+(6, 'admin@admin.com', '$2b$10$Y4leV7b.fr3f3Urk/Nf4repgm92mAPK1tu/kOaBEApgr7Kd1mweTm', 'Пич', 'Джо', 'A', 0, NULL, NULL, NULL),
+(7, 'prime@gmail.com', '$2b$10$jFb.C2BmyKplWiaTpV/GC.AsWarThgI9OUomxt6LH0qV/XLjNdtAG', 'Прайм', 'Оптимус', 'M', 0, NULL, NULL, '2025-03-31 19:47:52'),
+(8, 'qwertyuiop@qwertyuiop.com', '$2b$10$aXJ725U/YDi6H7UJk/wQnuKqyI9AtWP3LCW20.uYDcKUY0TbQqK3y', 'qwertyuiop', 'qwertyuiop', 'U', 0, NULL, NULL, NULL),
+(9, 'kirill@mail.ru', '$2b$10$akNz7DUyuRXcNxf7n0IRUuiCX7TqJTBjiSeVhsr73AKbeMiRFqVka', 'Митько', 'Кирилл', 'U', 0, NULL, NULL, NULL),
+(10, 'roma@mail.ru', '$2b$10$JLzy3S6pNTg8JiqKsVN8geBlPG/cceP4kPGrMGguMUY.rvM9sk572', 'Борисюк', 'Роман', 'U', 0, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -363,6 +390,21 @@ ALTER TABLE `invitations`
   ADD KEY `user_id` (`user_id`);
 
 --
+-- Индексы таблицы `membership`
+--
+ALTER TABLE `membership`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `team_id` (`team_id`);
+
+--
+-- Индексы таблицы `notifications`
+--
+ALTER TABLE `notifications`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
 -- Индексы таблицы `teams`
 --
 ALTER TABLE `teams`
@@ -427,6 +469,18 @@ ALTER TABLE `invitations`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT для таблицы `membership`
+--
+ALTER TABLE `membership`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `notifications`
+--
+ALTER TABLE `notifications`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT для таблицы `teams`
 --
 ALTER TABLE `teams`
@@ -487,6 +541,19 @@ ALTER TABLE `complaints_votes`
 ALTER TABLE `invitations`
   ADD CONSTRAINT `invitations_ibfk_1` FOREIGN KEY (`team_id`) REFERENCES `teams` (`id`),
   ADD CONSTRAINT `invitations_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+
+--
+-- Ограничения внешнего ключа таблицы `membership`
+--
+ALTER TABLE `membership`
+  ADD CONSTRAINT `membership_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `membership_ibfk_2` FOREIGN KEY (`team_id`) REFERENCES `teams` (`id`);
+
+--
+-- Ограничения внешнего ключа таблицы `notifications`
+--
+ALTER TABLE `notifications`
+  ADD CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Ограничения внешнего ключа таблицы `teams`
