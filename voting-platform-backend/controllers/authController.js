@@ -61,13 +61,16 @@ const loginUser = async (req, res) => {
                 return res.status(400).send('Неверный пароль');
             }
 
-            await updateLastOnline(user.id);
+            const currentTime = new Date().toISOString();
 
+            await updateLastOnline(user.id); 
+            user.last_online = currentTime; 
             res.status(200).json({ message: 'Авторизация прошла успешно', user });
         });
     } catch (error) {
         res.status(500).send('Ошибка сервера');
     }
 };
+
 
 module.exports = { registerUser, loginUser };

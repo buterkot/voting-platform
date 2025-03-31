@@ -1,4 +1,4 @@
-const { fetchAllUsers, updateUserBan, updateUserRole } = require('../models/userModel');
+const { fetchAllUsers, updateUserBan, updateUserRole, updateUserData } = require('../models/userModel');
 
 const getUsers = async (req, res) => {
     try {
@@ -50,8 +50,33 @@ const updateUserRoleStatus = async (req, res) => {
     }
 };
 
+const updateUserInfo = async (req, res) => {
+    const { userId, address, phone_number } = req.body;
+
+    if (!userId || (!address && !phone_number)) {
+        return res.status(400).send('Необходимо передать userId и хотя бы одно из полей: address или phone_number.');
+    }
+
+    try {
+        const updateData = {};
+        if (address) updateData.address = address;
+        if (phone_number) updateData.phone_number = phone_number;
+
+        const result = await updateUserData(userId, updateData);
+        if (result.affectedRows === 0) {
+            return res.status(404).send('Пользователь не найден.');
+        }
+        res.status(200).send({ message: 'Данные пользователя успешно обновлены.' });
+    } catch (error) {
+        console.error('Ошибка при обновлении данных пользователя:', error.message);
+        res.status(500).send('Ошибка сервера при обновлении данных пользователя.');
+    }
+};
+
+
 module.exports = {
     getUsers,
     updateUserBanStatus,
-    updateUserRoleStatus
+    updateUserRoleStatus,
+    updateUserInfo
 };

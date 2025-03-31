@@ -47,8 +47,31 @@ function Profile() {
     };
 
     const handleInputChange = (event, field) => {
-        const newUserData = { ...userData, [field]: event.target.value };
-        setUserData(newUserData);
+        setUserData({ ...userData, [field]: event.target.value });
+    };
+
+    const handleSave = async (field) => {
+        try {
+            const response = await fetch("http://localhost:3000/users/update", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    userId: user.id,
+                    [field]: userData[field],
+                }),
+            });
+
+            if (response.ok) {
+                alert("Данные успешно обновлены");
+            } else {
+                alert("Ошибка при обновлении данных");
+            }
+        } catch (error) {
+            console.error("Ошибка при отправке запроса:", error);
+            alert("Ошибка при обновлении данных");
+        }
     };
 
     return (
@@ -68,7 +91,6 @@ function Profile() {
                     </div>
                     <div className="profile-field">
                         <strong>Последний вход:</strong> {new Date(Date.parse(userData.last_online)).toLocaleString()}
-
                     </div>
                     <div className="profile-field">
                         <strong>Адрес:</strong>
@@ -77,6 +99,7 @@ function Profile() {
                             value={userData.address}
                             onChange={(e) => handleInputChange(e, 'address')}
                         />
+                        <button onClick={() => handleSave('address')}>Сохранить</button>
                     </div>
                     <div className="profile-field">
                         <strong>Телефон:</strong>
@@ -85,6 +108,7 @@ function Profile() {
                             value={userData.phone_number}
                             onChange={(e) => handleInputChange(e, 'phone_number')}
                         />
+                        <button onClick={() => handleSave('phone_number')}>Сохранить</button>
                     </div>
                     <div className="profile-field">
                         <strong>Группы:</strong>
@@ -94,7 +118,6 @@ function Profile() {
                             ))}
                         </select>
                     </div>
-
                 </div>
 
                 <div className="block-title">Настройки</div>

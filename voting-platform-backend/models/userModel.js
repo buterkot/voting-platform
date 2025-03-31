@@ -64,9 +64,27 @@ const updateLastOnline = (id) => {
     });
 };
 
+const updateUserData = (id, data) => {
+    const { address, phone_number } = data;
+    const query = `
+        UPDATE users
+        SET address = ?, phone_number = ?
+        WHERE id = ?
+    `;
+    return new Promise((resolve, reject) => {
+        db.query(query, [address, phone_number, id], (error, results) => {
+            if (error) {
+                return reject(error);
+            }
+            resolve(results);
+        });
+    });
+};
+
 module.exports = {
     fetchAllUsers,
     updateUserBan,
     updateUserRole,
-    updateLastOnline
+    updateLastOnline,
+    updateUserData
 };
