@@ -213,6 +213,30 @@ body {
     display: flex;
 }
 
+.carousel-container {
+    width: 100%;
+    max-width: 600px; 
+    margin: 0 auto; 
+    overflow: hidden; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.review-card {
+    width: 100%; 
+    max-width: 500px; 
+    text-align: center; 
+    padding: 20px;
+}
+
+.review {
+    text-align: center;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+}
+
 .form-frame {
     display: flex;
     background-color: rgb(255, 255, 255);
