@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import Reviews from "../components/Reviews";
 
 function Home() {
+    useEffect(() => {
+        document.title = "Главная";
+    }, []);
+
     return (
         <div className="main">
             <div className="home-frame">

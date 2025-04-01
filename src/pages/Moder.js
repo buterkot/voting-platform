@@ -11,6 +11,7 @@ function Moder() {
 
     useEffect(() => {
         fetchComplaints();
+        document.title = "Модерация"; 
     }, []);
 
     const fetchComplaints = async () => {

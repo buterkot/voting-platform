@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Header from "../components/Header.js";
 import "../styles/App.css";
+import "../styles/Profile.css";
 
 function Profile() {
     const user = JSON.parse(sessionStorage.getItem('user')) || {};
@@ -19,6 +20,7 @@ function Profile() {
     });
 
     useEffect(() => {
+        document.title = "Профиль";
         sessionStorage.setItem('user', JSON.stringify({
             ...user,
             profilePrivate: isProfilePrivate,
@@ -33,6 +35,10 @@ function Profile() {
             groups: user.groups
         }));
     }, [userData, isProfilePrivate, language, theme]);
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [groupName, setGroupName] = useState("");
+    const [isPrivate, setIsPrivate] = useState(false);
 
     const handleProfilePrivacyChange = () => {
         setIsProfilePrivate(!isProfilePrivate);
@@ -74,6 +80,34 @@ function Profile() {
         }
     };
 
+    const handleCreateGroup = async () => {
+        try {
+            const response = await fetch("http://localhost:3000/groups", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    name: groupName,
+                    creatorId: user.id,
+                    isPrivate: isPrivate ? 1 : 0
+                }),
+            });
+
+            if (response.ok) {
+                alert("Группа успешно создана");
+                setIsModalOpen(false);
+                setGroupName("");
+                setIsPrivate(false);
+            } else {
+                alert("Ошибка при создании группы");
+            }
+        } catch (error) {
+            console.error("Ошибка при создании группы:", error);
+            alert("Ошибка при создании группы");
+        }
+    };
+
     return (
         <div className={`main ${theme === 'dark' ? 'dark-theme' : 'light-theme'}`}>
             <Header />
@@ -112,9 +146,9 @@ function Profile() {
                     </div>
                     <div className="profile-field">
                         <strong>Группы:</strong>
-                        <select disabled>
+                        <select>
                             {userData.groups.map((group, index) => (
-                                <option key={index} value={group}>{group}</option>
+                                <option key={group.id} value={group.id}>{group.name}</option>
                             ))}
                         </select>
                     </div>
@@ -148,9 +182,34 @@ function Profile() {
                             <option value="dark">Тёмная</option>
                         </select>
                     </div>
+                    <button onClick={() => setIsModalOpen(true)}>Создать группу</button>
                 </div>
                 <div className="block-title">Уведомления</div>
             </div>
+
+            {isModalOpen && (
+                <div className="modal">
+                    <div className="modal-content">
+                        <h2>Создать группу</h2>
+                        <input
+                            type="text"
+                            placeholder="Название группы"
+                            value={groupName}
+                            onChange={(e) => setGroupName(e.target.value)}
+                        />
+                        <label>
+                            <input
+                                type="checkbox"
+                                checked={isPrivate}
+                                onChange={() => setIsPrivate(!isPrivate)}
+                            />
+                            Приватная
+                        </label>
+                        <button onClick={handleCreateGroup}>Создать</button>
+                        <button onClick={() => setIsModalOpen(false)}>Закрыть</button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

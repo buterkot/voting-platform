@@ -18,6 +18,7 @@ const Vote = () => {
     const user = JSON.parse(sessionStorage.getItem("user"));
 
     useEffect(() => {
+        document.title = "Голосование"; 
         axios.get(`http://localhost:3000/votes/${voteId}`)
             .then(response => setVote(response.data))
             .catch(error => {

@@ -7,6 +7,7 @@ const voteRoutes = require('./routes/voteRoutes');
 const userRoutes = require('./routes/userRoutes');
 const commentRoutes = require('./routes/commentRoutes');
 const complaintsRoutes = require('./routes/complaintsRoutes');
+const groupsRoutes = require('./routes/groupsRoutes');
 
 dotenv.config();
 
@@ -26,6 +27,7 @@ app.use('/votes', voteRoutes);
 app.use('/users', userRoutes);
 app.use('/comments', commentRoutes);
 app.use('/complaints', complaintsRoutes);
+app.use('/groups', groupsRoutes);
 
 app.get('/', (req, res) => {
     res.send('Hello, World!');

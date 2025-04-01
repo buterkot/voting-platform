@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const db = require('../config/db');
 const { updateLastOnline } = require('../models/userModel');
+const { getUserTeams } = require('../models/groupModel');
 
 const registerUser = async (req, res) => {
     const { firstname, lastname, email, password } = req.body;
@@ -62,15 +63,21 @@ const loginUser = async (req, res) => {
             }
 
             const currentTime = new Date().toISOString();
+            await updateLastOnline(user.id);
+            user.last_online = currentTime;
 
-            await updateLastOnline(user.id); 
-            user.last_online = currentTime; 
+            try {
+                user.groups = await getUserTeams(user.id); 
+            } catch (groupError) {
+                console.error("Ошибка при получении групп пользователя:", groupError);
+                user.groups = []; 
+            }
+
             res.status(200).json({ message: 'Авторизация прошла успешно', user });
         });
     } catch (error) {
         res.status(500).send('Ошибка сервера');
     }
 };
-
 
 module.exports = { registerUser, loginUser };
