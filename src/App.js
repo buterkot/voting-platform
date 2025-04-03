@@ -8,6 +8,7 @@ import Admin from "./pages/Admin.js";
 import Moder from "./pages/Moder.js";
 import Vote from "./pages/Vote.js";
 import Catalog from "./pages/Catalog.js";
+import UserProfile from "./pages/UserProfile";
 import "./styles/App.css";
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
         <Route path="/admin" element={<Admin />} />
         <Route path="/moder" element={<Moder />} />
         <Route path="/vote/:voteId" element={<Vote />} />
+        <Route path="/user/:id" element={<UserProfile />} />
       </Routes>
     </Router>
   );

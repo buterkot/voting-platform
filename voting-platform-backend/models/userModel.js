@@ -16,6 +16,23 @@ const fetchAllUsers = () => {
     });
 };
 
+const fetchUserById = (id) => {
+    const query = `
+        SELECT id, email, firstname, lastname, role, ban, address, phone_number, last_online, profile_private
+        FROM users
+        WHERE id = ?
+    `;
+    return new Promise((resolve, reject) => {
+        db.query(query, [id], (error, results) => {
+            if (error) {
+                return reject(error);
+            }
+            resolve(results[0]);
+        });
+    });
+};
+
+
 const updateUserBan = (id, ban) => {
     const query = `
         UPDATE users
@@ -83,6 +100,7 @@ const updateUserData = (id, data) => {
 
 module.exports = {
     fetchAllUsers,
+    fetchUserById,
     updateUserBan,
     updateUserRole,
     updateLastOnline,

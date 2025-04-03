@@ -1,4 +1,4 @@
-const { fetchAllUsers, updateUserBan, updateUserRole, updateUserData } = require('../models/userModel');
+const { fetchAllUsers, fetchUserById, updateUserBan, updateUserRole, updateUserData } = require('../models/userModel');
 
 const getUsers = async (req, res) => {
     try {
@@ -7,6 +7,20 @@ const getUsers = async (req, res) => {
     } catch (error) {
         console.error('Ошибка при получении пользователей:', error.message);
         res.status(500).send('Ошибка сервера при загрузке пользователей.');
+    }
+};
+
+const getUserById = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const user = await fetchUserById(id);
+        if (!user) {
+            return res.status(404).send('Пользователь не найден.');
+        }
+        res.status(200).json(user);
+    } catch (error) {
+        console.error('Ошибка при получении пользователя:', error.message);
+        res.status(500).send('Ошибка сервера при загрузке данных пользователя.');
     }
 };
 
@@ -76,6 +90,7 @@ const updateUserInfo = async (req, res) => {
 
 module.exports = {
     getUsers,
+    getUserById,
     updateUserBanStatus,
     updateUserRoleStatus,
     updateUserInfo

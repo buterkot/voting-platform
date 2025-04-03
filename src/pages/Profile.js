@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Header from "../components/Header.js";
+import GroupMembersModal from "../components/tables/GroupMembersModal";
 import "../styles/App.css";
 import "../styles/Profile.css";
 
@@ -39,6 +40,7 @@ function Profile() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [groupName, setGroupName] = useState("");
     const [isPrivate, setIsPrivate] = useState(false);
+    const [selectedGroup, setSelectedGroup] = useState(null);
 
     const handleProfilePrivacyChange = () => {
         setIsProfilePrivate(!isProfilePrivate);
@@ -108,6 +110,12 @@ function Profile() {
         }
     };
 
+    const handleGroupSelect = (event) => {
+        const groupId = event.target.value;
+        const group = userData.groups.find(g => g.id === parseInt(groupId));
+        setSelectedGroup(group);
+    };
+
     return (
         <div className={`main ${theme === 'dark' ? 'dark-theme' : 'light-theme'}`}>
             <Header />
@@ -146,8 +154,9 @@ function Profile() {
                     </div>
                     <div className="profile-field">
                         <strong>Группы:</strong>
-                        <select>
-                            {userData.groups.map((group, index) => (
+                        <select onChange={handleGroupSelect}>
+                            <option value="">Выберите группу</option>
+                            {userData.groups.map(group => (
                                 <option key={group.id} value={group.id}>{group.name}</option>
                             ))}
                         </select>
@@ -187,6 +196,13 @@ function Profile() {
                 <div className="block-title">Уведомления</div>
             </div>
 
+            {selectedGroup && (
+                <GroupMembersModal
+                    group={selectedGroup}
+                    onClose={() => setSelectedGroup(null)}
+                />
+            )}
+
             {isModalOpen && (
                 <div className="modal">
                     <div className="modal-content">
@@ -206,7 +222,7 @@ function Profile() {
                             Приватная
                         </label>
                         <button onClick={handleCreateGroup}>Создать</button>
-                        <button onClick={() => setIsModalOpen(false)}>Закрыть</button>
+                        <button className="close-button" onClick={() => setIsModalOpen(false)}>×</button>
                     </div>
                 </div>
             )}
