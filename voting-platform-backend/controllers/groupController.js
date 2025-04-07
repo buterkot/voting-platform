@@ -3,7 +3,8 @@ const {
     getTeamById,
     addMemberToTeam,
     getTeamMembers,
-    getUserTeams
+    getUserTeams,
+    getTeamsByCreator 
 } = require('../models/groupModel');
 
 const createGroup = async (req, res) => {
@@ -57,9 +58,23 @@ const getUserGroups = async (req, res) => {
     }
 };
 
+const getGroupsCreatedByUser = async (req, res) => {
+    const { creatorId } = req.params;
+
+    try {
+        const teams = await getTeamsByCreator(creatorId);
+        res.status(200).json(teams);
+    } catch (error) {
+        console.error('Ошибка при получении групп, созданных пользователем:', error);
+        res.status(500).json({ message: 'Ошибка сервера' });
+    }
+};
+
+
 module.exports = {
     createGroup,
     getGroupById,
     getGroupMembers,
-    getUserGroups
+    getUserGroups,
+    getGroupsCreatedByUser 
 };

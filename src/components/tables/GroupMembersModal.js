@@ -23,7 +23,7 @@ const GroupMembersModal = ({ group, onClose }) => {
                         <li key={member.id}>{member.firstname} {member.lastname}</li>
                     ))}
                 </ul>
-                <button className="close-button" onClick={onClose}>Закрыть</button>
+                <button onClick={onClose} className="close-button">×</button>
             </div>
         </div>
     );

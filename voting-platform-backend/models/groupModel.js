@@ -54,10 +54,21 @@ const getUserTeams = (userId) => {
     });
 };
 
+const getTeamsByCreator = (creatorId) => {
+    const query = `SELECT id, name, creation_date, creator_id, private FROM teams WHERE creator_id = ?`;
+    return new Promise((resolve, reject) => {
+        db.query(query, [creatorId], (error, results) => {
+            if (error) return reject(error);
+            resolve(results);
+        });
+    });
+};
+
 module.exports = {
     createTeam,
     getTeamById,
     addMemberToTeam,
     getTeamMembers,
-    getUserTeams
+    getUserTeams,
+    getTeamsByCreator
 };

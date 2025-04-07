@@ -5,7 +5,7 @@ const InviteToGroupModal = ({ userId, creatorId, onClose }) => {
     const [selectedGroup, setSelectedGroup] = useState("");
 
     useEffect(() => {
-        fetch(`http://localhost:3000/groups?creatorId=${creatorId}`)
+        fetch(`http://localhost:3000/groups/creator/${creatorId}`)
             .then(response => response.json())
             .then(data => setGroups(data))
             .catch(error => console.error("Ошибка загрузки групп:", error));
@@ -18,7 +18,7 @@ const InviteToGroupModal = ({ userId, creatorId, onClose }) => {
         }
 
         try {
-            const response = await fetch("http://localhost:3000/groups/invite", {
+            const response = await fetch("http://localhost:3000/invitations", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ userId, groupId: selectedGroup }),
@@ -28,7 +28,14 @@ const InviteToGroupModal = ({ userId, creatorId, onClose }) => {
                 alert("Приглашение отправлено");
                 onClose();
             } else {
-                alert("Ошибка при отправке приглашения");
+                const result = await response.json();
+                if (result.message === "Пользователь уже является участником группы") {
+                    alert("Пользователь уже в группе");
+                } else if (result.message === "Приглашение уже отправлено") {
+                    alert("Приглашение уже отправлялось");
+                } else {
+                    alert("Ошибка при отправке приглашения");
+                }
             }
         } catch (error) {
             console.error("Ошибка при отправке приглашения:", error);
@@ -47,7 +54,7 @@ const InviteToGroupModal = ({ userId, creatorId, onClose }) => {
                     ))}
                 </select>
                 <button onClick={handleInvite}>Пригласить</button>
-                <button className="close-button" onClick={onClose}>Закрыть</button>
+                <button onClick={onClose} className="close-button">×</button>
             </div>
         </div>
     );

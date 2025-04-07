@@ -8,6 +8,7 @@ const userRoutes = require('./routes/userRoutes');
 const commentRoutes = require('./routes/commentRoutes');
 const complaintsRoutes = require('./routes/complaintsRoutes');
 const groupsRoutes = require('./routes/groupsRoutes');
+const invitationRoutes = require('./routes/invitationRoutes');
 
 dotenv.config();
 
@@ -28,6 +29,7 @@ app.use('/users', userRoutes);
 app.use('/comments', commentRoutes);
 app.use('/complaints', complaintsRoutes);
 app.use('/groups', groupsRoutes);
+app.use('/invitations', invitationRoutes);
 
 app.get('/', (req, res) => {
     res.send('Hello, World!');
