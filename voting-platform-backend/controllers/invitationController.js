@@ -1,10 +1,12 @@
 const {
+    getInvitationById,
     createInvitation,
     getUserInvitations,
     updateInvitationStatus,
     isUserInTeam,
     hasActiveInvitation
 } = require('../models/invitationModel');
+const { addMemberToTeam } = require('../models/groupModel');
 
 const sendInvitation = async (req, res) => {
     const { userId, groupId } = req.body;
@@ -53,10 +55,20 @@ const respondToInvitation = async (req, res) => {
     }
 
     try {
+        const invitation = await getInvitationById(invitationId);
+        if (!invitation) {
+            return res.status(404).json({ message: 'Приглашение не найдено' });
+        }
+
         const result = await updateInvitationStatus(invitationId, status);
         if (result.affectedRows === 0) {
             return res.status(404).json({ message: 'Приглашение не найдено' });
         }
+
+        if (status === 'C') {
+            await addMemberToTeam(invitation.user_id, invitation.team_id);
+        }
+
         res.status(200).json({ message: 'Статус приглашения обновлён' });
     } catch (error) {
         console.error('Ошибка при обновлении статуса приглашения:', error);

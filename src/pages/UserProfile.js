@@ -13,6 +13,7 @@ const UserProfile = () => {
     const currentUser = JSON.parse(sessionStorage.getItem("user")) || {}; 
 
     useEffect(() => {
+        document.title = "Пользователь";
         fetch(`http://localhost:3000/users/${id}`)
             .then((response) => response.json())
             .then((data) => {

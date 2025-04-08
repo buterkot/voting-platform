@@ -1,5 +1,15 @@
 const db = require('../config/db');
 
+const getInvitationById = (invitationId) => {
+    const query = `SELECT * FROM invitations WHERE id = ?`;
+    return new Promise((resolve, reject) => {
+        db.query(query, [invitationId], (error, results) => {
+            if (error) return reject(error);
+            resolve(results[0] || null);
+        });
+    });
+};
+
 const isUserInTeam = (userId, teamId) => {
     const query = `
         SELECT * FROM membership
@@ -69,6 +79,7 @@ const updateInvitationStatus = (invitationId, status) => {
 };
 
 module.exports = {
+    getInvitationById,
     createInvitation,
     getUserInvitations,
     updateInvitationStatus,

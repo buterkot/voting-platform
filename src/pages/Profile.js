@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Header from "../components/Header.js";
 import GroupMembersModal from "../components/tables/GroupMembersModal";
+import Notifications from "../components/Notifications.js";
 import "../styles/App.css";
 import "../styles/Profile.css";
+import "../styles/Notifications.css";
 
 function Profile() {
     const user = JSON.parse(sessionStorage.getItem('user')) || {};
@@ -194,6 +196,7 @@ function Profile() {
                     <button onClick={() => setIsModalOpen(true)}>Создать группу</button>
                 </div>
                 <div className="block-title">Уведомления</div>
+                <Notifications userId={user.id} />
             </div>
 
             {selectedGroup && (

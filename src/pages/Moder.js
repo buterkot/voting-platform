@@ -63,7 +63,6 @@ function Moder() {
             <div className="main-content">
                 {error && <div className="error-message">{error}</div>}
 
-                {/* Жалобы на комментарии */}
                 <div className="block-title">Жалобы на комментарии</div>
                 {commentComplaints.length > 0 ? (
                     <div className="complaints-container">
@@ -90,7 +89,6 @@ function Moder() {
                     <p>Нет активных жалоб на комментарии.</p>
                 )}
 
-                {/* Жалобы на голосования */}
                 <div className="block-title">Жалобы на голосования</div>
                 {voteComplaints.length > 0 ? (
                     <div className="complaints-container">
