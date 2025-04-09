@@ -1,0 +1,108 @@
+.profile-info{
+    max-width: 600px;
+    width: 600px;
+    border-radius: 10px;
+    background-color: azure;
+    padding: 15px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+    font-size: 18px;
+}
+
+.profile-field{
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    position: relative;
+    align-items: center;
+}
+
+.profile-field-label{
+    font-weight: bold;
+    margin-right: 10px;
+    padding-bottom: 3px;
+}
+
+.profile-field-name1, .profile-field-name2{
+    font-size: 30px;
+    font-weight: bolder;
+    margin-right: 10px;
+    margin-bottom: -5px;
+    color: #3a7bd5;
+}
+
+.profile-field-mail{
+    font-size: 20px;
+    font-weight: 600;
+    color: #3a7bd5;
+}
+
+.profile-input {
+    border-radius: 7px;
+    border: none;
+    background-color: #e7f3fe;
+    height: 30px;
+    color: rgb(0, 0, 0);
+    font-family: Nunito;
+    font-size: 15px;
+    font-weight: 649;
+    width: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: inset 2px 2px 3px rgba(0, 0, 0, 0.3);
+    padding-left: 10px;
+}
+
+.group-selection {
+    border-radius: 7px;
+    border: unset;
+    background: linear-gradient(150deg, #00d2ff, #3a7bd5);
+    height: 32px;
+    font-family: Nunito;
+    font-size: 15px;
+    font-weight: 649;
+    color: azure;
+    width: 52%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+}
+
+.group-selection option {
+    background-color: #0084ff !important;
+    color: white;
+    padding: 8px;
+    margin: 0;
+    border: none;
+    appearance: none;
+}
+
+.group-selection option:hover,
+.group-selection option:focus,
+.group-selection option:checked {
+    background-color: #005fb8 !important;
+    color: white;
+}
+
+.form-button-save {
+    margin: 5px;
+    height: 30px;
+    width: 100px;
+    max-width: 390px;
+    border-radius: 5px;
+    border: unset;
+    background: linear-gradient(150deg, #00d2ff, #3a7bd5);
+    color: azure;
+    cursor: pointer;
+    font-family: Nunito;
+    font-size: 17px;
+}
+
+#address, #phone-number {
+    display: flex;
+    justify-content: space-between;
+}

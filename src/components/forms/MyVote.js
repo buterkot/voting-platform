@@ -103,7 +103,7 @@ const MyVote = () => {
                         return (
                             <div key={vote.id} className="form-frame">
                                 <div className="form-title">
-                                    <strong>{vote.title}</strong>
+                                    <div className='form-title'>{vote.title}</div>
                                 </div>
                                 <div className="my-vote-status">
                                     Статус: {vote.status === "A" ? "Активно" : "Остановлено"}

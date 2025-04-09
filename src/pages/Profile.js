@@ -125,38 +125,41 @@ function Profile() {
                 <div className="block-title">Личные данные</div>
                 <div className="profile-info">
                     <div className="profile-field">
-                        <strong>Имя:</strong> {userData.firstname}
+                        <div className="profile-field-name1">{userData.firstname}</div>
+                        <div className="profile-field-name2">{userData.lastname}</div>
                     </div>
                     <div className="profile-field">
-                        <strong>Фамилия:</strong> {userData.lastname}
+                        <div className="profile-field-mail">{userData.email}</div>
                     </div>
                     <div className="profile-field">
-                        <strong>Почта:</strong> {userData.email}
+                        <div className="profile-field-label">Последний вход:</div>
+                        <div className="profile-field-info">
+                            {new Date(Date.parse(userData.last_online)).toLocaleString()}
+                        </div>
                     </div>
-                    <div className="profile-field">
-                        <strong>Последний вход:</strong> {new Date(Date.parse(userData.last_online)).toLocaleString()}
-                    </div>
-                    <div className="profile-field">
-                        <strong>Адрес:</strong>
+                    <div className="profile-field" id="address">
+                        <div className="profile-field-label">Адрес:</div>
                         <input
+                            className="profile-input"
                             type="text"
                             value={userData.address}
                             onChange={(e) => handleInputChange(e, 'address')}
                         />
-                        <button onClick={() => handleSave('address')}>Сохранить</button>
+                        <button className="form-button-save" onClick={() => handleSave('address')}>Сохранить</button>
                     </div>
-                    <div className="profile-field">
-                        <strong>Телефон:</strong>
+                    <div className="profile-field" id="phone-number">
+                        <div className="profile-field-label">Телефон:</div>
                         <input
+                            className="profile-input"
                             type="text"
                             value={userData.phone_number}
                             onChange={(e) => handleInputChange(e, 'phone_number')}
                         />
-                        <button onClick={() => handleSave('phone_number')}>Сохранить</button>
+                        <button className="form-button-save" onClick={() => handleSave('phone_number')}>Сохранить</button>
                     </div>
                     <div className="profile-field">
-                        <strong>Группы:</strong>
-                        <select onChange={handleGroupSelect}>
+                        <div className="profile-field-label">Группы:</div>
+                        <select className="group-selection" onChange={handleGroupSelect}>
                             <option value="">Выберите группу</option>
                             {userData.groups.map(group => (
                                 <option key={group.id} value={group.id}>{group.name}</option>
@@ -168,18 +171,18 @@ function Profile() {
                 <div className="block-title">Настройки</div>
                 <div className="settings-section">
                     <div className="settings-option">
-                        <label>
+                        <div>
                             <input
                                 type="checkbox"
                                 checked={isProfilePrivate}
                                 onChange={handleProfilePrivacyChange}
                             />
                             Приватность
-                        </label>
+                        </div>
                     </div>
 
                     <div className="settings-option">
-                        <label>Язык:</label>
+                        <div>Язык:</div>
                         <select value={language} onChange={handleLanguageChange}>
                             <option value="ru">Русский</option>
                             <option value="en">English</option>
@@ -187,7 +190,7 @@ function Profile() {
                     </div>
 
                     <div className="settings-option">
-                        <label>Тема:</label>
+                        <div>Тема:</div>
                         <select value={theme} onChange={handleThemeChange}>
                             <option value="light">Светлая</option>
                             <option value="dark">Тёмная</option>
@@ -209,21 +212,21 @@ function Profile() {
             {isModalOpen && (
                 <div className="modal">
                     <div className="modal-content">
-                        <h2>Создать группу</h2>
+                        <div>Создать группу</div>
                         <input
                             type="text"
                             placeholder="Название группы"
                             value={groupName}
                             onChange={(e) => setGroupName(e.target.value)}
                         />
-                        <label>
+                        <div>
                             <input
                                 type="checkbox"
                                 checked={isPrivate}
                                 onChange={() => setIsPrivate(!isPrivate)}
                             />
                             Приватная
-                        </label>
+                        </div>
                         <button onClick={handleCreateGroup}>Создать</button>
                         <button className="close-button" onClick={() => setIsModalOpen(false)}>×</button>
                     </div>
