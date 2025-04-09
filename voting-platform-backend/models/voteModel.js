@@ -12,8 +12,19 @@ const createVote = async (voteData, options) => {
                 }
 
                 try {
-                    const voteQuery = `INSERT INTO votes (title, start_date, end_date, user_id, anonymous, multiple, status) VALUES (?, NOW(), NULL, ?, ?, ?, 'A')`;
-                    const [voteResult] = await connection.promise().query(voteQuery, [voteData.title, voteData.userId, voteData.anonymous, voteData.multiple]);
+                    const voteQuery = `
+                        INSERT INTO votes (title, start_date, end_date, user_id, anonymous, multiple, status, team_id)
+                        VALUES (?, NOW(), ?, ?, ?, ?, 'A', ?)
+                    `;
+
+                    const [voteResult] = await connection.promise().query(voteQuery, [
+                        voteData.title,
+                        voteData.endDate ? voteData.endDate.slice(0, 19).replace('T', ' ') : null,
+                        voteData.userId,
+                        voteData.anonymous,
+                        voteData.multiple,
+                        voteData.groupId || null
+                    ]);
 
                     const voteId = voteResult.insertId;
 
@@ -229,14 +240,14 @@ const getVoteById = (voteId) => {
 };
 
 const getVoteIdByOptionId = async (optionId) => {
-    const query = `SELECT vote_id FROM vote_options WHERE id = ?`; 
+    const query = `SELECT vote_id FROM vote_options WHERE id = ?`;
     const [rows] = await db.execute(query, [optionId]);
 
     if (rows.length === 0) {
         throw new Error("Вариант ответа не найден.");
     }
 
-    return rows[0].vote_id; 
+    return rows[0].vote_id;
 };
 
 const getUserVotes = (userId) => {

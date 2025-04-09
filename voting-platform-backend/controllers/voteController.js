@@ -1,4 +1,4 @@
-const { 
+const {
     createVote,
     getAvailableVotes,
     getVoteById,
@@ -11,17 +11,25 @@ const {
 } = require('../models/voteModel');
 
 const createVoteController = async (req, res) => {
-    const { title, userId, options, anonymous, multiple } = req.body;
+    const { title, userId, options, anonymous, multiple, groupId, endDate } = req.body;
 
     if (!title || !userId || !options || options.length < 2) {
         return res.status(400).send('Все поля обязательны, минимум 2 варианта.');
     }
 
     const isAnonymous = anonymous ? 1 : 0;
-    const isMultiple = multiple ? 1 : 0; 
+    const isMultiple = multiple ? 1 : 0;
 
     try {
-        const voteId = await createVote({ title, userId, anonymous: isAnonymous, multiple: isMultiple }, options);
+        const voteId = await createVote({
+            title,
+            userId,
+            anonymous: isAnonymous,
+            multiple: isMultiple,
+            groupId: groupId || null,
+            endDate: endDate || null
+        }, options);
+
         res.status(201).send({ message: 'Голосование успешно создано', voteId });
     } catch (error) {
         console.error('Ошибка при создании голосования:', error.message);
@@ -59,7 +67,7 @@ const castVoteController = async (req, res) => {
     }
 
     try {
-        const voteId = await getVoteIdByOptionId(optionIds[0]); 
+        const voteId = await getVoteIdByOptionId(optionIds[0]);
         const hasVoted = await checkIfUserVoted(userId, voteId);
 
         if (hasVoted) {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const CreateVote = () => {
@@ -9,6 +9,25 @@ const CreateVote = () => {
     const [isTemporary, setIsTemporary] = useState(false);
     const [endDate, setEndDate] = useState('');
     const [error, setError] = useState('');
+    const [isPrivate, setIsPrivate] = useState(false);
+    const [userGroups, setUserGroups] = useState([]);
+    const [selectedGroup, setSelectedGroup] = useState('');
+
+    useEffect(() => {
+        const fetchGroups = async () => {
+            const user = JSON.parse(sessionStorage.getItem('user'));
+            if (user && user.id && isPrivate) {
+                try {
+                    const response = await axios.get(`http://localhost:3000/groups/user/${user.id}`);
+                    setUserGroups(response.data);
+                } catch (error) {
+                    console.error('Ошибка при загрузке групп:', error);
+                }
+            }
+        };
+
+        fetchGroups();
+    }, [isPrivate]);
 
     const handleChange = (e, index) => {
         const { name, value } = e.target;
@@ -66,7 +85,13 @@ const CreateVote = () => {
             anonymous: anonymous ? 1 : 0,
             multiple: multiple ? 1 : 0,
             options: options.map(option => option.optionText),
+            groupId: isPrivate ? selectedGroup : null,
         };
+
+        if (isPrivate && !selectedGroup) {
+            alert('Выберите группу для закрытого голосования.');
+            return;
+        }        
 
         try {
             await axios.post('http://localhost:3000/votes/add', voteData);
@@ -141,28 +166,27 @@ const CreateVote = () => {
                     </label>
                 </div>
                 <div className='form-case-checkbox'>
-                    <label>
+                    <div>
                         <input
                             type="checkbox"
                             checked={multiple}
                             onChange={() => setMultiple(!multiple)}
                         />
                         Несколько вариантов
-                    </label>
+                    </div>
                 </div>
                 <div className='form-case-checkbox'>
-                    <label>
+                    <div>
                         <input
                             type="checkbox"
                             checked={isTemporary}
                             onChange={() => setIsTemporary(!isTemporary)}
                         />
                         Временное голосование
-                    </label>
+                    </div>
                 </div>
                 {isTemporary && (
                     <div className='form-case'>
-                        <div className='form-subtitle'>Дата окончания:</div>
                         <input
                             className='login-input'
                             type="datetime-local"
@@ -172,6 +196,38 @@ const CreateVote = () => {
                         />
                     </div>
                 )}
+                <div className='form-case-checkbox'>
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked={isPrivate}
+                            onChange={() => {
+                                setIsPrivate(!isPrivate);
+                                if (!isPrivate) setSelectedGroup('');
+                            }}
+                        />
+                        Закрытое голосование
+                    </label>
+                </div>
+
+                {isPrivate && (
+                    <div className='form-case'>
+                        <select
+                            className='login-input'
+                            value={selectedGroup}
+                            onChange={(e) => setSelectedGroup(e.target.value)}
+                            required
+                        >
+                            <option value="">Выберите группу</option>
+                            {userGroups.map(group => (
+                                <option key={group.id} value={group.id}>
+                                    {group.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                )}
+
                 {error && <div className='error-message'>{error}</div>}
                 <div className='button-block'>
                     <button className='form-button' type="submit">Создать голосование</button>

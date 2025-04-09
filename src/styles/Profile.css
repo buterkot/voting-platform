@@ -106,3 +106,15 @@
     display: flex;
     justify-content: space-between;
 }
+
+/*-------------------settings--------------------*/
+
+.settings-section{
+    max-width: 600px;
+    width: 600px;
+    border-radius: 10px;
+    background-color: azure;
+    padding: 15px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+    font-size: 18px;
+}
