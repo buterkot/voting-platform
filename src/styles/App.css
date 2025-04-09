@@ -391,6 +391,14 @@ form {
     font-weight: 500;
 }
 
+.vote-radio{
+    margin-right: 5px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+    width: 15px;
+}
+
 .login-input,
 .search-input {
     margin: 5px;

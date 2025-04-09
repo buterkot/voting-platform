@@ -159,44 +159,50 @@ function Profile() {
                     </div>
                     <div className="profile-field">
                         <div className="profile-field-label">Группы:</div>
-                        <select className="group-selection" onChange={handleGroupSelect}>
-                            <option value="">Выберите группу</option>
-                            {userData.groups.map(group => (
-                                <option key={group.id} value={group.id}>{group.name}</option>
-                            ))}
-                        </select>
+                        <div className="select-wrapper">
+                            <select className="group-selection" onChange={handleGroupSelect}>
+                                <option value="">Выберите группу</option>
+                                {userData.groups.map(group => (
+                                    <option key={group.id} value={group.id}>{group.name}</option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
                 </div>
 
                 <div className="block-title">Настройки</div>
                 <div className="settings-section">
                     <div className="settings-option">
-                        <div>
-                            <input
-                                type="checkbox"
-                                checked={isProfilePrivate}
-                                onChange={handleProfilePrivacyChange}
-                            />
-                            Приватность
+                        <div className="settings-option-label">Приватность профиля:</div>
+                        <input
+                            className="settings-checkbox"
+                            type="checkbox"
+                            checked={isProfilePrivate}
+                            onChange={handleProfilePrivacyChange}
+                        />
+
+                    </div>
+
+                    <div className="settings-option" id="s-language">
+                        <div className="settings-option-label">Язык:</div>
+                        <div className="select-wrapper2">
+                            <select className="language-selection" value={language} onChange={handleLanguageChange}>
+                                <option value="ru">Русский</option>
+                                <option value="en">English</option>
+                            </select>
                         </div>
                     </div>
 
-                    <div className="settings-option">
-                        <div>Язык:</div>
-                        <select value={language} onChange={handleLanguageChange}>
-                            <option value="ru">Русский</option>
-                            <option value="en">English</option>
-                        </select>
+                    <div className="settings-option" id="s-theme">
+                        <div className="settings-option-label">Тема:</div>
+                        <div className="select-wrapper2">
+                            <select className="theme-selection" value={theme} onChange={handleThemeChange}>
+                                <option value="light">Светлая</option>
+                                <option value="dark">Тёмная</option>
+                            </select>
+                        </div>
                     </div>
-
-                    <div className="settings-option">
-                        <div>Тема:</div>
-                        <select value={theme} onChange={handleThemeChange}>
-                            <option value="light">Светлая</option>
-                            <option value="dark">Тёмная</option>
-                        </select>
-                    </div>
-                    <button onClick={() => setIsModalOpen(true)}>Создать группу</button>
+                    <button className="form-button-create" onClick={() => setIsModalOpen(true)}>Создать группу</button>
                 </div>
                 <div className="block-title">Уведомления</div>
                 <Notifications userId={user.id} />

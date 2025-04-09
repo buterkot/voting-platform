@@ -18,7 +18,7 @@ const Vote = () => {
     const user = JSON.parse(sessionStorage.getItem("user"));
 
     useEffect(() => {
-        document.title = "Голосование"; 
+        document.title = "Голосование";
         axios.get(`http://localhost:3000/votes/${voteId}`)
             .then(response => setVote(response.data))
             .catch(error => {
@@ -152,6 +152,7 @@ const Vote = () => {
                                             />
                                         ) : (
                                             <input
+                                                className="vote-radio"
                                                 type="radio"
                                                 id={`option-${option.id}`}
                                                 name="vote"
