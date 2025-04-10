@@ -10,6 +10,7 @@
 
 .profile-field{
     display: flex;
+    flex-wrap: wrap;
     justify-content: flex-start;
     margin-bottom: 8px;
     border-radius: 8px;
@@ -169,8 +170,9 @@
 .select-wrapper2{
     position: relative;
     width: 52%; 
-    margin: 0 auto;
     height: 30px;
+    margin-left: auto; 
+    margin-right: 40px;
 }
 
 .select-wrapper2::after {
@@ -213,7 +215,7 @@
 .form-button-create{
     margin: 5px;
     height: 30px;
-    width: 100px;
+    width: 200px;
     max-width: 390px;
     border-radius: 5px;
     border: unset;
@@ -222,4 +224,9 @@
     cursor: pointer;
     font-family: Nunito;
     font-size: 17px;
+}
+
+.form-button-create-container{
+    display: flex;
+    justify-content: center;
 }

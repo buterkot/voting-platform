@@ -82,14 +82,33 @@ const updateLastOnline = (id) => {
 };
 
 const updateUserData = (id, data) => {
-    const { address, phone_number } = data;
+    const fields = [];
+    const values = [];
+
+    if (data.address !== undefined) {
+        fields.push('address = ?');
+        values.push(data.address);
+    }
+
+    if (data.phone_number !== undefined) {
+        fields.push('phone_number = ?');
+        values.push(data.phone_number);
+    }
+
+    if (fields.length === 0) {
+        return Promise.resolve({ affectedRows: 0 }); 
+    }
+
     const query = `
         UPDATE users
-        SET address = ?, phone_number = ?
+        SET ${fields.join(', ')}
         WHERE id = ?
     `;
+
+    values.push(id); 
+
     return new Promise((resolve, reject) => {
-        db.query(query, [address, phone_number, id], (error, results) => {
+        db.query(query, values, (error, results) => {
             if (error) {
                 return reject(error);
             }
@@ -97,6 +116,7 @@ const updateUserData = (id, data) => {
         });
     });
 };
+
 
 module.exports = {
     fetchAllUsers,
