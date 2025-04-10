@@ -202,7 +202,9 @@ function Profile() {
                             </select>
                         </div>
                     </div>
-                    <button className="form-button-create" onClick={() => setIsModalOpen(true)}>Создать группу</button>
+                    <div className="form-button-create-container">
+                        <button className="form-button-create" onClick={() => setIsModalOpen(true)}>Создать группу</button>
+                    </div>
                 </div>
                 <div className="block-title">Уведомления</div>
                 <Notifications userId={user.id} />
