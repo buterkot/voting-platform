@@ -315,7 +315,13 @@ const getVoteParticipants = (voteId) => {
             if (err) return reject(err);
 
             const query = `
-                SELECT u.firstname, u.lastname, u.email, vo.option_text
+                SELECT 
+                    u.id,
+                    u.firstname, 
+                    u.lastname, 
+                    u.email, 
+                    vo.option_text,
+                    vc.voted_date
                 FROM votes_cast vc
                 JOIN users u ON vc.user_id = u.id
                 JOIN vote_options vo ON vc.option_id = vo.id

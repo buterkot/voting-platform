@@ -17,8 +17,12 @@ function Home() {
                     Для доступа к системе онлайн-голосований требуется войти в аккаунт или создать его.
                 </div>
                 <div className="home-frame-bottom">
-                    <Link to="/login" className="text-link">Войти в аккаунт!</Link>
-                    <Link to="/signup" className="text-link">Создать аккаунт!</Link>
+                    <div className="home-button">
+                        <Link to="/login" className="home-link">Войти в аккаунт</Link>
+                    </div>
+                    <div className="home-button">
+                        <Link to="/signup" className="home-link">Создать аккаунт</Link>
+                    </div>
                 </div>
             </div>
         </div>

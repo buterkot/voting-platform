@@ -1,29 +1,32 @@
 import React from 'react';
+import { Link } from 'react-router-dom'; 
 
 const VotesModal = ({ participants, onClose }) => {
     return (
         <div className="modal">
             <div className="modal-content">
                 <div className="modal-header">
-                    <h3>Участники голосования</h3>
+                    <div className='modal-title'>Участники голосования</div>
                     <button onClick={onClose} className="close-button">×</button>
                 </div>
                 <table className="votes-table">
                     <thead>
                         <tr>
-                            <th>Имя</th>
-                            <th>Фамилия</th>
-                            <th>Почта</th>
+                            <th>Имя и фамилия</th>
                             <th>Выбранный вариант</th>
+                            <th>Дата и время</th>
                         </tr>
                     </thead>
                     <tbody>
                         {participants.map((participant) => (
                             <tr key={participant.id}>
-                                <td>{participant.firstname}</td>
-                                <td>{participant.lastname}</td>
-                                <td>{participant.email}</td>
+                                <td>
+                                    <Link to={`/user/${participant.id}`} className="user-link">
+                                        {participant.firstname} {participant.lastname}
+                                    </Link>
+                                </td>
                                 <td>{participant.option_text}</td>
+                                <td>{new Date(participant.voted_date).toLocaleString('ru-RU')}</td>
                             </tr>
                         ))}
                     </tbody>
