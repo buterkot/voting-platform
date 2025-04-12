@@ -4,7 +4,8 @@ const {
     getUserById,
     updateUserBanStatus,
     updateUserRoleStatus,
-    updateUserInfo
+    updateUserInfo,
+    updateSettings
 } = require('../controllers/userController');
 
 const router = express.Router();
@@ -14,5 +15,6 @@ router.get('/:id', getUserById);
 router.patch('/:id', updateUserBanStatus);
 router.patch('/:id/role', updateUserRoleStatus);
 router.post('/update', updateUserInfo);
+router.post('/update-settings', updateSettings);
 
 module.exports = router;

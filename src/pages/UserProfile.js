@@ -60,7 +60,7 @@ const UserProfile = () => {
                             {currentUser.id !== user.id && (
                                 <button className="form-button-create" onClick={() => setShowInviteModal(true)}>
                                     Пригласить в группу
-                                    </button>
+                                </button>
                             )}
                         </div>
                     </div>

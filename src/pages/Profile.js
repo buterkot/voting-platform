@@ -84,6 +84,32 @@ function Profile() {
         }
     };
 
+    const handleSaveSettings = async () => {
+        try {
+            const response = await fetch("http://localhost:3000/users/update-settings", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    userId: user.id,
+                    profilePrivate: isProfilePrivate,
+                    language,
+                    theme
+                }),
+            });
+    
+            if (response.ok) {
+                alert("Настройки успешно сохранены");
+            } else {
+                alert("Ошибка при сохранении настроек");
+            }
+        } catch (error) {
+            console.error("Ошибка при отправке запроса:", error);
+            alert("Ошибка при сохранении настроек");
+        }
+    };
+
     const handleCreateGroup = async () => {
         try {
             const response = await fetch("http://localhost:3000/groups", {
@@ -202,7 +228,9 @@ function Profile() {
                             </select>
                         </div>
                     </div>
+
                     <div className="form-button-create-container">
+                        <button className="form-button-create" onClick={handleSaveSettings}>Сохранить</button>
                         <button className="form-button-create" onClick={() => setIsModalOpen(true)}>Создать группу</button>
                     </div>
                 </div>

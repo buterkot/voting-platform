@@ -1,4 +1,4 @@
-const { fetchAllUsers, fetchUserById, updateUserBan, updateUserRole, updateUserData } = require('../models/userModel');
+const { fetchAllUsers, fetchUserById, updateUserBan, updateUserRole, updateUserData, updateUserSettings  } = require('../models/userModel');
 
 const getUsers = async (req, res) => {
     try {
@@ -87,11 +87,36 @@ const updateUserInfo = async (req, res) => {
     }
 };
 
+const updateSettings = async (req, res) => {
+    const { userId, profilePrivate, language, theme } = req.body;
+
+    if (!userId) {
+        return res.status(400).send('userId обязателен.');
+    }
+
+    try {
+        const settings = {};
+        if (profilePrivate !== undefined) settings.profilePrivate = profilePrivate;
+        if (language) settings.language = language;
+        if (theme) settings.theme = theme;
+
+        const result = await updateUserSettings(userId, settings);
+        if (result.affectedRows === 0) {
+            return res.status(404).send('Пользователь не найден.');
+        }
+
+        res.status(200).send({ message: 'Настройки успешно обновлены.' });
+    } catch (error) {
+        console.error('Ошибка при обновлении настроек:', error.message);
+        res.status(500).send('Ошибка сервера при обновлении настроек.');
+    }
+};
 
 module.exports = {
     getUsers,
     getUserById,
     updateUserBanStatus,
     updateUserRoleStatus,
-    updateUserInfo
+    updateUserInfo,
+    updateSettings
 };

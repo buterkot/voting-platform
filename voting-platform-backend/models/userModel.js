@@ -117,6 +117,47 @@ const updateUserData = (id, data) => {
     });
 };
 
+const updateUserSettings = (id, settings) => {
+    const fields = [];
+    const values = [];
+
+    if (settings.profilePrivate !== undefined) {
+        fields.push('profile_private = ?');
+        values.push(settings.profilePrivate ? 1 : 0);
+    }
+
+    if (settings.language !== undefined) {
+        fields.push('language = ?');
+        values.push(settings.language);
+    }
+
+    if (settings.theme !== undefined) {
+        fields.push('theme = ?');
+        values.push(settings.theme);
+    }
+
+    if (fields.length === 0) {
+        return Promise.resolve({ affectedRows: 0 });
+    }
+
+    const query = `
+        UPDATE users
+        SET ${fields.join(', ')}
+        WHERE id = ?
+    `;
+
+    values.push(id);
+
+    return new Promise((resolve, reject) => {
+        db.query(query, values, (error, results) => {
+            if (error) {
+                return reject(error);
+            }
+            resolve(results);
+        });
+    });
+};
+
 
 module.exports = {
     fetchAllUsers,
@@ -124,5 +165,6 @@ module.exports = {
     updateUserBan,
     updateUserRole,
     updateLastOnline,
-    updateUserData
+    updateUserData,
+    updateUserSettings
 };
