@@ -11,9 +11,9 @@ const NotFound = () => {
         Запрашиваемая вами страница недоступна или не существует.
       </div>
         <div className="home-frame-bottom">
-          <Link to="/" className="text-link">
-            На главную
-          </Link>
+          <div className="home-button">
+            <Link to="/" className="home-link">На главную</Link>
+          </div>
         </div>
       </div>
 

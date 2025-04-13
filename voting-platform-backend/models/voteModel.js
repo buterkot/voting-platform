@@ -57,7 +57,7 @@ const getAvailableVotes = () => {
             if (err) return reject(err);
 
             const query = `
-                SELECT v.id, v.title, v.user_id, v.anonymous, v.multiple, v.removed, u.firstname, u.lastname, 
+                SELECT v.id, v.title, v.user_id, v.anonymous, v.multiple, v.removed, v.start_date, u.firstname, u.lastname, 
                        o.id AS option_id, o.option_text, COUNT(votes.option_id) AS vote_count
                 FROM votes v
                 LEFT JOIN vote_options o ON v.id = o.vote_id
@@ -84,6 +84,7 @@ const getAvailableVotes = () => {
                             anonymous: row.anonymous,
                             multiple: row.multiple,
                             removed: row.removed,
+                            start_date: row.start_date,
                             options: [
                                 {
                                     id: row.option_id,

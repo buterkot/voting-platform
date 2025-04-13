@@ -54,33 +54,13 @@ const VoteForm = () => {
                 ) : (
                     filteredVotes.map((vote) => {
                         const totalVotes = calculateTotalVotes(vote.options);
+                        const formattedDate = new Date(Date.parse(vote.start_date)).toLocaleDateString();
                         return (
-                            <div key={vote.id} className="form-frame">
+                            <div key={vote.id} className="form-frame simple">
                                 <div className="form-title">{vote.title}</div>
-                                <div className="vote-author">
-                                    <div className="author">
-                                        Автор: {vote.anonymous ? "Аноним" : vote.user_name}
-                                    </div>
-                                </div>
-                                <div className="vote-options">
-                                    {vote.options.map((option) => {
-                                        const votePercentage = totalVotes
-                                            ? (option.vote_count / totalVotes) * 100
-                                            : 0;
-                                        return (
-                                            <div key={option.id} className="vote-option">
-                                                <div className="vote-option-text">
-                                                    {option.option_text} - {option.vote_count} голосов
-                                                </div>
-                                                <div className="vote-option-bar">
-                                                    <div
-                                                        className="vote-bar"
-                                                        style={{ width: `${votePercentage}%` }}
-                                                    ></div>
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
+                                <div className="form-info">
+                                    <div>Дата: {formattedDate}</div>
+                                    <div>Голосов: {totalVotes}</div>
                                 </div>
                                 <button
                                     className="form-button"
