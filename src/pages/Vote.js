@@ -144,28 +144,38 @@ const Vote = () => {
                             return (
                                 <div key={option.id} className="vote-option">
                                     <div className="vote-option-up">
-                                        {vote.multiple ? (
-                                            <input
-                                                type="checkbox"
-                                                checked={selectedOptions.includes(option.id)}
-                                                onChange={() => {
-                                                    setSelectedOptions(prev =>
-                                                        prev.includes(option.id)
-                                                            ? prev.filter(id => id !== option.id)
-                                                            : [...prev, option.id]
-                                                    );
-                                                }}
-                                            />
-                                        ) : (
-                                            <input
-                                                type="radio"
-                                                name="vote"
-                                                value={option.id}
-                                                onChange={() => setSelectedOption(option.id)}
-                                            />
-                                        )}
+                                        <div className="tooltip-wrapper">
+                                            {vote.multiple ? (
+                                                <input
+                                                    type="checkbox"
+                                                    disabled={vote.status !== "A"}
+                                                    checked={selectedOptions.includes(option.id)}
+                                                    onChange={() => {
+                                                        if (vote.status !== "A") return;
+                                                        setSelectedOptions(prev =>
+                                                            prev.includes(option.id)
+                                                                ? prev.filter(id => id !== option.id)
+                                                                : [...prev, option.id]
+                                                        );
+                                                    }}
+                                                />
+                                            ) : (
+                                                <input
+                                                    type="radio"
+                                                    name="vote"
+                                                    value={option.id}
+                                                    disabled={vote.status !== "A"}
+                                                    onChange={() => vote.status === "A" && setSelectedOption(option.id)}
+                                                />
+                                            )}
+                                            {vote.status !== "A" && (
+                                                <div className="tooltip-text">Голосование завершено</div>
+                                            )}
+                                        </div>
+
                                         <label>{option.option_text} ({option.vote_count} голосов)</label>
                                     </div>
+
                                     <div className="vote-option-bar">
                                         <div className="vote-bar" style={{ width: `${votePercentage}%` }}></div>
                                     </div>
@@ -174,9 +184,19 @@ const Vote = () => {
                         })}
                     </div>
 
-                    <button className="form-button" onClick={handleVoteSubmit}>
-                        Проголосовать
-                    </button>
+                    <div className="tooltip-wrapper">
+                        <button
+                            className="form-button"
+                            onClick={handleVoteSubmit}
+                            disabled={vote.status !== "A"}
+                        >
+                            Проголосовать
+                        </button>
+                        {vote.status !== "A" && (
+                            <div className="tooltip-text">Голосование завершено</div>
+                        )}
+                    </div>
+
 
                     {isOwner && (
                         <>
