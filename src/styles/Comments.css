@@ -64,6 +64,10 @@ body {
     margin-bottom: 20px;
 }
 
+#comment-add-button{
+    width: 130px;
+}
+
 .comment-area {
     resize: none;
     width: 560px;

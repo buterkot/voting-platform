@@ -85,7 +85,6 @@ const castVoteController = async (req, res) => {
     }
 };
 
-
 const stopVoteController = async (req, res) => {
     const { voteId } = req.body;
 

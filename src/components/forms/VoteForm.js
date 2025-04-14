@@ -54,13 +54,20 @@ const VoteForm = () => {
                 ) : (
                     filteredVotes.map((vote) => {
                         const totalVotes = calculateTotalVotes(vote.options);
-                        const formattedDate = new Date(Date.parse(vote.start_date)).toLocaleDateString();
                         return (
                             <div key={vote.id} className="form-frame simple">
                                 <div className="form-title">{vote.title}</div>
                                 <div className="form-info">
-                                    <div>Дата: {formattedDate}</div>
-                                    <div>Голосов: {totalVotes}</div>
+                                    <div>
+                                        Дата начала: {new Date(vote.start_date).toLocaleString("ru-RU", {
+                                            day: "2-digit",
+                                            month: "2-digit",
+                                            year: "numeric",
+                                            hour: "2-digit",
+                                            minute: "2-digit"
+                                        })}
+                                    </div>
+                                    <div>Количество голосов: {totalVotes}</div>
                                 </div>
                                 <button
                                     className="form-button"

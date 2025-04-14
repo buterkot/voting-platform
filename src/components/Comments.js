@@ -102,7 +102,7 @@ const Comments = ({ voteId }) => {
                     cols={70}
                     onChange={(e) => setNewComment(e.target.value)}
                 />
-                <button className="form-button" onClick={handleCommentSubmit}>Добавить</button>
+                <button className="form-button" id="comment-add-button" onClick={handleCommentSubmit}>Добавить</button>
             </div>
             <div className="comments-list">
                 {sortedComments.length > 0 ? (
