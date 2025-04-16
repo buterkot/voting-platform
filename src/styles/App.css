@@ -416,12 +416,13 @@ form {
 .vote-info::after {
     content: "";
     display: block;
-    width: 100%;
+    width: 50%;
     height: 2px;
     background: linear-gradient(to right, #565656, #565656);
     border-radius: 5px;
     position: absolute;
     bottom: 0;
+    left: 25%;
 }
 
 

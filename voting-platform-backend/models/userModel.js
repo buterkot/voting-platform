@@ -32,7 +32,6 @@ const fetchUserById = (id) => {
     });
 };
 
-
 const updateUserBan = (id, ban) => {
     const query = `
         UPDATE users

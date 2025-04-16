@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import "../../styles/modal.css";
+import "../../styles/Modal.css";
 
 const GroupMembersModal = ({ group, onClose }) => {
     const [members, setMembers] = useState([]);

@@ -30,30 +30,46 @@ const Vote = () => {
     const isOwner = vote && user && vote.user_id === user.id;
 
     const handleVoteSubmit = async () => {
-        if (vote.multiple && selectedOptions.length === 0) {
-            alert("Выберите хотя бы один вариант");
-            return;
-        }
-        if (!vote.multiple && !selectedOption) {
-            alert("Выберите вариант");
-            return;
-        }
+        if (vote.multiple) {
+            if (selectedOptions.length === 0) {
+                alert("Выберите хотя бы один вариант");
+                return;
+            }
 
-        try {
-            if (!user?.id) return alert("Пожалуйста, войдите в систему");
+            try {
+                await axios.post("http://localhost:3000/votes/vote-multiple", {
+                    optionIds: selectedOptions,
+                    userId: user.id
+                });
 
-            const voteData = vote.multiple
-                ? selectedOptions.map(optionId => ({ optionId, userId: user.id }))
-                : [{ optionId: selectedOption, userId: user.id }];
+                alert("Ваши голоса учтены!");
+                window.location.reload();
+            } catch (error) {
+                alert("Ошибка при голосовании.");
+                console.error(error);
+            }
 
-            await axios.post("http://localhost:3000/votes/vote", voteData);
-            alert("Ваш голос учтен!");
-            window.location.reload();
-        } catch (error) {
-            alert("Ошибка при голосовании.");
-            console.error(error);
+        } else {
+            if (!selectedOption) {
+                alert("Выберите вариант перед голосованием");
+                return;
+            }
+
+            try {
+                await axios.post("http://localhost:3000/votes/vote", {
+                    optionId: selectedOption,
+                    userId: user.id
+                });
+
+                alert("Ваш голос учтен!");
+                window.location.reload();
+            } catch (error) {
+                alert("Ошибка при голосовании.");
+                console.error(error);
+            }
         }
     };
+
 
     const handleStopVote = async () => {
         try {

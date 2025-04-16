@@ -60,26 +60,19 @@ const getVoteByIdController = async (req, res) => {
 };
 
 const castVoteController = async (req, res) => {
-    const { userId, optionIds } = req.body;
+    const { userId, optionId } = req.body;
 
-    if (!userId || !optionIds || !Array.isArray(optionIds) || optionIds.length === 0) {
-        return res.status(400).send('Все поля обязательны. Должен быть выбран хотя бы один вариант.');
+    if (!userId || !optionId) {
+        return res.status(400).send('Все поля обязательны.');
     }
 
     try {
-        const voteId = await getVoteIdByOptionId(optionIds[0]);
-        const hasVoted = await checkIfUserVoted(userId, voteId);
-
-        if (hasVoted) {
-            return res.status(400).send('Пользователь уже голосовал в этом опросе.');
-        }
-
-        for (const optionId of optionIds) {
-            await castVote(userId, optionId);
-        }
-
-        res.status(200).send({ message: 'Ваши голоса успешно учтены.' });
+        await castVote(userId, optionId);
+        res.status(200).send({ message: 'Ваш голос успешно учтен.' });
     } catch (error) {
+        if (error.message === 'Не удалось проголосовать.') {
+            return res.status(400).send(error.message);
+        }
         console.error('Ошибка при голосовании:', error.message);
         res.status(500).send('Ошибка сервера');
     }
