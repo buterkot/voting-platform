@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import "../../styles/modal.css";
 
 const GroupMembersModal = ({ group, onClose }) => {
     const [members, setMembers] = useState([]);
@@ -17,13 +19,22 @@ const GroupMembersModal = ({ group, onClose }) => {
     return (
         <div className="modal">
             <div className="modal-content">
-                <h2>Участники группы: {group.name}</h2>
-                <ul>
+                <div className="modal-header">
+                    <div className="modal-title">Участники группы: {group.name}</div>
+                    <button onClick={onClose} className="close-button">×</button>
+                </div>
+
+                <div className="member-list">
                     {members.map(member => (
-                        <li key={member.id}>{member.firstname} {member.lastname}</li>
+                        <div key={member.id} className="member-item">
+                            👤
+                            <Link to={`/user/${member.id}`} className="user-link">
+                                {member.firstname} {member.lastname}
+                            </Link>
+                        </div>
                     ))}
-                </ul>
-                <button onClick={onClose} className="close-button">×</button>
+                </div>
+
             </div>
         </div>
     );

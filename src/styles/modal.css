@@ -48,3 +48,40 @@
     background-color: #f4f4f4;
     text-align: left;
 }
+
+.member-item{
+    display: flex;
+    align-items: center;
+}
+
+.user-link {
+    color: #222; 
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 20px;
+    padding-top: 2px;
+    margin-left: 5px;
+    transition: color 0.2s ease;
+}
+
+.user-link:hover {
+    color: #555; 
+    text-decoration: underline;
+}
+
+#create-group-content{
+    max-width: 400px;
+}
+
+.private-group{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.private-group-label{
+    margin-left: 5px;
+    font-weight: 500;
+    font-size: 17px;
+    padding-bottom: 1px;
+}

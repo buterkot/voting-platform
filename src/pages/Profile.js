@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Header from "../components/Header.js";
 import GroupMembersModal from "../components/tables/GroupMembersModal";
+import CreateGroup from "../components/tables/CreateGroup";
 import Notifications from "../components/Notifications.js";
 import "../styles/App.css";
 import "../styles/Profile.css";
@@ -98,7 +99,7 @@ function Profile() {
                     theme
                 }),
             });
-    
+
             if (response.ok) {
                 alert("Настройки успешно сохранены");
             } else {
@@ -246,27 +247,10 @@ function Profile() {
             )}
 
             {isModalOpen && (
-                <div className="modal">
-                    <div className="modal-content">
-                        <div>Создать группу</div>
-                        <input
-                            type="text"
-                            placeholder="Название группы"
-                            value={groupName}
-                            onChange={(e) => setGroupName(e.target.value)}
-                        />
-                        <div>
-                            <input
-                                type="checkbox"
-                                checked={isPrivate}
-                                onChange={() => setIsPrivate(!isPrivate)}
-                            />
-                            Приватная
-                        </div>
-                        <button onClick={handleCreateGroup}>Создать</button>
-                        <button className="close-button" onClick={() => setIsModalOpen(false)}>×</button>
-                    </div>
-                </div>
+                <CreateGroup
+                    userId={user.id}
+                    onClose={() => setIsModalOpen(false)}
+                />
             )}
         </div>
     );
