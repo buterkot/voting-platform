@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import "../../styles/Modal.css";
 
 const InviteToGroupModal = ({ userId, creatorId, onClose }) => {
     const [groups, setGroups] = useState([]);
@@ -46,15 +47,27 @@ const InviteToGroupModal = ({ userId, creatorId, onClose }) => {
     return (
         <div className="modal">
             <div className="modal-content">
-                <h2>Пригласить в группу</h2>
-                <select value={selectedGroup} onChange={(e) => setSelectedGroup(e.target.value)}>
-                    <option value="">Выберите группу</option>
-                    {groups.map(group => (
-                        <option key={group.id} value={group.id}>{group.name}</option>
-                    ))}
-                </select>
-                <button onClick={handleInvite}>Пригласить</button>
-                <button onClick={onClose} className="close-button">×</button>
+                <div className="modal-header">
+                    <div className="modal-title">Пригласить в группу</div>
+                    <button onClick={onClose} className="close-button">×</button>
+                </div>
+                <div className="group-invite-content">
+                    <div className="select-wrapper" id="select-wrapper3">
+                        <select
+                            className="group-selection"
+                            value={selectedGroup}
+                            onChange={(e) => setSelectedGroup(e.target.value)}>
+                            <option value="">Выберите группу</option>
+                            {groups.map(group => (
+                                <option key={group.id} value={group.id}>{group.name}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <button className="form-button" onClick={handleInvite}>Пригласить</button>
+                </div>
+
+
             </div>
         </div>
     );

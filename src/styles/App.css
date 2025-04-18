@@ -506,6 +506,23 @@ form {
     font-size: 17px;
 }
 
+#form-button-vote, #form-button-show-votes {
+    width: 180px;
+}
+
+#form-button-create-voting {
+    width: 100%;
+}
+
+.form-button:hover, 
+.form-button-delete:hover,
+.form-button-save:hover,
+.form-button-create:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: scale(1.02);
+    transition: all 0.2s ease-in-out;
+}   
+
 .form-button-delete {
     max-width: 77px;
 }

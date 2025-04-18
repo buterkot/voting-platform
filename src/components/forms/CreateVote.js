@@ -91,7 +91,7 @@ const CreateVote = () => {
         if (isPrivate && !selectedGroup) {
             alert('Выберите группу для закрытого голосования.');
             return;
-        }        
+        }
 
         try {
             await axios.post('http://localhost:3000/votes/add', voteData);
@@ -149,6 +149,7 @@ const CreateVote = () => {
                     ))}
                     <button
                         className='form-button'
+                        id='form-button-add-option'
                         type="button"
                         onClick={addOption}
                     >
@@ -229,9 +230,12 @@ const CreateVote = () => {
                 )}
 
                 {error && <div className='error-message'>{error}</div>}
-                <div className='button-block'>
-                    <button className='form-button' type="submit">Создать голосование</button>
-                </div>
+                <button
+                    className='form-button'
+                    id='form-button-create-voting'
+                    type="submit">
+                    Создать голосование
+                </button>
             </form>
         </div>
     );

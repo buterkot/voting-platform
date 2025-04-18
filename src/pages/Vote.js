@@ -203,6 +203,7 @@ const Vote = () => {
                     <div className="tooltip-wrapper">
                         <button
                             className="form-button"
+                            id="form-button-vote"
                             onClick={handleVoteSubmit}
                             disabled={vote.status !== "A"}
                         >
@@ -213,17 +214,20 @@ const Vote = () => {
                         )}
                     </div>
 
+                    {!vote.anonymous && (
+                        <button 
+                        className="form-button" 
+                        id="form-button-show-votes"
+                        onClick={handleViewParticipants}>
+                            Посмотреть голоса
+                        </button>
+                    )}
 
                     {isOwner && (
                         <>
                             {vote.status === "A" && (
                                 <button className="form-button" onClick={handleStopVote}>
                                     Завершить голосование
-                                </button>
-                            )}
-                            {!vote.anonymous && (
-                                <button className="form-button" onClick={handleViewParticipants}>
-                                    Посмотреть голоса
                                 </button>
                             )}
                         </>

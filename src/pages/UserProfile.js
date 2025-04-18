@@ -31,8 +31,22 @@ const UserProfile = () => {
             <Header />
             <div className="main-content">
                 <div className="block-title">Профиль пользователя</div>
-                {user.profilePrivate ? (
-                    <div>Этот профиль приватный</div>
+                {user.profile_private ? (
+                    <div className="profile-info">
+                        <div className="profile-field">
+                            <div className="profile-field-name1">{user.firstname}</div>
+                            <div className="profile-field-name2">{user.lastname}</div>
+                        </div>
+                        <div className="private-notice">Этот профиль приватный</div>
+
+                        {currentUser.id !== user.id && (
+                            <div className="form-button-create-container">
+                                <button className="form-button-create" onClick={() => setShowInviteModal(true)}>
+                                    Пригласить в группу
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 ) : (
                     <div className="profile-info">
                         <div className="profile-field">
@@ -65,7 +79,6 @@ const UserProfile = () => {
                         </div>
                     </div>
                 )}
-
 
             </div>
 

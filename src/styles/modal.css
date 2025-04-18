@@ -85,3 +85,14 @@
     font-size: 17px;
     padding-bottom: 1px;
 }
+
+.group-invite-content{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 40px;
+}
+
+#select-wrapper3{
+    width: 390px;
+}
