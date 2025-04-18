@@ -161,6 +161,79 @@ const castVote = (userId, optionId) => {
     });
 };
 
+const castMultipleVotes = (userId, optionIds) => {
+    return new Promise((resolve, reject) => {
+        if (!Array.isArray(optionIds) || optionIds.length === 0) {
+            return reject(new Error("Не переданы варианты ответа."));
+        }
+
+        db.getConnection((err, connection) => {
+            if (err) return reject(err);
+
+            connection.beginTransaction(async (err) => {
+                if (err) {
+                    connection.release();
+                    return reject(err);
+                }
+
+                try {
+                    const [voteIdResult] = await connection.promise().query(
+                        "SELECT vote_id FROM vote_options WHERE id = ?",
+                        [optionIds[0]]
+                    );
+
+                    if (voteIdResult.length === 0) throw new Error("Голосование не найдено.");
+
+                    const voteId = voteIdResult[0].vote_id;
+
+                    const [alreadyVoted] = await connection.promise().query(`
+                        SELECT 1 FROM votes_cast vc
+                        JOIN vote_options vo ON vc.option_id = vo.id
+                        WHERE vc.user_id = ? AND vo.vote_id = ?
+                    `, [userId, voteId]);
+
+                    if (alreadyVoted.length > 0) {
+                        connection.rollback();
+                        connection.release();
+                        return reject(new Error("Пользователь уже голосовал в этом голосовании."));
+                    }
+
+                    const [voteCheck] = await connection.promise().query(`
+                        SELECT multiple FROM votes WHERE id = ?
+                    `, [voteId]);
+
+                    if (!voteCheck[0].multiple) {
+                        connection.rollback();
+                        connection.release();
+                        return reject(new Error("Это голосование не поддерживает множественный выбор."));
+                    }
+
+                    const values = optionIds.map(optionId => [userId, optionId]);
+                    await connection.promise().query(`
+                        INSERT INTO votes_cast (user_id, option_id, voted_date)
+                        VALUES ?
+                    `, [values.map(([u, o]) => [u, o, new Date()])]);
+
+                    connection.commit(err => {
+                        if (err) {
+                            connection.rollback();
+                            connection.release();
+                            return reject(err);
+                        }
+                        connection.release();
+                        resolve();
+                    });
+
+                } catch (err) {
+                    connection.rollback();
+                    connection.release();
+                    reject(err);
+                }
+            });
+        });
+    });
+};
+
 const stopVote = (voteId) => {
     return new Promise((resolve, reject) => {
         db.getConnection((err, connection) => {
@@ -369,6 +442,7 @@ module.exports = {
     getVoteById,
     getVoteIdByOptionId,
     castVote,
+    castMultipleVotes,
     stopVote,
     getUserVotes,
     getVoteParticipants,

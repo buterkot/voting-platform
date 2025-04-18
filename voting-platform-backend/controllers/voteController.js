@@ -4,6 +4,7 @@ const {
     getVoteById,
     getVoteIdByOptionId,
     castVote,
+    castMultipleVotes,
     stopVote,
     getUserVotes,
     getVoteParticipants,
@@ -78,6 +79,22 @@ const castVoteController = async (req, res) => {
     }
 };
 
+const castMultipleVotesController = async (req, res) => {
+    const { userId, optionIds } = req.body;
+
+    if (!userId || !Array.isArray(optionIds) || optionIds.length < 1) {
+        return res.status(400).send('userId и минимум один optionId обязательны.');
+    }
+
+    try {
+        await castMultipleVotes(userId, optionIds);
+        res.status(200).send({ message: 'Ваши голоса успешно учтены.' });
+    } catch (error) {
+        console.error('Ошибка при мультивыборе:', error.message);
+        res.status(500).send(error.message);
+    }
+};
+
 const stopVoteController = async (req, res) => {
     const { voteId } = req.body;
 
@@ -146,6 +163,7 @@ module.exports = {
     getVotesController,
     getVoteByIdController,
     castVoteController,
+    castMultipleVotesController,
     stopVoteController,
     getUserVotesController,
     getVoteParticipantsController,
