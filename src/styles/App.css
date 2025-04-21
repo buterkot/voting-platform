@@ -126,10 +126,10 @@ body {
     font-weight: 600;
 }
 
-
 ::-webkit-scrollbar {
     width: 10px;
     height: 10px;
+    background-color: #3a7bd5;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -139,6 +139,7 @@ body {
 
 ::-webkit-scrollbar-track {
     background-color: #3a7bd5;
+    border-radius: 10px;
 }
 
 .main {
