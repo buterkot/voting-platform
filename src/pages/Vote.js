@@ -16,6 +16,8 @@ const Vote = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const user = JSON.parse(sessionStorage.getItem("user"));
+    const isVotingTimeOver = vote?.end_date ? new Date(vote.end_date) < new Date() : false;
+    const isVoteActive = vote?.status === "A" && !isVotingTimeOver;
 
     useEffect(() => {
         document.title = "Голосование";
@@ -69,7 +71,6 @@ const Vote = () => {
             }
         }
     };
-
 
     const handleStopVote = async () => {
         try {
@@ -164,10 +165,10 @@ const Vote = () => {
                                             {vote.multiple ? (
                                                 <input
                                                     type="checkbox"
-                                                    disabled={vote.status !== "A"}
+                                                    disabled={!isVoteActive}
                                                     checked={selectedOptions.includes(option.id)}
                                                     onChange={() => {
-                                                        if (vote.status !== "A") return;
+                                                        if (!isVoteActive) return;
                                                         setSelectedOptions(prev =>
                                                             prev.includes(option.id)
                                                                 ? prev.filter(id => id !== option.id)
@@ -180,11 +181,11 @@ const Vote = () => {
                                                     type="radio"
                                                     name="vote"
                                                     value={option.id}
-                                                    disabled={vote.status !== "A"}
-                                                    onChange={() => vote.status === "A" && setSelectedOption(option.id)}
+                                                    disabled={!isVoteActive}
+                                                    onChange={() => isVoteActive && setSelectedOption(option.id)}
                                                 />
                                             )}
-                                            {vote.status !== "A" && (
+                                            {!isVoteActive && (
                                                 <div className="tooltip-text">Голосование завершено</div>
                                             )}
                                         </div>
@@ -205,27 +206,27 @@ const Vote = () => {
                             className="form-button"
                             id="form-button-vote"
                             onClick={handleVoteSubmit}
-                            disabled={vote.status !== "A"}
+                            disabled={!isVoteActive}
                         >
                             Проголосовать
                         </button>
-                        {vote.status !== "A" && (
+                        {!isVoteActive && (
                             <div className="tooltip-text">Голосование завершено</div>
                         )}
                     </div>
 
                     {!vote.anonymous && (
-                        <button 
-                        className="form-button" 
-                        id="form-button-show-votes"
-                        onClick={handleViewParticipants}>
+                        <button
+                            className="form-button"
+                            id="form-button-show-votes"
+                            onClick={handleViewParticipants}>
                             Посмотреть голоса
                         </button>
                     )}
 
                     {isOwner && (
                         <>
-                            {vote.status === "A" && (
+                            {isOwner && isVoteActive && (
                                 <button className="form-button" onClick={handleStopVote}>
                                     Завершить голосование
                                 </button>
