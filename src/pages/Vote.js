@@ -6,6 +6,7 @@ import "../styles/App.css";
 import "../styles/Comments.css";
 import VotesTable from '../components/tables/VotesModal';
 import Comments from "../components/Comments";
+import VoteReportModal from "../components/tables/VoteReportModal";
 
 const Vote = () => {
     const { voteId } = useParams();
@@ -16,6 +17,7 @@ const Vote = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const [showMoreActions, setShowMoreActions] = useState(false);
+    const [isReportModalOpen, setIsReportModalOpen] = useState(false);
 
     const user = JSON.parse(sessionStorage.getItem("user"));
     const isVotingTimeOver = vote?.end_date ? new Date(vote.end_date) < new Date() : false;
@@ -260,7 +262,7 @@ const Vote = () => {
                             <button
                                 className="form-button"
                                 id="one-action"
-                                onClick={() => alert("Здесь будет отчёт")}
+                                onClick={() => setIsReportModalOpen(true)}
                             >
                                 Получить отчёт
                             </button>
@@ -272,6 +274,9 @@ const Vote = () => {
             </div>
 
             {isModalOpen && <VotesTable participants={selectedParticipants} onClose={closeModal} />}
+            {isReportModalOpen && (
+                <VoteReportModal vote={vote} onClose={() => setIsReportModalOpen(false)} />
+            )}
         </div>
     );
 };
