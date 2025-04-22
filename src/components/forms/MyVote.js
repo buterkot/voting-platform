@@ -78,7 +78,7 @@ const MyVote = () => {
                                         minute: "2-digit"
                                     })}</div>
                                     <div>Количество голосов: {totalVotes}</div>
-                                    <div>Статус: {vote.status === "A" ? "Активно" : "Остановлено"}</div>
+                                    <div>Статус: {vote.status === "A" ? "Активно" : "Завершено"}</div>
                                 </div>
                                 <button
                                     className="form-button"

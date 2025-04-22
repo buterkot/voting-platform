@@ -15,6 +15,8 @@ const Vote = () => {
     const [selectedParticipants, setSelectedParticipants] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [showMoreActions, setShowMoreActions] = useState(false);
+
     const user = JSON.parse(sessionStorage.getItem("user"));
     const isVotingTimeOver = vote?.end_date ? new Date(vote.end_date) < new Date() : false;
     const isVoteActive = vote?.status === "A" && !isVotingTimeOver;
@@ -215,7 +217,16 @@ const Vote = () => {
                         )}
                     </div>
 
-                    {!vote.anonymous && (
+                    {isOwner && (
+                        <button
+                            className="toggle-actions"
+                            onClick={() => setShowMoreActions(prev => !prev)}
+                        >
+                            {showMoreActions ? "Скрыть действия ▲" : "Дополнительно ▼"}
+                        </button>
+                    )}
+
+                    {!vote.anonymous && !isOwner && (
                         <button
                             className="form-button"
                             id="form-button-show-votes"
@@ -224,14 +235,36 @@ const Vote = () => {
                         </button>
                     )}
 
-                    {isOwner && (
-                        <>
-                            {isOwner && isVoteActive && (
-                                <button className="form-button" onClick={handleStopVote}>
+                    {isOwner && showMoreActions && (
+                        <div className="more-actions">
+                            {!vote.anonymous && (
+                                <button
+                                    className="form-button"
+                                    id="one-action"
+                                    onClick={handleViewParticipants}
+                                >
+                                    Посмотреть голоса
+                                </button>
+                            )}
+
+                            {isVoteActive && (
+                                <button
+                                    className="form-button"
+                                    id="one-action"
+                                    onClick={handleStopVote}
+                                >
                                     Завершить голосование
                                 </button>
                             )}
-                        </>
+
+                            <button
+                                className="form-button"
+                                id="one-action"
+                                onClick={() => alert("Здесь будет отчёт")}
+                            >
+                                Получить отчёт
+                            </button>
+                        </div>
                     )}
                 </div>
 
