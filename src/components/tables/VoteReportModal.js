@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import "../../styles/Modal.css";
 import { PieChart, Pie, Cell, Tooltip, LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts";
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff8042", "#8dd1e1"];
 
-const VoteReportModal = ({ vote, onClose }) => {
+const VoteReportModal = ({ vote, participants, onClose }) => {
     const [fileType, setFileType] = useState("pdf");
+
+    if (!vote || !participants) return null;
 
     const handleDownload = () => {
         alert(`Скачивание отчёта в формате .${fileType}`);
@@ -16,13 +18,18 @@ const VoteReportModal = ({ vote, onClose }) => {
         value: option.vote_count,
     }));
 
-    const timelineData = vote.options.flatMap(option =>
-        (option.votes_time || []).map((voteTime, i) => ({
-            name: `#${i + 1}`,
-            time: voteTime,
-            option: option.option_text,
-        }))
-    );
+    const timeData = participants
+        .sort((a, b) => new Date(a.voted_date) - new Date(b.voted_date))
+        .reduce((acc, curr) => {
+            const date = new Date(curr.voted_date).toLocaleDateString();
+            const existing = acc.find((item) => item.date === date);
+            if (existing) {
+                existing.count += 1;
+            } else {
+                acc.push({ date, count: 1 });
+            }
+            return acc;
+        }, []);
 
     return (
         <div className="modal">
@@ -38,19 +45,19 @@ const VoteReportModal = ({ vote, onClose }) => {
                     <div className="section">
                         <div className="modal-subtitle">Формат файла</div>
                         <div className="file-section">
-                            <select 
-                            className="group-selection" 
-                            id="file-type"
-                            value={fileType} 
-                            onChange={(e) => setFileType(e.target.value)}>
+                            <select
+                                className="group-selection"
+                                id="file-type"
+                                value={fileType}
+                                onChange={(e) => setFileType(e.target.value)}>
                                 <option value="pdf">PDF</option>
                                 <option value="csv">CSV</option>
                                 <option value="xlsx">Excel</option>
                             </select>
-                            <button 
-                            className="form-button" 
-                            id="download"
-                            onClick={handleDownload}>Скачать</button>
+                            <button
+                                className="form-button"
+                                id="download"
+                                onClick={handleDownload}>Скачать</button>
                         </div>
 
                     </div>
@@ -71,13 +78,13 @@ const VoteReportModal = ({ vote, onClose }) => {
 
                     <div className="section">
                         <div className="modal-subtitle">Динамика голосов</div>
-                        <ResponsiveContainer width="100%" height={200}>
-                            <LineChart data={timelineData}>
+                        <ResponsiveContainer width="100%" height={250}>
+                            <LineChart data={timeData}>
                                 <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="name" />
-                                <YAxis />
+                                <XAxis dataKey="date" />
+                                <YAxis allowDecimals={false} />
                                 <Tooltip />
-                                <Line type="monotone" dataKey="time" stroke="#82ca9d" />
+                                <Line type="monotone" dataKey="count" stroke="#8884d8" />
                             </LineChart>
                         </ResponsiveContainer>
                     </div>

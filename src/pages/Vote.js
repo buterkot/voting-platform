@@ -6,7 +6,7 @@ import "../styles/App.css";
 import "../styles/Comments.css";
 import VotesTable from '../components/tables/VotesModal';
 import Comments from "../components/Comments";
-import VoteReportModal from "../components/tables/VoteReportModal";
+import ReportModal from "../components/tables/VoteReportModal";
 
 const Vote = () => {
     const { voteId } = useParams();
@@ -17,7 +17,7 @@ const Vote = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const [showMoreActions, setShowMoreActions] = useState(false);
-    const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+    const [isReportOpen, setIsReportOpen] = useState(false);
 
     const user = JSON.parse(sessionStorage.getItem("user"));
     const isVotingTimeOver = vote?.end_date ? new Date(vote.end_date) < new Date() : false;
@@ -120,6 +120,17 @@ const Vote = () => {
 
     const calculateTotalVotes = () => {
         return vote.options.reduce((total, option) => total + option.vote_count, 0);
+    };
+
+    const handleOpenReport = async () => {
+        try {
+            const response = await axios.get(`http://localhost:3000/votes/participants/${voteId}`);
+            setSelectedParticipants(response.data);
+            setIsReportOpen(true);
+        } catch (error) {
+            alert("Ошибка при получении отчёта.");
+            console.error(error);
+        }
     };
 
     if (!vote) return <div>Загрузка...</div>;
@@ -262,7 +273,7 @@ const Vote = () => {
                             <button
                                 className="form-button"
                                 id="one-action"
-                                onClick={() => setIsReportModalOpen(true)}
+                                onClick={handleOpenReport}
                             >
                                 Получить отчёт
                             </button>
@@ -274,9 +285,10 @@ const Vote = () => {
             </div>
 
             {isModalOpen && <VotesTable participants={selectedParticipants} onClose={closeModal} />}
-            {isReportModalOpen && (
-                <VoteReportModal vote={vote} onClose={() => setIsReportModalOpen(false)} />
+            {isReportOpen && (
+                <ReportModal vote={vote} participants={selectedParticipants} onClose={() => setIsReportOpen(false)} />
             )}
+
         </div>
     );
 };
