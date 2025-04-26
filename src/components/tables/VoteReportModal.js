@@ -61,6 +61,36 @@ const VoteReportModal = ({ vote, participants, onClose }) => {
         return acc;
     }, {});
 
+    const fraudAlerts = [];
+
+    const fraudIntervalMinutes = 5;
+    const fraudThreshold = 5;
+
+    const groupedByTimeAndOption = {};
+
+    participants.forEach((p) => {
+        const date = new Date(p.voted_date);
+        const roundedMinutes = Math.floor(date.getMinutes() / fraudIntervalMinutes) * fraudIntervalMinutes;
+        const timeLabel = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${roundedMinutes.toString().padStart(2, '0')}`;
+
+        const key = `${timeLabel}|${p.option_text}`;
+        if (!groupedByTimeAndOption[key]) {
+            groupedByTimeAndOption[key] = [];
+        }
+        groupedByTimeAndOption[key].push(p);
+    });
+
+    for (const key in groupedByTimeAndOption) {
+        if (groupedByTimeAndOption[key].length > fraudThreshold) {
+            const [timeLabel, optionText] = key.split("|");
+            fraudAlerts.push({
+                time: timeLabel,
+                option: optionText,
+                count: groupedByTimeAndOption[key].length
+            });
+        }
+    }
+
     return (
         <div className="modal">
             <div className="modal-content" id="report-content">
@@ -131,15 +161,23 @@ const VoteReportModal = ({ vote, participants, onClose }) => {
 
                     <div className="section">
                         <div className="modal-subtitle">Проверка на накрутку</div>
-                        <p>Пока нет данных. В будущем здесь появится результат анализа активности голосов.</p>
+                        {fraudAlerts.length > 0 ? (
+                            fraudAlerts.map((alert, index) => (
+                                <div key={index}>
+                                    В период <strong>{alert.time}</strong> за вариант <strong>"{alert.option}"</strong> проголосовало <strong>{alert.count}</strong> человек(а) — подозрительная активность!
+                                </div>
+                            ))
+                        ) : (
+                            <div>Подозрительная активность не обнаружена.</div>
+                        )}
                     </div>
 
                     <div className="section">
                         <div className="modal-subtitle">Список проголосовавших</div>
                         {vote.options.map(option => (
-                            <div key={option.id}>
-                                <strong>{option.option_text}:</strong>
-                                <div style={{ marginLeft: "10px" }}>
+                            <div className="" key={option.id}>
+                                <div className="option-text">{option.option_text}:</div>
+                                <div className="voter">
                                     {(votersByOption[option.option_text] || []).map((voter, i) => (
                                         <div key={i}>{voter}</div>
                                     ))}
