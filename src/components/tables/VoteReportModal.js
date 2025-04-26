@@ -13,23 +13,53 @@ const VoteReportModal = ({ vote, participants, onClose }) => {
         alert(`Скачивание отчёта в формате .${fileType}`);
     };
 
-    const pieData = vote.options.map(option => ({
-        name: option.option_text,
-        value: option.vote_count,
-    }));
+    const pieData = vote.options
+        .filter(option => option.vote_count > 0)
+        .map(option => ({
+
+            name: option.option_text,
+            value: option.vote_count,
+        }));
+
+    const startTime = new Date(vote.start_date);
+    const endTime = vote.end_date ? new Date(vote.end_date) : new Date();
+    const durationInHours = (endTime - startTime) / (1000 * 60 * 60);
+
+    let intervalMinutes;
+
+    if (durationInHours <= 2) {
+        intervalMinutes = 5;
+    } else if (durationInHours <= 6) {
+        intervalMinutes = 10;
+    } else if (durationInHours <= 24) {
+        intervalMinutes = 30;
+    } else {
+        intervalMinutes = 60;
+    }
 
     const timeData = participants
         .sort((a, b) => new Date(a.voted_date) - new Date(b.voted_date))
         .reduce((acc, curr) => {
-            const date = new Date(curr.voted_date).toLocaleDateString();
-            const existing = acc.find((item) => item.date === date);
+            const date = new Date(curr.voted_date);
+
+            const roundedMinutes = Math.floor(date.getMinutes() / intervalMinutes) * intervalMinutes;
+            const timeLabel = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${roundedMinutes.toString().padStart(2, '0')}`;
+
+            const existing = acc.find(item => item.time === timeLabel);
             if (existing) {
                 existing.count += 1;
             } else {
-                acc.push({ date, count: 1 });
+                acc.push({ time: timeLabel, count: 1 });
             }
             return acc;
         }, []);
+
+    const votersByOption = vote.options.reduce((acc, option) => {
+        acc[option.option_text] = participants
+            .filter(p => p.option_text === option.option_text)
+            .map(p => `${p.firstname} ${p.lastname} (${p.email})`);
+        return acc;
+    }, {});
 
     return (
         <div className="modal">
@@ -49,7 +79,8 @@ const VoteReportModal = ({ vote, participants, onClose }) => {
                                 className="group-selection"
                                 id="file-type"
                                 value={fileType}
-                                onChange={(e) => setFileType(e.target.value)}>
+                                onChange={(e) => setFileType(e.target.value)}
+                            >
                                 <option value="pdf">PDF</option>
                                 <option value="csv">CSV</option>
                                 <option value="xlsx">Excel</option>
@@ -57,16 +88,25 @@ const VoteReportModal = ({ vote, participants, onClose }) => {
                             <button
                                 className="form-button"
                                 id="download"
-                                onClick={handleDownload}>Скачать</button>
+                                onClick={handleDownload}
+                            >
+                                Скачать
+                            </button>
                         </div>
-
                     </div>
 
                     <div className="section">
                         <div className="modal-subtitle">Распределение голосов</div>
                         <ResponsiveContainer width="100%" height={250}>
                             <PieChart>
-                                <Pie data={pieData} dataKey="value" nameKey="name" outerRadius={80} fill="#8884d8" label>
+                                <Pie
+                                    data={pieData}
+                                    dataKey="value"
+                                    nameKey="name"
+                                    outerRadius={80}
+                                    fill="#8884d8"
+                                    label={({ name }) => name}
+                                >
                                     {pieData.map((_, index) => (
                                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                     ))}
@@ -78,10 +118,10 @@ const VoteReportModal = ({ vote, participants, onClose }) => {
 
                     <div className="section">
                         <div className="modal-subtitle">Динамика голосов</div>
-                        <ResponsiveContainer width="100%" height={250}>
+                        <ResponsiveContainer width="95%" height={250}>
                             <LineChart data={timeData}>
                                 <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="date" />
+                                <XAxis dataKey="time" />
                                 <YAxis allowDecimals={false} />
                                 <Tooltip />
                                 <Line type="monotone" dataKey="count" stroke="#8884d8" />
@@ -90,22 +130,22 @@ const VoteReportModal = ({ vote, participants, onClose }) => {
                     </div>
 
                     <div className="section">
+                        <div className="modal-subtitle">Проверка на накрутку</div>
+                        <p>Пока нет данных. В будущем здесь появится результат анализа активности голосов.</p>
+                    </div>
+
+                    <div className="section">
                         <div className="modal-subtitle">Список проголосовавших</div>
                         {vote.options.map(option => (
                             <div key={option.id}>
-                                <div>{option.option_text}</div>:
-                                <div>
-                                    {(option.voters || []).map((voter, i) => (
+                                <strong>{option.option_text}:</strong>
+                                <div style={{ marginLeft: "10px" }}>
+                                    {(votersByOption[option.option_text] || []).map((voter, i) => (
                                         <div key={i}>{voter}</div>
                                     ))}
                                 </div>
                             </div>
                         ))}
-                    </div>
-
-                    <div className="section">
-                        <div className="modal-subtitle">Проверка на накрутку</div>
-                        <p>Пока нет данных. В будущем здесь появится результат анализа активности голосов.</p>
                     </div>
                 </div>
             </div>

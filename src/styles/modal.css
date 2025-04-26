@@ -64,16 +64,20 @@
 .votes-table {
     width: 100%;
     border-collapse: collapse;
+    color: black;
+    text-align: center;
 }
 
 .votes-table th, .votes-table td {
     border: 1px solid #ddd;
     padding: 8px;
+    color: black;
+    text-align: center;
 }
 
 .votes-table th {
     background-color: #f4f4f4;
-    text-align: left;
+    text-align: center;
 }
 
 .member-item{
