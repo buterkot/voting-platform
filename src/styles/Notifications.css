@@ -1,4 +1,4 @@
-.notif-content{
+.notif-content {
     width: 100%;
     display: flex;
     justify-content: flex-start;
@@ -7,7 +7,7 @@
     margin-bottom: 20px;
 }
 
-.notifications-list{
+.notifications-list {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -15,14 +15,49 @@
     width: 100%;
 }
 
-.invitation-card{
+.invitation-card {
     background-color: #f9f9f9;
     padding: 15px;
     border-radius: 10px;
     display: flex;
     justify-content: space-between;
+    gap: 15px;
     align-items: center;
-    width: 50%;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
-    max-width: 600px;
+    max-width: 650px;
+    min-width: 550px;
+}
+
+.invitation-status {
+    color: rgb(65, 65, 65);
+}
+
+.inv-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-width: 190px;
+    text-align: center;
+}
+
+.inv-date{
+    text-align: center;
+}
+
+.inv-buttons {
+    margin-right: 10px;
+}
+
+#inv-accept {
+    background: linear-gradient(150deg, #22ff00, #3ad544);
+}
+
+#inv-reject {
+    background: linear-gradient(150deg, #ff0000, #d53a3a);
+}
+
+.group-name {
+    color: #3a7bd5;
+    font-weight: 700;
 }

@@ -30,7 +30,7 @@ const Notifications = ({ userId }) => {
             });
 
             if (response.ok) {
-                fetchInvitations(); 
+                fetchInvitations();
             } else {
                 alert("Не удалось обработать приглашение");
             }
@@ -44,26 +44,36 @@ const Notifications = ({ userId }) => {
     return (
         <div className="notif-content">
             {invitations.length === 0 ? (
-                <p>Нет уведомлений.</p>
+                <div>Нет уведомлений.</div>
             ) : (
                 <div className="notifications-list">
                     {invitations.map(invite => (
                         <div key={invite.id} className="invitation-card">
-                            <div>Вас пригласили в группу <strong>“{invite.team_name}”</strong></div>
-                            <div><small>Дата: {new Date(invite.invitation_date).toLocaleString()}</small></div>
+                            <div className="inv-text">Вас пригласили в группу
+                                <div className="group-name">
+                                    «{invite.team_name}»
+                                </div>
+                            </div>
+                            <div className="inv-date">
+                                Дата: {new Date(invite.invitation_date).toLocaleString()}
+                            </div>
                             {invite.status === 'A' ? (
-                                <div>
-                                    <button onClick={() => respondToInvitation(invite.id, 'C')}>
+                                <div className="inv-buttons">
+                                    <button className="form-button"
+                                        id="inv-accept"
+                                        onClick={() => respondToInvitation(invite.id, 'C')}>
                                         Принять
                                     </button>
-                                    <button onClick={() => respondToInvitation(invite.id, 'R')}>
+                                    <button className="form-button"
+                                        id="inv-reject"
+                                        onClick={() => respondToInvitation(invite.id, 'R')}>
                                         Отклонить
                                     </button>
                                 </div>
                             ) : (
-                                <div style={{ marginTop: '0.5rem' }}>
-                                    {invite.status === 'C' && <span>Принято</span>}
-                                    {invite.status === 'R' && <span>Отклонено</span>}
+                                <div className="invitation-status">
+                                    {invite.status === 'C' && <div>Принято</div>}
+                                    {invite.status === 'R' && <div>Отклонено</div>}
                                 </div>
                             )}
                         </div>
