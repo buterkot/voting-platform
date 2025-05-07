@@ -16,7 +16,6 @@ const VoteReportModal = ({ vote, participants, onClose }) => {
     const pieData = vote.options
         .filter(option => option.vote_count > 0)
         .map(option => ({
-
             name: option.option_text,
             value: option.vote_count,
         }));
@@ -64,32 +63,42 @@ const VoteReportModal = ({ vote, participants, onClose }) => {
     const fraudAlerts = [];
 
     const fraudIntervalMinutes = 5;
-    const fraudThreshold = 5;
-
-    const groupedByTimeAndOption = {};
+    const groupedByTime = {};
 
     participants.forEach((p) => {
         const date = new Date(p.voted_date);
         const roundedMinutes = Math.floor(date.getMinutes() / fraudIntervalMinutes) * fraudIntervalMinutes;
         const timeLabel = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${roundedMinutes.toString().padStart(2, '0')}`;
 
-        const key = `${timeLabel}|${p.option_text}`;
-        if (!groupedByTimeAndOption[key]) {
-            groupedByTimeAndOption[key] = [];
+        if (!groupedByTime[timeLabel]) {
+            groupedByTime[timeLabel] = 0;
         }
-        groupedByTimeAndOption[key].push(p);
+        groupedByTime[timeLabel] += 1;
     });
 
-    for (const key in groupedByTimeAndOption) {
-        if (groupedByTimeAndOption[key].length > fraudThreshold) {
-            const [timeLabel, optionText] = key.split("|");
+    const counts = Object.values(groupedByTime);
+    const mean = counts.reduce((sum, val) => sum + val, 0) / counts.length;
+    const stdDev = Math.sqrt(counts.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / counts.length);
+
+    const zThreshold = 1.5;             //пороговое значение
+    fraudAlerts.length = 0;
+
+    Object.entries(groupedByTime).forEach(([time, count]) => {
+        const zScore = stdDev === 0 ? 0 : (count - mean) / stdDev;
+        if (zScore > zThreshold) {
+            const [year, month, day, hour, minute] = time.split(/[- :]/);
+            const startTime = new Date(year, month - 1, day, hour, minute);
+            const endTime = new Date(startTime);
+            endTime.setMinutes(endTime.getMinutes() + fraudIntervalMinutes);
+
             fraudAlerts.push({
-                time: timeLabel,
-                option: optionText,
-                count: groupedByTimeAndOption[key].length
+                startTime: startTime.toLocaleString(),
+                endTime: endTime.toLocaleString(),
+                count,
+                zScore: zScore.toFixed(2)
             });
         }
-    }
+    });
 
     return (
         <div className="modal">
@@ -164,7 +173,7 @@ const VoteReportModal = ({ vote, participants, onClose }) => {
                         {fraudAlerts.length > 0 ? (
                             fraudAlerts.map((alert, index) => (
                                 <div key={index}>
-                                    В период <strong>{alert.time}</strong> за вариант <strong>"{alert.option}"</strong> проголосовало <strong>{alert.count}</strong> человек(а) — подозрительная активность!
+                                    В период с <strong>{alert.startTime}</strong> по <strong>{alert.endTime}</strong> зафиксировано <strong>{alert.count}</strong> голосов — подозрительное отклонение (Z = {alert.zScore})
                                 </div>
                             ))
                         ) : (
