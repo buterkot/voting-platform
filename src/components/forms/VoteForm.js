@@ -6,14 +6,17 @@ const VoteForm = () => {
     const [votes, setVotes] = useState([]);
     const [filteredVotes, setFilteredVotes] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
+    const [myGroupsOnly, setMyGroupsOnly] = useState(false);
+
     const navigate = useNavigate();
+    const user = JSON.parse(localStorage.getItem("user")); // Получаем пользователя из localStorage
 
     useEffect(() => {
         axios.get("http://localhost:3000/votes")
             .then((response) => {
                 const activeVotes = response.data.filter(vote => !vote.removed);
                 setVotes(activeVotes);
-                setFilteredVotes(activeVotes);
+                setFilteredVotes(filterVotes(activeVotes, searchQuery, myGroupsOnly));
             })
             .catch((error) => {
                 console.error("Ошибка загрузки голосований:", error);
@@ -23,11 +26,24 @@ const VoteForm = () => {
     const handleSearchChange = (e) => {
         const query = e.target.value.toLowerCase();
         setSearchQuery(query);
+        setFilteredVotes(filterVotes(votes, query, myGroupsOnly));
+    };
 
-        const filtered = votes.filter((vote) =>
-            vote.title.toLowerCase().includes(query)
-        );
-        setFilteredVotes(filtered);
+    const handleCheckboxChange = (e) => {
+        const checked = e.target.checked;
+        setMyGroupsOnly(checked);
+        setFilteredVotes(filterVotes(votes, searchQuery, checked));
+    };
+
+    const filterVotes = (allVotes, query, filterMyGroups) => {
+        return allVotes.filter((vote) => {
+            const matchesQuery = vote.title.toLowerCase().includes(query);
+            const inMyGroups = !filterMyGroups || (
+                vote.team_id ||
+                user?.groups?.some(group => group.id === vote.team_id)
+            );
+            return matchesQuery && inMyGroups;
+        });
     };
 
     const calculateTotalVotes = (options) => {
@@ -36,18 +52,32 @@ const VoteForm = () => {
 
     return (
         <div className="votes-frame">
-            <div className='search-block'>
-                <div className='search'>Поиск по названию:</div>
-                <div className="search-bar">
+            <div className="filters">
+                <div className="search-block">
+                    <div className="search">Поиск по названию:</div>
+                    <div className="search-bar">
+                        <input
+                            className="search-input"
+                            type="text"
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                            placeholder="Искать..."
+                        />
+                    </div>
+                </div>
+
+                <div className="checkbox-block">
+                    <div className="search">
+                        Из моих групп:</div>
                     <input
-                        className="search-input"
-                        type="text"
-                        value={searchQuery}
-                        onChange={handleSearchChange}
-                        placeholder="Искать..."
+                        className="my-check"
+                        type="checkbox"
+                        checked={myGroupsOnly}
+                        onChange={handleCheckboxChange}
                     />
                 </div>
             </div>
+
             <div className="votes-list">
                 {filteredVotes.length === 0 ? (
                     <div>Нет доступных голосований</div>

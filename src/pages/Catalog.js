@@ -4,6 +4,7 @@ import Header from "../components/Header.js";
 import CreateVote from "../components/forms/CreateVote.js";
 import VoteForm from "../components/forms/VoteForm.js";
 import MyVote from "../components/forms/MyVote.js";
+import Recom from "../components/forms/Recommendations.js";
 import "../styles/App.css";
 
 function Catalog() {
@@ -36,12 +37,19 @@ function Catalog() {
                         <MyVote />
                     </div>
                 </div>
+                <div className="recom-votes">
+                    <div className="block-title">
+                        Рекомендации
+                    </div>
+                    Тут будут рекомендованные голосования
+                    <Recom />
+                </div>
                 <div className="other-votes">
                     <div className="block-title">
                         Доступные голосования
                     </div>
                     <div className="other-votes-content">
-                        <VoteForm /> 
+                        <VoteForm />
                     </div>
                 </div>
             </div>
