@@ -1,16 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import "../../styles/Modal.css";
+import { Report } from "../Report.js";
 import { PieChart, Pie, Cell, Tooltip, LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts";
+import html2canvas from "html2canvas";
 
 const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff8042", "#8dd1e1"];
 
 const VoteReportModal = ({ vote, participants, onClose }) => {
     const [fileType, setFileType] = useState("pdf");
 
+    const pieRef = useRef(null);
+    const lineRef = useRef(null);
+
     if (!vote || !participants) return null;
 
-    const handleDownload = () => {
-        alert(`Скачивание отчёта в формате .${fileType}`);
+    const handleDownload = async () => {
+        const getImageFromRef = async (ref) => {
+            if (!ref.current) return null;
+            const canvas = await html2canvas(ref.current);
+            return canvas.toDataURL("image/png");
+        };
+
+        const pieImage = await getImageFromRef(pieRef);
+        const lineImage = await getImageFromRef(lineRef);
+
+        await Report({
+            vote,
+            participants,
+            fileType,
+            pieImage,
+            lineImage,
+        });
     };
 
     const pieData = vote.options
@@ -136,36 +156,40 @@ const VoteReportModal = ({ vote, participants, onClose }) => {
 
                     <div className="section">
                         <div className="modal-subtitle">Распределение голосов</div>
-                        <ResponsiveContainer width="100%" height={250}>
-                            <PieChart>
-                                <Pie
-                                    data={pieData}
-                                    dataKey="value"
-                                    nameKey="name"
-                                    outerRadius={80}
-                                    fill="#8884d8"
-                                    label={({ name }) => name}
-                                >
-                                    {pieData.map((_, index) => (
-                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                    ))}
-                                </Pie>
-                                <Tooltip />
-                            </PieChart>
-                        </ResponsiveContainer>
+                        <div ref={pieRef}>
+                            <ResponsiveContainer width="100%" height={250}>
+                                <PieChart>
+                                    <Pie
+                                        data={pieData}
+                                        dataKey="value"
+                                        nameKey="name"
+                                        outerRadius={80}
+                                        fill="#8884d8"
+                                        label={({ name }) => name}
+                                    >
+                                        {pieData.map((_, index) => (
+                                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip />
+                                </PieChart>
+                            </ResponsiveContainer>
+                        </div>
                     </div>
 
                     <div className="section">
                         <div className="modal-subtitle">Динамика голосов</div>
-                        <ResponsiveContainer width="95%" height={250}>
-                            <LineChart data={timeData}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="time" />
-                                <YAxis allowDecimals={false} />
-                                <Tooltip />
-                                <Line type="monotone" dataKey="count" stroke="#8884d8" />
-                            </LineChart>
-                        </ResponsiveContainer>
+                        <div ref={lineRef}>
+                            <ResponsiveContainer width="95%" height={250}>
+                                <LineChart data={timeData}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="time" />
+                                    <YAxis allowDecimals={false} />
+                                    <Tooltip />
+                                    <Line type="monotone" dataKey="count" stroke="#8884d8" />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </div>
                     </div>
 
                     <div className="section">
