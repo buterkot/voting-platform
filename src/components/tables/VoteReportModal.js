@@ -134,16 +134,18 @@ const VoteReportModal = ({ vote, participants, onClose }) => {
                     <div className="section">
                         <div className="modal-subtitle">Формат файла</div>
                         <div className="file-section">
-                            <select
-                                className="group-selection"
-                                id="file-type"
-                                value={fileType}
-                                onChange={(e) => setFileType(e.target.value)}
-                            >
-                                <option value="pdf">PDF</option>
-                                <option value="csv">CSV</option>
-                                <option value="xlsx">Excel</option>
-                            </select>
+                            <div className="custom-select-wrapper">
+                                <select
+                                    className="group-selection"
+                                    value={fileType}
+                                    onChange={(e) => setFileType(e.target.value)}
+                                >
+                                    <option value="pdf">PDF</option>
+                                    <option value="csv">CSV</option>
+                                    <option value="xlsx">Excel</option>
+                                </select>
+                                <span className="custom-arrow">▼</span>
+                            </div>
                             <button
                                 className="form-button"
                                 id="download"
