@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import "../../styles/Modal.css";
 import { Report } from "../Report.js";
 import { PieChart, Pie, Cell, Tooltip, LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts";
@@ -11,6 +12,8 @@ const VoteReportModal = ({ vote, participants, onClose }) => {
 
     const pieRef = useRef(null);
     const lineRef = useRef(null);
+
+    const navigate = useNavigate();
 
     if (!vote || !participants) return null;
 
@@ -223,7 +226,21 @@ const VoteReportModal = ({ vote, participants, onClose }) => {
                                     <button
                                         className="form-button"
                                         id="second-round"
-                                        onClick={() => alert("Переход к созданию второго тура")}>
+                                        onClick={() => {
+                                            const sortedOptions = [...vote.options].sort((a, b) => b.vote_count - a.vote_count);
+                                            const topTwo = sortedOptions.slice(0, 2);
+                                            navigate("/catalog", {
+                                                state: {
+                                                    secondRound: true,
+                                                    data: {
+                                                        title: `${vote.title}`,
+                                                        anonymous: vote.anonymous,
+                                                        multiple: vote.multiple,
+                                                        options: topTwo.map(opt => opt.option_text)
+                                                    }
+                                                }
+                                            });
+                                        }}>
                                         Провести второй тур
                                     </button>
                                 </div>

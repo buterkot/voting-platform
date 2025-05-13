@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from "react-router-dom";
 import axios from 'axios';
 
 const CreateVote = () => {
@@ -12,6 +13,18 @@ const CreateVote = () => {
     const [isPrivate, setIsPrivate] = useState(false);
     const [userGroups, setUserGroups] = useState([]);
     const [selectedGroup, setSelectedGroup] = useState('');
+
+    const location = useLocation();
+
+    useEffect(() => {
+        if (location.state?.secondRound && location.state.data) {
+            const { title, options, anonymous, multiple } = location.state.data;
+            setTitle(title);
+            setAnonymous(!!anonymous);
+            setMultiple(!!multiple);
+            setOptions(options.map(text => ({ optionText: text })));
+        }
+    }, [location]);
 
     useEffect(() => {
         const fetchGroups = async () => {
@@ -86,6 +99,7 @@ const CreateVote = () => {
             multiple: multiple ? 1 : 0,
             options: options.map(option => option.optionText),
             groupId: isPrivate ? selectedGroup : null,
+            round: location.state?.secondRound ? 2 : 1,
         };
 
         if (isPrivate && !selectedGroup) {

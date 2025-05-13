@@ -12,7 +12,7 @@ const {
 } = require('../models/voteModel');
 
 const createVoteController = async (req, res) => {
-    const { title, userId, options, anonymous, multiple, groupId, endDate } = req.body;
+    const { title, userId, options, anonymous, multiple, groupId, endDate, round } = req.body;
 
     if (!title || !userId || !options || options.length < 2) {
         return res.status(400).send('Все поля обязательны, минимум 2 варианта.');
@@ -28,7 +28,8 @@ const createVoteController = async (req, res) => {
             anonymous: isAnonymous,
             multiple: isMultiple,
             groupId: groupId || null,
-            endDate: endDate || null
+            endDate: endDate || null,
+            round: round
         }, options);
 
         res.status(201).send({ message: 'Голосование успешно создано', voteId });

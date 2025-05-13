@@ -13,8 +13,8 @@ const createVote = async (voteData, options) => {
 
                 try {
                     const voteQuery = `
-                        INSERT INTO votes (title, start_date, end_date, user_id, anonymous, multiple, status, team_id)
-                        VALUES (?, NOW(), ?, ?, ?, ?, 'A', ?)
+                        INSERT INTO votes (title, start_date, end_date, user_id, anonymous, multiple, status, team_id, round)
+                        VALUES (?, NOW(), ?, ?, ?, ?, 'A', ?, ?)
                     `;
 
                     const [voteResult] = await connection.promise().query(voteQuery, [
@@ -23,7 +23,8 @@ const createVote = async (voteData, options) => {
                         voteData.userId,
                         voteData.anonymous,
                         voteData.multiple,
-                        voteData.groupId || null
+                        voteData.groupId || null,
+                        voteData.round || 1
                     ]);
 
                     const voteId = voteResult.insertId;
@@ -57,7 +58,7 @@ const getAvailableVotes = () => {
             if (err) return reject(err);
 
             const query = `
-                SELECT v.id, v.title, v.user_id, v.anonymous, v.multiple, v.removed, v.team_id, v.start_date, u.firstname, u.lastname, 
+                SELECT v.id, v.title, v.user_id, v.anonymous, v.multiple, v.removed, v.team_id, v.start_date, v.round, u.firstname, u.lastname, 
                        o.id AS option_id, o.option_text, COUNT(votes.option_id) AS vote_count
                 FROM votes v
                 LEFT JOIN vote_options o ON v.id = o.vote_id
@@ -86,6 +87,7 @@ const getAvailableVotes = () => {
                             removed: row.removed,
                             team_id: row.team_id,
                             start_date: row.start_date,
+                            round: row.round,
                             options: [
                                 {
                                     id: row.option_id,
@@ -331,7 +333,7 @@ const getUserVotes = (userId) => {
             if (err) return reject(err);
 
             const query = `
-                SELECT v.id, v.title, v.status, v.start_date, v.end_date, 
+                SELECT v.id, v.title, v.status, v.start_date, v.end_date, v.round,
                        u.firstname, u.lastname, 
                        o.id AS option_id, o.option_text, 
                        COUNT(vc.option_id) AS vote_count
@@ -359,6 +361,7 @@ const getUserVotes = (userId) => {
                             start_date: row.start_date,
                             end_date: row.end_date,
                             user_name: `${row.firstname} ${row.lastname}`,
+                            round: row.round,
                             options: row.option_id ? [{
                                 id: row.option_id,
                                 option_text: row.option_text,

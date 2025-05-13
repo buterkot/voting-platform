@@ -171,6 +171,14 @@ body {
     align-items: center;
 }
 
+.second-round-alert{
+    background-color: #c1c1c1;
+    color: #ffffff;
+    padding: 5px;
+    font-weight: 600;
+    border-radius: 5px;
+}
+
 .create-vote {
     display: flex;
     flex-direction: column;

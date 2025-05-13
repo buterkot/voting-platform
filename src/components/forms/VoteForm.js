@@ -9,7 +9,7 @@ const VoteForm = () => {
     const [myGroupsOnly, setMyGroupsOnly] = useState(false);
 
     const navigate = useNavigate();
-    const user = JSON.parse(localStorage.getItem("user")); // Получаем пользователя из localStorage
+    const user = JSON.parse(localStorage.getItem("user")); 
 
     useEffect(() => {
         axios.get("http://localhost:3000/votes")
@@ -87,6 +87,7 @@ const VoteForm = () => {
                         return (
                             <div key={vote.id} className="form-frame simple">
                                 <div className="form-title">{vote.title}</div>
+                                {vote.round > 1 && <div className="second-round-alert">{vote.round}-й тур</div>}
                                 <div className="form-info">
                                     <div>
                                         Дата начала: {new Date(vote.start_date).toLocaleString("ru-RU", {
