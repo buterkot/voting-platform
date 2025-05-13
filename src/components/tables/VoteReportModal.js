@@ -82,6 +82,9 @@ const VoteReportModal = ({ vote, participants, onClose }) => {
 
     const fraudAlerts = [];
 
+    const totalVotes = vote.options.reduce((sum, opt) => sum + opt.vote_count, 0);
+    const winningOption = vote.options.find(opt => opt.vote_count / totalVotes >= 0.5);
+
     const fraudIntervalMinutes = 5;
     const groupedByTime = {};
 
@@ -204,6 +207,28 @@ const VoteReportModal = ({ vote, participants, onClose }) => {
                             ))
                         ) : (
                             <div>Подозрительная активность не обнаружена.</div>
+                        )}
+                    </div>
+
+                    <div className="section">
+                        <div className="modal-subtitle">Результат голосования</div>
+                        {winningOption ? (
+                            <div>
+                                Победитель: <div>{winningOption.option_text}</div> ({winningOption.vote_count} голосов, {((winningOption.vote_count / totalVotes) * 100).toFixed(1)}%)
+                            </div>
+                        ) : (
+                            <div className="second-round-block">
+                                Победитель не определён (ни один вариант не набрал 50% голосов).
+                                <div className="second-round-wrapper">
+                                    <button
+                                        className="form-button"
+                                        id="second-round"
+                                        onClick={() => alert("Переход к созданию второго тура")}>
+                                        Провести второй тур
+                                    </button>
+                                </div>
+
+                            </div>
                         )}
                     </div>
 

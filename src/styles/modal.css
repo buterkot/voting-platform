@@ -129,6 +129,10 @@
     width: 390px;
 }
 
+.section{
+    margin-bottom: 10px;
+}
+
 .file-section{
     display: flex;
     flex-direction: row;
@@ -188,4 +192,14 @@
     pointer-events: none;
     color: white;
     font-size: 12px;
+}
+
+.second-round-wrapper{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#second-round{
+    width: 250px;
 }
