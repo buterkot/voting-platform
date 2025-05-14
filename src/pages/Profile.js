@@ -3,12 +3,16 @@ import Header from "../components/Header.js";
 import GroupMembersModal from "../components/tables/GroupMembersModal";
 import CreateGroup from "../components/tables/CreateGroup";
 import Notifications from "../components/Notifications.js";
+import { useTranslation } from "react-i18next";
+
 import "../styles/App.css";
 import "../styles/Profile.css";
 import "../styles/Notifications.css";
 
 function Profile() {
     const user = JSON.parse(sessionStorage.getItem('user')) || {};
+
+    const { t, i18n } = useTranslation();
 
     const [isProfilePrivate, setIsProfilePrivate] = useState(user.profilePrivate || false);
     const [language, setLanguage] = useState(user.language || 'ru');
@@ -38,11 +42,10 @@ function Profile() {
             last_online: user.last_online,
             groups: user.groups
         }));
+        i18n.changeLanguage(language);
     }, [userData, isProfilePrivate, language, theme]);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [groupName, setGroupName] = useState("");
-    const [isPrivate, setIsPrivate] = useState(false);
     const [selectedGroup, setSelectedGroup] = useState(null);
 
     const handleProfilePrivacyChange = () => {
@@ -50,7 +53,9 @@ function Profile() {
     };
 
     const handleLanguageChange = (event) => {
-        setLanguage(event.target.value);
+        const selectedLang = event.target.value;
+        setLanguage(selectedLang);
+        i18n.changeLanguage(selectedLang); 
     };
 
     const handleThemeChange = (event) => {
@@ -111,34 +116,6 @@ function Profile() {
         }
     };
 
-    const handleCreateGroup = async () => {
-        try {
-            const response = await fetch("http://localhost:3000/groups", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    name: groupName,
-                    creatorId: user.id,
-                    isPrivate: isPrivate ? 1 : 0
-                }),
-            });
-
-            if (response.ok) {
-                alert("Группа успешно создана");
-                setIsModalOpen(false);
-                setGroupName("");
-                setIsPrivate(false);
-            } else {
-                alert("Ошибка при создании группы");
-            }
-        } catch (error) {
-            console.error("Ошибка при создании группы:", error);
-            alert("Ошибка при создании группы");
-        }
-    };
-
     const handleGroupSelect = (event) => {
         const groupId = event.target.value;
         const group = userData.groups.find(g => g.id === parseInt(groupId));
@@ -149,7 +126,7 @@ function Profile() {
         <div className={`main ${theme === 'dark' ? 'dark-theme' : 'light-theme'}`}>
             <Header />
             <div className="main-content">
-                <div className="block-title">Личные данные</div>
+                <div className="block-title">{t("personal_data")}</div>
                 <div className="profile-info">
                     <div className="profile-field">
                         <div className="profile-field-name1">{userData.firstname}</div>
@@ -159,36 +136,36 @@ function Profile() {
                         <div className="profile-field-mail">{userData.email}</div>
                     </div>
                     <div className="profile-field">
-                        <div className="profile-field-label">Последний вход:</div>
+                        <div className="profile-field-label">{t("last_login")}:</div>
                         <div className="profile-field-info">
                             {new Date(Date.parse(userData.last_online)).toLocaleString()}
                         </div>
                     </div>
                     <div className="profile-field" id="address">
-                        <div className="profile-field-label">Адрес:</div>
+                        <div className="profile-field-label">{t("address")}:</div>
                         <input
                             className="profile-input"
                             type="text"
                             value={userData.address}
                             onChange={(e) => handleInputChange(e, 'address')}
                         />
-                        <button className="form-button-save" onClick={() => handleSave('address')}>Сохранить</button>
+                        <button className="form-button-save" onClick={() => handleSave('address')}>{t("save")}</button>
                     </div>
                     <div className="profile-field" id="phone-number">
-                        <div className="profile-field-label">Телефон:</div>
+                        <div className="profile-field-label">{t("phone")}:</div>
                         <input
                             className="profile-input"
                             type="text"
                             value={userData.phone_number}
                             onChange={(e) => handleInputChange(e, 'phone_number')}
                         />
-                        <button className="form-button-save" onClick={() => handleSave('phone_number')}>Сохранить</button>
+                        <button className="form-button-save" onClick={() => handleSave('phone_number')}>{t("save")}</button>
                     </div>
                     <div className="profile-field">
-                        <div className="profile-field-label">Группы:</div>
+                        <div className="profile-field-label">{t("groups")}:</div>
                         <div className="select-wrapper">
                             <select className="group-selection" onChange={handleGroupSelect}>
-                                <option value="">Выберите группу</option>
+                                <option value="">{t("select_group")}</option>
                                 {userData.groups.map(group => (
                                     <option key={group.id} value={group.id}>{group.name}</option>
                                 ))}
@@ -197,10 +174,10 @@ function Profile() {
                     </div>
                 </div>
 
-                <div className="block-title">Настройки</div>
+                <div className="block-title">{t("settings")}</div>
                 <div className="settings-section">
                     <div className="settings-option">
-                        <div className="settings-option-label">Приватность профиля:</div>
+                        <div className="settings-option-label">{t("profile_privacy")}:</div>
                         <input
                             className="settings-checkbox"
                             type="checkbox"
@@ -211,7 +188,7 @@ function Profile() {
                     </div>
 
                     <div className="settings-option" id="s-language">
-                        <div className="settings-option-label">Язык:</div>
+                        <div className="settings-option-label">{t("language")}:</div>
                         <div className="select-wrapper2">
                             <select className="language-selection" value={language} onChange={handleLanguageChange}>
                                 <option value="ru">Русский</option>
@@ -221,21 +198,21 @@ function Profile() {
                     </div>
 
                     <div className="settings-option" id="s-theme">
-                        <div className="settings-option-label">Тема:</div>
+                        <div className="settings-option-label">{t("theme")}:</div>
                         <div className="select-wrapper2">
                             <select className="theme-selection" value={theme} onChange={handleThemeChange}>
-                                <option value="light">Светлая</option>
-                                <option value="dark">Тёмная</option>
+                                <option value="light">{t("light")}</option>
+                                <option value="dark">{t("dark")}</option>
                             </select>
                         </div>
                     </div>
 
                     <div className="form-button-create-container">
-                        <button className="form-button-create" onClick={handleSaveSettings}>Сохранить</button>
-                        <button className="form-button-create" onClick={() => setIsModalOpen(true)}>Создать группу</button>
+                        <button className="form-button-create" onClick={handleSaveSettings}>{t("save")}</button>
+                        <button className="form-button-create" onClick={() => setIsModalOpen(true)}>{t("create_group")}</button>
                     </div>
                 </div>
-                <div className="block-title">Уведомления</div>
+                <div className="block-title">{t("notifications")}</div>
                 <Notifications userId={user.id} />
             </div>
 

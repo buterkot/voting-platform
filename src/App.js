@@ -10,6 +10,7 @@ import Vote from "./pages/Vote.js";
 import Catalog from "./pages/Catalog.js";
 import UserProfile from "./pages/UserProfile";
 import "./styles/App.css";
+import './i18n';
 
 function App() {
   return (

@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const Notifications = ({ userId }) => {
     const [invitations, setInvitations] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    const { t, i18n } = useTranslation();
 
     const fetchInvitations = async () => {
         try {
@@ -39,41 +42,41 @@ const Notifications = ({ userId }) => {
         }
     };
 
-    if (loading) return <div>Загрузка уведомлений...</div>;
+    if (loading) return <div>{t("upload_notif")}...</div>;
 
     return (
         <div className="notif-content">
             {invitations.length === 0 ? (
-                <div>Нет уведомлений.</div>
+                <div>{t("no_notif")}.</div>
             ) : (
                 <div className="notifications-list">
                     {invitations.map(invite => (
                         <div key={invite.id} className="invitation-card">
-                            <div className="inv-text">Вас пригласили в группу
+                            <div className="inv-text">{t("you_invited")}
                                 <div className="group-name">
                                     «{invite.team_name}»
                                 </div>
                             </div>
                             <div className="inv-date">
-                                Дата: {new Date(invite.invitation_date).toLocaleString()}
+                                {t("date")}: {new Date(invite.invitation_date).toLocaleString()}
                             </div>
                             {invite.status === 'A' ? (
                                 <div className="inv-buttons">
                                     <button className="form-button"
                                         id="inv-accept"
                                         onClick={() => respondToInvitation(invite.id, 'C')}>
-                                        Принять
+                                        {t("accept")}
                                     </button>
                                     <button className="form-button"
                                         id="inv-reject"
                                         onClick={() => respondToInvitation(invite.id, 'R')}>
-                                        Отклонить
+                                        {t("reject")}
                                     </button>
                                 </div>
                             ) : (
                                 <div className="invitation-status">
-                                    {invite.status === 'C' && <div>Принято</div>}
-                                    {invite.status === 'R' && <div>Отклонено</div>}
+                                    {invite.status === 'C' && <div>{t("accepted")}</div>}
+                                    {invite.status === 'R' && <div>{t("rejected")}</div>}
                                 </div>
                             )}
                         </div>
