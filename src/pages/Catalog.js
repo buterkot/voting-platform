@@ -5,13 +5,16 @@ import CreateVote from "../components/forms/CreateVote.js";
 import VoteForm from "../components/forms/VoteForm.js";
 import MyVote from "../components/forms/MyVote.js";
 import Recom from "../components/forms/Recommendations.js";
+import { useTranslation } from "react-i18next";
 import "../styles/App.css";
 
 function Catalog() {
     const navigate = useNavigate();
 
+    const { t, i18n } = useTranslation();
+
     useEffect(() => {
-        document.title = "Каталог";
+        document.title = t("catalog");
 
         const user = JSON.parse(sessionStorage.getItem("user"));
         if (!user || !user.id || user.ban === 1) {
@@ -25,13 +28,13 @@ function Catalog() {
             <div className="main-content">
                 <div className="create-vote">
                     <div className="block-title">
-                        Создать голосование
+                        {t("create_vote")}
                     </div>
                     <CreateVote />
                 </div>
                 <div className="my-votes">
                     <div className="block-title">
-                        Мои голосования
+                        {t("my_votes")}
                     </div>
                     <div className="my-votes-content">
                         <MyVote />
@@ -39,14 +42,14 @@ function Catalog() {
                 </div>
                 <div className="recom-votes">
                     <div className="block-title">
-                        Рекомендации
+                        {t("recom")}
                     </div>
                     Тут будут рекомендованные голосования
                     <Recom />
                 </div>
                 <div className="other-votes">
                     <div className="block-title">
-                        Доступные голосования
+                        {t("available_v")}
                     </div>
                     <div className="other-votes-content">
                         <VoteForm />

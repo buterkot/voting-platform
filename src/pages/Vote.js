@@ -7,6 +7,7 @@ import "../styles/Comments.css";
 import VotesTable from '../components/tables/VotesModal';
 import Comments from "../components/Comments";
 import ReportModal from "../components/tables/VoteReportModal";
+import { useTranslation } from "react-i18next";
 
 const Vote = () => {
     const { voteId } = useParams();
@@ -19,16 +20,18 @@ const Vote = () => {
     const [showMoreActions, setShowMoreActions] = useState(false);
     const [isReportOpen, setIsReportOpen] = useState(false);
 
+    const { t, i18n } = useTranslation();
+
     const user = JSON.parse(sessionStorage.getItem("user"));
     const isVotingTimeOver = vote?.end_date ? new Date(vote.end_date) < new Date() : false;
     const isVoteActive = vote?.status === "A" && !isVotingTimeOver;
 
     useEffect(() => {
-        document.title = "Голосование";
+        document.title = t("Vote");
         axios.get(`http://localhost:3000/votes/${voteId}`)
             .then(response => setVote(response.data))
             .catch(error => {
-                alert("Ошибка загрузки голосования");
+                alert(t("err_load_v"));
                 console.error(error);
             });
     }, [voteId]);
@@ -38,7 +41,7 @@ const Vote = () => {
     const handleVoteSubmit = async () => {
         if (vote.multiple) {
             if (selectedOptions.length === 0) {
-                alert("Выберите хотя бы один вариант");
+                alert(t("select_one"));
                 return;
             }
 
@@ -48,16 +51,16 @@ const Vote = () => {
                     userId: user.id
                 });
 
-                alert("Ваши голоса учтены!");
+                alert(t("v_counted"));
                 window.location.reload();
             } catch (error) {
-                alert("Ошибка при голосовании.");
+                alert(t("voting_error"));
                 console.error(error);
             }
 
         } else {
             if (!selectedOption) {
-                alert("Выберите вариант перед голосованием");
+                alert(t("select_option"));
                 return;
             }
 

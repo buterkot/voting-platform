@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 
 const VoteForm = () => {
     const [votes, setVotes] = useState([]);
@@ -9,7 +10,9 @@ const VoteForm = () => {
     const [myGroupsOnly, setMyGroupsOnly] = useState(false);
 
     const navigate = useNavigate();
-    const user = JSON.parse(localStorage.getItem("user")); 
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    const { t, i18n } = useTranslation();
 
     useEffect(() => {
         axios.get("http://localhost:3000/votes")
@@ -54,21 +57,22 @@ const VoteForm = () => {
         <div className="votes-frame">
             <div className="filters">
                 <div className="search-block">
-                    <div className="search">Поиск по названию:</div>
+                    <div className="search">{t("search_by")}:</div>
                     <div className="search-bar">
                         <input
                             className="search-input"
                             type="text"
                             value={searchQuery}
                             onChange={handleSearchChange}
-                            placeholder="Искать..."
+                            placeholder={t("search")}
                         />
                     </div>
                 </div>
 
                 <div className="checkbox-block">
                     <div className="search">
-                        Из моих групп:</div>
+                        {t("from_my")}:
+                    </div>
                     <input
                         className="my-check"
                         type="checkbox"
@@ -80,17 +84,17 @@ const VoteForm = () => {
 
             <div className="votes-list">
                 {filteredVotes.length === 0 ? (
-                    <div>Нет доступных голосований</div>
+                    <div>{t("no_available_v")}</div>
                 ) : (
                     filteredVotes.map((vote) => {
                         const totalVotes = calculateTotalVotes(vote.options);
                         return (
                             <div key={vote.id} className="form-frame simple">
                                 <div className="form-title">{vote.title}</div>
-                                {vote.round > 1 && <div className="second-round-alert">{vote.round}-й тур</div>}
+                                {vote.round > 1 && <div className="second-round-alert">{vote.round}{t("second")}</div>}
                                 <div className="form-info">
                                     <div>
-                                        Дата начала: {new Date(vote.start_date).toLocaleString("ru-RU", {
+                                        {t("start_date")}: {new Date(vote.start_date).toLocaleString("ru-RU", {
                                             day: "2-digit",
                                             month: "2-digit",
                                             year: "numeric",
@@ -98,13 +102,13 @@ const VoteForm = () => {
                                             minute: "2-digit"
                                         })}
                                     </div>
-                                    <div>Количество голосов: {totalVotes}</div>
+                                    <div>{t("total_votes")}: {totalVotes}</div>
                                 </div>
                                 <button
                                     className="form-button"
                                     onClick={() => navigate(`/vote/${vote.id}`)}
                                 >
-                                    Подробнее
+                                    {t("more")}
                                 </button>
                             </div>
                         );

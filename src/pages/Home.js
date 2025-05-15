@@ -1,8 +1,11 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import Reviews from "../components/Reviews";
+import { useTranslation } from "react-i18next";
 
 function Home() {
+
+    const { t, i18n } = useTranslation();
+
     useEffect(() => {
         document.title = "Главная";
     }, []);
@@ -12,7 +15,7 @@ function Home() {
             <div className="home-frame">
                 <div className="home-frame-up">
                     <div className="form-title">
-                        Добро пожаловать!
+                        {t("welcome")}!
                     </div>
                     Для доступа к системе онлайн-голосований требуется войти в аккаунт или создать его.
                 </div>

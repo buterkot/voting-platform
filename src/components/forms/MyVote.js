@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useTranslation } from "react-i18next";
 
 const MyVote = () => {
     const [myVotes, setMyVotes] = useState([]);
@@ -9,13 +10,14 @@ const MyVote = () => {
     const [error, setError] = useState("");
 
     const navigate = useNavigate();
+    const { t, i18n } = useTranslation();
 
     useEffect(() => {
         const fetchVotes = async () => {
             try {
                 const user = JSON.parse(sessionStorage.getItem("user"));
                 if (!user || !user.id) {
-                    setError("Не удалось определить пользователя. Авторизуйтесь заново.");
+                    setError(t("fail_user"));
                     return;
                 }
 
@@ -49,14 +51,14 @@ const MyVote = () => {
         <div className='my-votes-frame'>
             <div className='filters'>
                 <div className='search-block'>
-                    <div className='search'>Поиск по названию:</div>
+                    <div className='search'>{t("search_by")}:</div>
                     <div className="search-bar">
                         <input
                             className="search-input"
                             type="text"
                             value={searchQuery}
                             onChange={handleSearchChange}
-                            placeholder="Искать..."
+                            placeholder={t("search")}
                         />
                     </div>
                 </div>
@@ -64,30 +66,30 @@ const MyVote = () => {
 
             <div className="my-votes-list">
                 {filteredVotes.length === 0 ? (
-                    <div>Нет созданных вами голосований.</div>
+                    <div>{t("no_votes")}</div>
                 ) : (
                     filteredVotes.map((vote) => {
                         const totalVotes = calculateTotalVotes(vote.options);
                         return (
                             <div key={vote.id} className="form-frame simple">
                                 <div className="form-title">{vote.title}</div>
-                                {vote.round > 1 && <div className="second-round-alert">{vote.round}-й тур</div>}
+                                {vote.round > 1 && <div className="second-round-alert">{vote.round}{t("second")}</div>}
                                 <div className="form-info">
-                                    <div>Дата начала: {new Date(vote.start_date).toLocaleString("ru-RU", {
+                                    <div>{t("start_date")}: {new Date(vote.start_date).toLocaleString("ru-RU", {
                                         day: "2-digit",
                                         month: "2-digit",
                                         year: "numeric",
                                         hour: "2-digit",
                                         minute: "2-digit"
                                     })}</div>
-                                    <div>Количество голосов: {totalVotes}</div>
-                                    <div>Статус: {vote.status === "A" ? "Активно" : "Завершено"}</div>
+                                    <div>{t("total_votes")}: {totalVotes}</div>
+                                    <div>{t("status")}: {vote.status === "A" ? t("active") : t("completed")}</div>
                                 </div>
                                 <button
                                     className="form-button"
                                     onClick={() => navigate(`/vote/${vote.id}`)}
                                 >
-                                    Подробнее
+                                    {t("more")}
                                 </button>
                                 {error && <div className="error-message">{error}</div>}
                             </div>

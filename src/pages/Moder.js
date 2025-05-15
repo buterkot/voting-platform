@@ -3,15 +3,18 @@ import axios from "axios";
 import Header from "../components/Header.js";
 import "../styles/App.css";
 import "../styles/Complaints.css";
+import { useTranslation } from "react-i18next";
 
 function Moder() {
     const [commentComplaints, setCommentComplaints] = useState([]);
     const [voteComplaints, setVoteComplaints] = useState([]);
     const [error, setError] = useState("");
 
+    const { t, i18n } = useTranslation();
+
     useEffect(() => {
         fetchComplaints();
-        document.title = "Модерация"; 
+        document.title = t("moder"); 
     }, []);
 
     const fetchComplaints = async () => {
@@ -37,7 +40,7 @@ function Moder() {
 
             setCommentComplaints(prev => prev.filter(complaint => complaint.id !== complaintId));
         } catch (error) {
-            alert("Ошибка при обработке жалобы на комментарий.");
+            alert(t("err_proc_com_com"));
             console.error(error);
         }
     };
@@ -52,7 +55,7 @@ function Moder() {
 
             setVoteComplaints(prev => prev.filter(complaint => complaint.id !== complaintId));
         } catch (error) {
-            alert("Ошибка при обработке жалобы на голосование.");
+            alert(t("err_proc_com_vot"));
             console.error(error);
         }
     };
@@ -63,56 +66,56 @@ function Moder() {
             <div className="main-content">
                 {error && <div className="error-message">{error}</div>}
 
-                <div className="block-title">Жалобы на комментарии</div>
+                <div className="block-title">{t("com_com")}</div>
                 {commentComplaints.length > 0 ? (
                     <div className="complaints-container">
                         {commentComplaints.map(complaint => (
                             <div key={complaint.id} className="complaint-card">
                                 <div className="complaint-info">
-                                    <div><strong>Автор комментария:</strong> {complaint.target_author_firstname + " " + complaint.target_author_lastname}</div>
-                                    <div><strong>Комментарий:</strong> {complaint.target_text}</div>
-                                    <div><strong>Пожаловался:</strong> {complaint.complainant_firstname + " " + complaint.complainant_lastname}</div>
-                                    <div><strong>Дата жалобы:</strong> {new Date(complaint.created_at).toLocaleString()}</div>
+                                    <div><strong>{t("com_author")}:</strong> {complaint.target_author_firstname + " " + complaint.target_author_lastname}</div>
+                                    <div><strong>{t("comment")}:</strong> {complaint.target_text}</div>
+                                    <div><strong>{t("comp_author")}:</strong> {complaint.complainant_firstname + " " + complaint.complainant_lastname}</div>
+                                    <div><strong>{t("comp_date")}:</strong> {new Date(complaint.created_at).toLocaleString()}</div>
                                 </div>
                                 <div className="complaint-actions">
                                     <button className="accept-btn" onClick={() => handleCommentComplaintAction(complaint.id, complaint.target_id, "accepted", "comment")}>
-                                        Принять
+                                        {t("accept")}
                                     </button>
                                     <button className="decline-btn" onClick={() => handleCommentComplaintAction(complaint.id, complaint.target_id, "declined", "comment")}>
-                                        Отклонить
+                                        {t("reject")}
                                     </button>
                                 </div>
                             </div>
                         ))}
                     </div>
                 ) : (
-                    <p>Нет активных жалоб на комментарии.</p>
+                    <p>{t("no_com_com")}</p>
                 )}
 
-                <div className="block-title">Жалобы на голосования</div>
+                <div className="block-title">{t("com_vot")}</div>
                 {voteComplaints.length > 0 ? (
                     <div className="complaints-container">
                         {voteComplaints.map(complaint => (
                             <div key={complaint.id} className="complaint-card">
                                 <div className="complaint-info">
-                                    <div><strong>Автор голосования:</strong> {complaint.target_author_firstname + " " + complaint.target_author_lastname}</div>
-                                    <div><strong>Название голосования:</strong> {complaint.target_text}</div>
-                                    <div><strong>Пожаловался:</strong> {complaint.complainant_firstname + " " + complaint.complainant_lastname}</div>
-                                    <div><strong>Дата жалобы:</strong> {new Date(complaint.created_at).toLocaleString()}</div>
+                                    <div><strong>{t("vote_author")}:</strong> {complaint.target_author_firstname + " " + complaint.target_author_lastname}</div>
+                                    <div><strong>{t("vote_title")}:</strong> {complaint.target_text}</div>
+                                    <div><strong>{t("comp_author")}:</strong> {complaint.complainant_firstname + " " + complaint.complainant_lastname}</div>
+                                    <div><strong>{t("comp_date")}:</strong> {new Date(complaint.created_at).toLocaleString()}</div>
                                 </div>
                                 <div className="complaint-actions">
                                     <button className="accept-btn" onClick={() => handleVoteComplaintAction(complaint.id, complaint.target_id, "accepted", "vote")}>
-                                        Принять
+                                        {t("accept")}
                                     </button>
                                     <button className="decline-btn" onClick={() => handleVoteComplaintAction(complaint.id, complaint.target_id, "declined", "vote")}>
-                                        Отклонить
+                                        {t("reject")}
                                     </button>
                                 </div>
                             </div>
                         ))}
                     </div>
                 ) : (
-                    <p>Нет активных жалоб на голосования.</p>
+                    <p>{t("no_com_vot")}</p>
                 )}
             </div>
         </div>

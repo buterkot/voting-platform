@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import axios from 'axios';
 
 const CreateVote = () => {
@@ -15,6 +16,8 @@ const CreateVote = () => {
     const [selectedGroup, setSelectedGroup] = useState('');
 
     const location = useLocation();
+
+    const { t, i18n } = useTranslation();
 
     useEffect(() => {
         if (location.state?.secondRound && location.state.data) {
@@ -55,7 +58,7 @@ const CreateVote = () => {
 
     const addOption = () => {
         if (options.length >= 10) {
-            alert('Максимальное количество вариантов — 10.');
+            alert(t("max_10"));
             return;
         }
         setOptions([...options, { optionText: '' }]);
@@ -63,7 +66,7 @@ const CreateVote = () => {
 
     const removeOption = (index) => {
         if (options.length <= 2) {
-            alert('Минимальное количество вариантов — 2.');
+            alert(t("min_2"));
             return;
         }
         const newOptions = options.filter((_, i) => i !== index);
@@ -75,18 +78,18 @@ const CreateVote = () => {
         setError('');
 
         if (!title || options.some(option => !option.optionText)) {
-            alert('Пожалуйста, заполните все обязательные поля.');
+            alert(t("fill"));
             return;
         }
 
         if (isTemporary && !endDate) {
-            alert('Пожалуйста, выберите дату окончания голосования.');
+            alert(t("select_end_date"));
             return;
         }
 
         const user = JSON.parse(sessionStorage.getItem('user'));
         if (!user || !user.id) {
-            alert('Не удалось определить пользователя. Авторизуйтесь заново.');
+            alert(t("fail_user"));
             return;
         }
 
@@ -103,13 +106,13 @@ const CreateVote = () => {
         };
 
         if (isPrivate && !selectedGroup) {
-            alert('Выберите группу для закрытого голосования.');
+            alert(t("select_group"));
             return;
         }
 
         try {
             await axios.post('http://localhost:3000/votes/add', voteData);
-            alert('Голосование успешно создано!');
+            alert(t("v_created"));
             setTitle('');
             setOptions([{ optionText: '' }, { optionText: '' }]);
             setAnonymous(false);
@@ -117,16 +120,16 @@ const CreateVote = () => {
             setIsTemporary(false);
             setEndDate('');
         } catch (error) {
-            setError(error.response?.data?.message || 'Ошибка при создании голосования.');
+            setError(error.response?.data?.message || t("v_error"));
         }
     };
 
     return (
         <div className='form-frame'>
-            <div className='form-title'>Новое голосование</div>
+            <div className='form-title'>{t("new_vote")}</div>
             <form onSubmit={handleSubmit}>
                 <div className='form-case'>
-                    <div className='form-subtitle'>Вопрос:</div>
+                    <div className='form-subtitle'>{t("question")}:</div>
                     <input
                         className='login-input'
                         type="text"
@@ -135,11 +138,11 @@ const CreateVote = () => {
                         onChange={(e) => handleChange(e)}
                         required
                         maxLength={100}
-                        placeholder="Введите вопрос"
+                        placeholder={t("enter_q")}
                     />
                 </div>
                 <div className='form-case'>
-                    <div className='form-subtitle'>Варианты:</div>
+                    <div className='form-subtitle'>{t("options")}:</div>
                     {options.map((option, index) => (
                         <div className='vote-option-create' key={index}>
                             <input
@@ -150,14 +153,14 @@ const CreateVote = () => {
                                 onChange={(e) => handleChange(e, index)}
                                 required
                                 maxLength={20}
-                                placeholder={`Вариант ${index + 1}`}
+                                placeholder={t("option") + ` ${index + 1}`}
                             />
                             <button
                                 className='form-button-delete'
                                 type="button"
                                 onClick={() => removeOption(index)}
                             >
-                                Удалить
+                                {t("delete")}
                             </button>
                         </div>
                     ))}
@@ -167,7 +170,7 @@ const CreateVote = () => {
                         type="button"
                         onClick={addOption}
                     >
-                        Добавить вариант
+                        {t("add_option")}
                     </button>
                 </div>
                 <div className='form-case-checkbox'>
@@ -177,7 +180,7 @@ const CreateVote = () => {
                             checked={anonymous}
                             onChange={() => setAnonymous(!anonymous)}
                         />
-                        Анонимное голосование
+                        {t("anon_vote")}
                     </label>
                 </div>
                 <div className='form-case-checkbox'>
@@ -187,7 +190,7 @@ const CreateVote = () => {
                             checked={multiple}
                             onChange={() => setMultiple(!multiple)}
                         />
-                        Несколько вариантов
+                        {t("multiple")}
                     </div>
                 </div>
                 <div className='form-case-checkbox'>
@@ -197,7 +200,7 @@ const CreateVote = () => {
                             checked={isTemporary}
                             onChange={() => setIsTemporary(!isTemporary)}
                         />
-                        Временное голосование
+                        {t("timed")}
                     </div>
                 </div>
                 {isTemporary && (
@@ -221,7 +224,7 @@ const CreateVote = () => {
                                 if (!isPrivate) setSelectedGroup('');
                             }}
                         />
-                        Закрытое голосование
+                        {t("closed")}
                     </label>
                 </div>
 
@@ -233,7 +236,7 @@ const CreateVote = () => {
                             onChange={(e) => setSelectedGroup(e.target.value)}
                             required
                         >
-                            <option value="">Выберите группу</option>
+                            <option value="">{t("select_group")}</option>
                             {userGroups.map(group => (
                                 <option key={group.id} value={group.id}>
                                     {group.name}
@@ -248,7 +251,7 @@ const CreateVote = () => {
                     className='form-button'
                     id='form-button-create-voting'
                     type="submit">
-                    Создать голосование
+                    {t("create")}
                 </button>
             </form>
         </div>

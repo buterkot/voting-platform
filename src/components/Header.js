@@ -3,11 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import "../styles/App.css";
 import logo from '../styles/logo512.png';
 import { FiMenu } from "react-icons/fi"; 
+import { useTranslation } from "react-i18next";
 
 function Header() {
     const [user, setUser] = useState(null);
     const [menuOpen, setMenuOpen] = useState(false);
     const navigate = useNavigate();
+
+    const { t, i18n } = useTranslation();
 
     useEffect(() => {
         const storedUser = sessionStorage.getItem('user');
@@ -41,16 +44,16 @@ function Header() {
                         </div>
                         {menuOpen && (
                             <div className="dropdown-menu">
-                                <Link to="/profile" className="dropdown-item">Профиль</Link>
-                                <Link to="/catalog" className="dropdown-item">Каталог</Link>
-                                {user.role === "A" && <Link to="/admin" className="dropdown-item">Админ-панель</Link>}
-                                {user.role === "M" && <Link to="/moder" className="dropdown-item">Модерация</Link>}
-                                <button className="dropdown-item logout" onClick={handleLogout}>Выйти</button>
+                                <Link to="/profile" className="dropdown-item">{t("profile")}</Link>
+                                <Link to="/catalog" className="dropdown-item">{t("catalog")}</Link>
+                                {user.role === "A" && <Link to="/admin" className="dropdown-item">{t("admin")}</Link>}
+                                {user.role === "M" && <Link to="/moder" className="dropdown-item">{t("moder")}</Link>}
+                                <button className="dropdown-item logout" onClick={handleLogout}>{t("logout")}</button>
                             </div>
                         )}
                     </div>
                 ) : (
-                    <Link to="/login" className="text-link1">Войти</Link>
+                    <Link to="/login" className="text-link1">{t("login")}</Link>
                 )}
             </div>
         </div>

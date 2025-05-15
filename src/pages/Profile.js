@@ -28,7 +28,7 @@ function Profile() {
     });
 
     useEffect(() => {
-        document.title = "Профиль";
+        document.title = t("profile");
         sessionStorage.setItem('user', JSON.stringify({
             ...user,
             profilePrivate: isProfilePrivate,
@@ -80,13 +80,13 @@ function Profile() {
             });
 
             if (response.ok) {
-                alert("Данные успешно обновлены");
+                alert(t("data_upd_suc"));
             } else {
-                alert("Ошибка при обновлении данных");
+                alert(t("data_upd_err"));
             }
         } catch (error) {
             console.error("Ошибка при отправке запроса:", error);
-            alert("Ошибка при обновлении данных");
+            alert(t("data_upd_err"));
         }
     };
 
@@ -106,13 +106,13 @@ function Profile() {
             });
 
             if (response.ok) {
-                alert("Настройки успешно сохранены");
+                alert(t("set_upd_suc"));
             } else {
-                alert("Ошибка при сохранении настроек");
+                alert(t("set_upd_err"));
             }
         } catch (error) {
             console.error("Ошибка при отправке запроса:", error);
-            alert("Ошибка при сохранении настроек");
+            alert(t("set_upd_err"));
         }
     };
 
@@ -191,8 +191,8 @@ function Profile() {
                         <div className="settings-option-label">{t("language")}:</div>
                         <div className="select-wrapper2">
                             <select className="language-selection" value={language} onChange={handleLanguageChange}>
-                                <option value="ru">Русский</option>
-                                <option value="en">English</option>
+                                <option value="ru">{t("russian")}</option>
+                                <option value="en">{t("english")}</option>
                             </select>
                         </div>
                     </div>
