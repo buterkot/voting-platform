@@ -30,7 +30,7 @@
 }
 
 .accept-btn {
-    background-color: #4CAF50;
+    background: linear-gradient(150deg, #80de83, #4CAF50);
     color: white;
     border: none;
     padding: 8px 12px;
@@ -40,7 +40,7 @@
 }
 
 .decline-btn {
-    background-color: #f44336;
+    background: linear-gradient(150deg, #f97167, #f44336);
     color: white;
     border: none;
     padding: 8px 12px;

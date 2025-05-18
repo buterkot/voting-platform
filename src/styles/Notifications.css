@@ -16,7 +16,8 @@
 }
 
 .invitation-card {
-    background-color: #f9f9f9;
+    background-color: var(--container-bg);
+    color: var(--text-color);
     padding: 15px;
     border-radius: 10px;
     display: flex;
@@ -29,7 +30,7 @@
 }
 
 .invitation-status {
-    color: rgb(65, 65, 65);
+    color: var(--text-color);
 }
 
 .inv-text {
@@ -50,11 +51,11 @@
 }
 
 #inv-accept {
-    background: linear-gradient(150deg, #22ff00, #3ad544);
+    background: linear-gradient(150deg, #80de83, #4CAF50);
 }
 
 #inv-reject {
-    background: linear-gradient(150deg, #ff0000, #d53a3a);
+    background: linear-gradient(150deg, #f97167, #f44336);
 }
 
 .group-name {

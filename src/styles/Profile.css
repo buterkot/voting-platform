@@ -1,11 +1,36 @@
+:root {
+    --bg-main: azure;
+    --bg-secondary: #e7f3fe;
+    --text-main: #000;
+    --text-accent: #3a7bd5;
+    --btn-bg: linear-gradient(150deg, #00d2ff, #3a7bd5);
+    --select-bg: linear-gradient(150deg, #00d2ff, #3a7bd5);
+    --select-hover: #005fb8;
+    --select-option: #0084ff;
+    --box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+}
+
+.dark {
+    --bg-main: #1e1e1e;
+    --bg-secondary: #333;
+    --text-main: #f4f4f4;
+    --text-accent: #63a4ff;
+    --btn-bg: linear-gradient(150deg, #444, #222);
+    --select-bg: linear-gradient(150deg, #444, #222);
+    --select-hover: #666;
+    --select-option: #444;
+    --box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.7);
+}
+
 .profile-info{
     max-width: 600px;
     width: 600px;
     border-radius: 10px;
-    background-color: azure;
+    background-color: var(--bg-main);
     padding: 15px;
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+    box-shadow: var(--box-shadow);
     font-size: 18px;
+    color: var(--text-main);
 }
 
 .profile-field{
@@ -29,7 +54,7 @@
     font-weight: bolder;
     margin-right: 10px;
     margin-bottom: -5px;
-    color: #3a7bd5;
+    color: var(--text-accent);
 }
 
 .profile-field-mail{
@@ -41,9 +66,9 @@
 .profile-input {
     border-radius: 7px;
     border: none;
-    background-color: #e7f3fe;
+    background-color: var(--bg-secondary);
     height: 30px;
-    color: rgb(0, 0, 0);
+    color: var(--text-main);
     font-family: Nunito;
     font-size: 15px;
     font-weight: 649;
@@ -75,11 +100,11 @@
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
-    background: linear-gradient(150deg, #00d2ff, #3a7bd5);
+    background: var(--select-bg);
+    color: azure;
     font-family: Nunito;
     font-size: 15px;
     font-weight: 649;
-    color: azure;
     cursor: pointer;
 }
 
@@ -117,7 +142,7 @@
     max-width: 390px;
     border-radius: 5px;
     border: unset;
-    background: linear-gradient(150deg, #00d2ff, #3a7bd5);
+    background: var(--btn-bg);
     color: azure;
     cursor: pointer;
     font-family: Nunito;
@@ -135,7 +160,8 @@
     max-width: 600px;
     width: 300px;
     border-radius: 10px;
-    background-color: azure;
+    background-color: var(--bg-main);
+    color: var(--text-main);
     padding: 15px;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
     font-size: 18px;
@@ -195,7 +221,7 @@
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
-    background: linear-gradient(150deg, #00d2ff, #3a7bd5);
+    background: var(--select-bg);
     font-family: Nunito;
     font-size: 15px;
     font-weight: 649;
@@ -204,12 +230,18 @@
 }
 
 .language-selection option, .theme-selection option{
-    background-color: #0084ff !important;
+    background-color: var(--select-option) !important;
     color: white;
     padding: 8px;
     margin: 0;
     border: none;
     appearance: none;
+}
+
+.group-selection option:hover,
+.language-selection option:hover,
+.theme-selection option:hover {
+    background-color: var(--select-hover) !important;
 }
 
 .form-button-create{
@@ -219,7 +251,7 @@
     max-width: 390px;
     border-radius: 5px;
     border: unset;
-    background: linear-gradient(150deg, #00d2ff, #3a7bd5);
+    background: var(--btn-bg);
     color: azure;
     cursor: pointer;
     font-family: Nunito;

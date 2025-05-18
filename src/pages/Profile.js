@@ -58,7 +58,7 @@ function Profile() {
     const handleLanguageChange = (event) => {
         const selectedLang = event.target.value;
         setLanguage(selectedLang);
-        i18n.changeLanguage(selectedLang); 
+        i18n.changeLanguage(selectedLang);
     };
 
     const handleThemeChange = (event) => {
@@ -126,7 +126,7 @@ function Profile() {
     };
 
     return (
-        <div className={`main ${theme === 'dark' ? 'dark-theme' : 'light-theme'}`}>
+        <div className={`main ${theme === 'dark' ? 'dark' : ''}`}>
             <Alert message={alertMessage} onClose={() => setAlertMessage("")} />
             <Header />
             <div className="main-content">
