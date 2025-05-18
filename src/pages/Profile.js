@@ -4,6 +4,7 @@ import GroupMembersModal from "../components/tables/GroupMembersModal";
 import CreateGroup from "../components/tables/CreateGroup";
 import Notifications from "../components/Notifications.js";
 import { useTranslation } from "react-i18next";
+import Alert from "../components/Alert.js";
 
 import "../styles/App.css";
 import "../styles/Profile.css";
@@ -13,6 +14,8 @@ function Profile() {
     const user = JSON.parse(sessionStorage.getItem('user')) || {};
 
     const { t, i18n } = useTranslation();
+
+    const [alertMessage, setAlertMessage] = useState("");
 
     const [isProfilePrivate, setIsProfilePrivate] = useState(user.profilePrivate || false);
     const [language, setLanguage] = useState(user.language || 'ru');
@@ -80,13 +83,13 @@ function Profile() {
             });
 
             if (response.ok) {
-                alert(t("data_upd_suc"));
+                setAlertMessage(t("data_upd_suc"));
             } else {
-                alert(t("data_upd_err"));
+                setAlertMessage(t("data_upd_err"));
             }
         } catch (error) {
             console.error("Ошибка при отправке запроса:", error);
-            alert(t("data_upd_err"));
+            setAlertMessage(t("data_upd_err"));
         }
     };
 
@@ -106,13 +109,13 @@ function Profile() {
             });
 
             if (response.ok) {
-                alert(t("set_upd_suc"));
+                setAlertMessage(t("set_upd_suc"));
             } else {
-                alert(t("set_upd_err"));
+                setAlertMessage(t("set_upd_err"));
             }
         } catch (error) {
             console.error("Ошибка при отправке запроса:", error);
-            alert(t("set_upd_err"));
+            setAlertMessage(t("set_upd_err"));
         }
     };
 
@@ -124,6 +127,7 @@ function Profile() {
 
     return (
         <div className={`main ${theme === 'dark' ? 'dark-theme' : 'light-theme'}`}>
+            <Alert message={alertMessage} onClose={() => setAlertMessage("")} />
             <Header />
             <div className="main-content">
                 <div className="block-title">{t("personal_data")}</div>
