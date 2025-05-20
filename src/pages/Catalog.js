@@ -44,8 +44,9 @@ function Catalog() {
                     <div className="block-title">
                         {t("recom")}
                     </div>
-                    Тут будут рекомендованные голосования
-                    <Recom />
+                    <div className="other-votes-content">
+                        <Recom />
+                    </div>
                 </div>
                 <div className="other-votes">
                     <div className="block-title">

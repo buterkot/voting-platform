@@ -6,7 +6,9 @@ const {
     updateUserRoleStatus,
     updateUserInfo,
     updateSettings,
-    saveSearchQuery
+    saveSearchQuery,
+    getUserSearchHistory,
+    getUserVotedPolls 
 } = require('../controllers/userController');
 
 const router = express.Router();
@@ -18,5 +20,7 @@ router.patch('/:id/role', updateUserRoleStatus);
 router.post('/update', updateUserInfo);
 router.post('/update-settings', updateSettings);
 router.post('/search-history/add', saveSearchQuery);
+router.get('/:id/history', getUserSearchHistory);
+router.get('/:id/voted', getUserVotedPolls);
 
 module.exports = router;

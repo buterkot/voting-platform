@@ -4,7 +4,9 @@ const { fetchAllUsers,
     updateUserRole,
     updateUserData,
     updateUserSettings,
-    addSearchQuery
+    addSearchQuery,
+    getSearchHistory,
+    getVotedPollIds
 } = require('../models/userModel');
 
 const getUsers = async (req, res) => {
@@ -135,6 +137,38 @@ const saveSearchQuery = async (req, res) => {
     }
 };
 
+const getUserSearchHistory = async (req, res) => {
+    const { id } = req.params;
+
+    if (!id) {
+        return res.status(400).send("Не указан userId.");
+    }
+
+    try {
+        const history = await getSearchHistory(id);
+        res.status(200).json(history);
+    } catch (error) {
+        console.error("Ошибка при получении истории поиска:", error.message);
+        res.status(500).send("Ошибка сервера при получении истории.");
+    }
+};
+
+const getUserVotedPolls = async (req, res) => {
+    const { id } = req.params;
+
+    if (!id) {
+        return res.status(400).send("userId обязателен.");
+    }
+
+    try {
+        const voteIds = await getVotedPollIds(id);
+        res.status(200).json(voteIds);
+    } catch (error) {
+        console.error("Ошибка при получении списка проголосованных опросов:", error.message);
+        res.status(500).send("Ошибка сервера.");
+    }
+};
+
 module.exports = {
     getUsers,
     getUserById,
@@ -142,5 +176,7 @@ module.exports = {
     updateUserRoleStatus,
     updateUserInfo,
     updateSettings,
-    saveSearchQuery
+    saveSearchQuery,
+    getUserSearchHistory,
+    getUserVotedPolls
 };

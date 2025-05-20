@@ -57,57 +57,74 @@ const getAvailableVotes = () => {
         db.getConnection((err, connection) => {
             if (err) return reject(err);
 
-            const query = `
-                SELECT v.id, v.title, v.user_id, v.anonymous, v.multiple, v.removed, v.team_id, v.start_date, v.round, u.firstname, u.lastname, 
-                       o.id AS option_id, o.option_text, COUNT(votes.option_id) AS vote_count
+            const mainQuery = `
+                SELECT v.id, v.title, v.user_id, v.anonymous, v.multiple, v.removed, v.team_id, v.start_date, v.round,
+                       u.firstname, u.lastname,
+                       o.id AS option_id, o.option_text, COUNT(vc.option_id) AS vote_count
                 FROM votes v
                 LEFT JOIN vote_options o ON v.id = o.vote_id
-                LEFT JOIN votes_cast votes ON o.id = votes.option_id
+                LEFT JOIN votes_cast vc ON o.id = vc.option_id
                 LEFT JOIN users u ON v.user_id = u.id
                 WHERE v.status = 'A'
                 GROUP BY v.id, o.id
             `;
 
-            connection.query(query, (err, results) => {
+            const tagsQuery = `
+                SELECT vt.vote_id, t.id AS tag_id, t.name AS tag_name
+                FROM vote_tags vt
+                JOIN tags t ON vt.tag_id = t.id
+            `;
+
+            connection.query(mainQuery, (err, voteResults) => {
                 if (err) {
                     connection.release();
                     return reject(err);
                 }
 
-                const formattedResults = results.reduce((acc, row) => {
-                    const vote = acc.find(vote => vote.id === row.id);
-                    if (!vote) {
-                        acc.push({
-                            id: row.id,
-                            title: row.title,
-                            user_id: row.user_id,
-                            user_name: `${row.firstname} ${row.lastname}`,
-                            anonymous: row.anonymous,
-                            multiple: row.multiple,
-                            removed: row.removed,
-                            team_id: row.team_id,
-                            start_date: row.start_date,
-                            round: row.round,
-                            options: [
-                                {
-                                    id: row.option_id,
-                                    option_text: row.option_text,
-                                    vote_count: row.vote_count || 0
-                                }
-                            ]
-                        });
-                    } else {
+                connection.query(tagsQuery, (err, tagResults) => {
+                    connection.release();
+                    if (err) return reject(err);
+
+                    const formattedVotes = voteResults.reduce((acc, row) => {
+                        let vote = acc.find(v => v.id === row.id);
+                        if (!vote) {
+                            vote = {
+                                id: row.id,
+                                title: row.title,
+                                user_id: row.user_id,
+                                user_name: `${row.firstname} ${row.lastname}`,
+                                anonymous: row.anonymous,
+                                multiple: row.multiple,
+                                removed: row.removed,
+                                team_id: row.team_id,
+                                start_date: row.start_date,
+                                round: row.round,
+                                options: [],
+                                tags: []
+                            };
+                            acc.push(vote);
+                        }
+
                         vote.options.push({
                             id: row.option_id,
                             option_text: row.option_text,
                             vote_count: row.vote_count || 0
                         });
-                    }
-                    return acc;
-                }, []);
 
-                connection.release();
-                resolve(formattedResults);
+                        return acc;
+                    }, []);
+
+                    formattedVotes.forEach(vote => {
+                        vote.tags = tagResults
+                            .filter(tag => tag.vote_id === vote.id)
+                            .map(tag => ({
+                                id: tag.tag_id,
+                                name: tag.tag_name
+                            }));
+                    });
+
+                    resolve(formattedVotes);
+                });
             });
         });
     });
@@ -439,6 +456,32 @@ const removeVote = (voteId) => {
     });
 };
 
+const getAllTags = () => {
+    return new Promise((resolve, reject) => {
+        const query = `SELECT id, name FROM tags ORDER BY name ASC`;
+        db.query(query, (err, results) => {
+            if (err) return reject(err);
+            resolve(results);
+        });
+    });
+};
+
+const addVoteTags = (voteId, tagIds) => {
+    return new Promise((resolve, reject) => {
+        if (!tagIds || tagIds.length === 0) {
+            return resolve(); 
+        }
+
+        const values = tagIds.map(tagId => [voteId, tagId]);
+        const query = `INSERT INTO vote_tags (vote_id, tag_id) VALUES ?`;
+
+        db.query(query, [values], (err, results) => {
+            if (err) return reject(err);
+            resolve(results);
+        });
+    });
+};
+
 
 module.exports = {
     createVote,
@@ -450,5 +493,7 @@ module.exports = {
     stopVote,
     getUserVotes,
     getVoteParticipants,
-    removeVote
+    removeVote,
+    getAllTags,
+    addVoteTags
 };

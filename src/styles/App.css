@@ -392,6 +392,28 @@ input[type="checkbox"]{
     cursor: pointer;
 }
 
+.tags-list {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.tag-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border: #3a7bd5 solid 1px;
+    border-radius: 8px;
+    padding-right: 5px;
+    cursor: pointer;
+}
+
+.tag-checkbox:hover{
+    background-color: #c9d8ec;
+}
+
 .vote-option-create {
     display: flex;
     flex-direction: row;
@@ -650,8 +672,8 @@ input:disabled+label {
     width: 100%;
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
-    justify-content: space-around;
+    gap: 25px;
+    justify-content: center;
     align-items: flex-start;
     margin-bottom: 20px;
 }

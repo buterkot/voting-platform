@@ -16,6 +16,10 @@ const CreateVote = () => {
     const [userGroups, setUserGroups] = useState([]);
     const [selectedGroup, setSelectedGroup] = useState('');
 
+    const [showTags, setShowTags] = useState(false);
+    const [allTags, setAllTags] = useState([]);
+    const [selectedTags, setSelectedTags] = useState([]);
+
     const location = useLocation();
 
     const { t, i18n } = useTranslation();
@@ -46,6 +50,16 @@ const CreateVote = () => {
 
         fetchGroups();
     }, [isPrivate]);
+
+    useEffect(() => {
+        axios.get("http://localhost:3000/votes/tags/load")
+            .then((response) => {
+                setAllTags(response.data);
+            })
+            .catch((error) => {
+                console.error("Ошибка при загрузке тегов:", error);
+            });
+    }, []);
 
     const handleChange = (e, index) => {
         const { name, value } = e.target;
@@ -105,6 +119,7 @@ const CreateVote = () => {
             options: options.map(option => option.optionText),
             groupId: isPrivate ? selectedGroup : null,
             round: location.state?.secondRound ? 2 : 1,
+            tags: selectedTags,
         };
 
         if (isPrivate && !selectedGroup) {
@@ -124,6 +139,14 @@ const CreateVote = () => {
         } catch (error) {
             setError(error.response?.data?.message || t("v_error"));
         }
+    };
+
+    const toggleTag = (tagId) => {
+        setSelectedTags(prev =>
+            prev.includes(tagId)
+                ? prev.filter(id => id !== tagId)
+                : [...prev, tagId]
+        );
     };
 
     return (
@@ -246,6 +269,30 @@ const CreateVote = () => {
                                 </option>
                             ))}
                         </select>
+                    </div>
+                )}
+
+
+                <button
+                    className='toggle-actions'
+                    type="button"
+                    onClick={() => setShowTags(!showTags)}
+                >
+                    Показать теги
+                </button>
+
+                {showTags && (
+                    <div className="tags-list">
+                        {allTags.map(tag => (
+                            <label key={tag.id} className="tag-checkbox">
+                                <input
+                                    type="checkbox"
+                                    checked={selectedTags.includes(tag.id)}
+                                    onChange={() => toggleTag(tag.id)}
+                                />
+                                {tag.name}
+                            </label>
+                        ))}
                     </div>
                 )}
 

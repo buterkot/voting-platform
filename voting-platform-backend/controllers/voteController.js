@@ -2,17 +2,18 @@ const {
     createVote,
     getAvailableVotes,
     getVoteById,
-    getVoteIdByOptionId,
     castVote,
     castMultipleVotes,
     stopVote,
     getUserVotes,
     getVoteParticipants,
-    removeVote
+    removeVote,
+    getAllTags,
+    addVoteTags
 } = require('../models/voteModel');
 
 const createVoteController = async (req, res) => {
-    const { title, userId, options, anonymous, multiple, groupId, endDate, round } = req.body;
+    const { title, userId, options, anonymous, multiple, groupId, endDate, round, tags } = req.body;
 
     if (!title || !userId || !options || options.length < 2) {
         return res.status(400).send('Все поля обязательны, минимум 2 варианта.');
@@ -29,8 +30,12 @@ const createVoteController = async (req, res) => {
             multiple: isMultiple,
             groupId: groupId || null,
             endDate: endDate || null,
-            round: round
+            round
         }, options);
+
+        if (tags && Array.isArray(tags)) {
+            await addVoteTags(voteId, tags);  
+        }
 
         res.status(201).send({ message: 'Голосование успешно создано', voteId });
     } catch (error) {
@@ -159,6 +164,16 @@ const removeVoteController = async (req, res) => {
     }
 };
 
+const fetchAllTags = async (req, res) => {
+    try {
+        const tags = await getAllTags();
+        res.status(200).json(tags);
+    } catch (error) {
+        console.error("Ошибка при получении тегов:", error.message);
+        res.status(500).send("Ошибка при загрузке тегов.");
+    }
+};
+
 module.exports = {
     createVoteController,
     getVotesController,
@@ -168,5 +183,6 @@ module.exports = {
     stopVoteController,
     getUserVotesController,
     getVoteParticipantsController,
-    removeVoteController
+    removeVoteController,
+    fetchAllTags
 };

@@ -8,7 +8,8 @@ const {
     stopVoteController,
     getUserVotesController,
     getVoteParticipantsController,
-    removeVoteController
+    removeVoteController,
+    fetchAllTags
 } = require('../controllers/voteController');
 
 const router = express.Router();
@@ -22,5 +23,6 @@ router.get('/user/:userId', getUserVotesController);
 router.get('/participants/:voteId', getVoteParticipantsController);
 router.get('/:voteId', getVoteByIdController);
 router.patch('/remove/:voteId', removeVoteController);
+router.get('/tags/load', fetchAllTags);
 
 module.exports = router;

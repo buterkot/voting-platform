@@ -173,6 +173,42 @@ const addSearchQuery = (userId, query) => {
     });
 };
 
+const getSearchHistory = (userId) => {
+    const query = `
+        SELECT query, searched_at
+        FROM user_search_history
+        WHERE user_id = ?
+        ORDER BY searched_at DESC
+        LIMIT 50
+    `;
+
+    return new Promise((resolve, reject) => {
+        db.query(query, [userId], (error, results) => {
+            if (error) {
+                return reject(error);
+            }
+            resolve(results);
+        });
+    });
+};
+
+const getVotedPollIds = (userId) => {
+    const query = `
+        SELECT DISTINCT vo.vote_id
+        FROM votes_cast vc
+        JOIN vote_options vo ON vc.option_id = vo.id
+        WHERE vc.user_id = ?
+    `;
+
+    return new Promise((resolve, reject) => {
+        db.query(query, [userId], (error, results) => {
+            if (error) return reject(error);
+            const ids = results.map(row => row.vote_id);
+            resolve(ids);
+        });
+    });
+};
+
 module.exports = {
     fetchAllUsers,
     fetchUserById,
@@ -181,5 +217,7 @@ module.exports = {
     updateLastOnline,
     updateUserData,
     updateUserSettings,
-    addSearchQuery
+    addSearchQuery,
+    getSearchHistory,
+    getVotedPollIds
 };
