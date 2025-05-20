@@ -1,4 +1,11 @@
-const { fetchAllUsers, fetchUserById, updateUserBan, updateUserRole, updateUserData, updateUserSettings  } = require('../models/userModel');
+const { fetchAllUsers,
+    fetchUserById,
+    updateUserBan,
+    updateUserRole,
+    updateUserData,
+    updateUserSettings,
+    addSearchQuery
+} = require('../models/userModel');
 
 const getUsers = async (req, res) => {
     try {
@@ -112,11 +119,28 @@ const updateSettings = async (req, res) => {
     }
 };
 
+const saveSearchQuery = async (req, res) => {
+    const { userId, query } = req.body;
+
+    if (!userId || !query || query.trim() === "") {
+        return res.status(400).send("Необходимы userId и непустой query.");
+    }
+
+    try {
+        await addSearchQuery(userId, query);
+        res.status(200).send({ message: "Поисковый запрос сохранён." });
+    } catch (error) {
+        console.error("Ошибка при сохранении поискового запроса:", error.message);
+        res.status(500).send("Ошибка сервера при сохранении запроса.");
+    }
+};
+
 module.exports = {
     getUsers,
     getUserById,
     updateUserBanStatus,
     updateUserRoleStatus,
     updateUserInfo,
-    updateSettings
+    updateSettings,
+    saveSearchQuery
 };

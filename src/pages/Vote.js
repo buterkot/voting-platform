@@ -8,6 +8,7 @@ import VotesTable from '../components/tables/VotesModal';
 import Comments from "../components/Comments";
 import ReportModal from "../components/tables/VoteReportModal";
 import { useTranslation } from "react-i18next";
+import Alert from "../components/Alert.js";
 
 const Vote = () => {
     const { voteId } = useParams();
@@ -21,13 +22,14 @@ const Vote = () => {
     const [isReportOpen, setIsReportOpen] = useState(false);
 
     const { t, i18n } = useTranslation();
+    const [alertMessage, setAlertMessage] = useState("");
 
     const user = JSON.parse(sessionStorage.getItem("user"));
     const isVotingTimeOver = vote?.end_date ? new Date(vote.end_date) < new Date() : false;
     const isVoteActive = vote?.status === "A" && !isVotingTimeOver;
 
     useEffect(() => {
-        document.title = t("Vote");
+        document.title = t("vote");
         axios.get(`http://localhost:3000/votes/${voteId}`)
             .then(response => setVote(response.data))
             .catch(error => {
@@ -41,7 +43,7 @@ const Vote = () => {
     const handleVoteSubmit = async () => {
         if (vote.multiple) {
             if (selectedOptions.length === 0) {
-                alert(t("select_one"));
+                setAlertMessage(t("select_one"));
                 return;
             }
 
@@ -51,10 +53,10 @@ const Vote = () => {
                     userId: user.id
                 });
 
-                alert(t("v_counted"));
+                setAlertMessage(t("v_counted"));
                 window.location.reload();
             } catch (error) {
-                alert(t("voting_error"));
+                setAlertMessage(t("voting_error"));
                 console.error(error);
             }
 
@@ -140,6 +142,7 @@ const Vote = () => {
 
     return (
         <div className="main">
+            <Alert message={alertMessage} onClose={() => setAlertMessage("")} />
             <Header />
             <div className="main-content">
                 <div className="block-title">{vote.title}</div>

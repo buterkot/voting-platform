@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import axios from 'axios';
+import Alert from "../../components/Alert.js";
 
 const CreateVote = () => {
     const [title, setTitle] = useState('');
@@ -18,6 +19,7 @@ const CreateVote = () => {
     const location = useLocation();
 
     const { t, i18n } = useTranslation();
+    const [alertMessage, setAlertMessage] = useState("");
 
     useEffect(() => {
         if (location.state?.secondRound && location.state.data) {
@@ -58,7 +60,7 @@ const CreateVote = () => {
 
     const addOption = () => {
         if (options.length >= 10) {
-            alert(t("max_10"));
+            setAlertMessage(t("max_10"));
             return;
         }
         setOptions([...options, { optionText: '' }]);
@@ -66,7 +68,7 @@ const CreateVote = () => {
 
     const removeOption = (index) => {
         if (options.length <= 2) {
-            alert(t("min_2"));
+            setAlertMessage(t("min_2"));;
             return;
         }
         const newOptions = options.filter((_, i) => i !== index);
@@ -126,6 +128,7 @@ const CreateVote = () => {
 
     return (
         <div className='form-frame'>
+            <Alert message={alertMessage} onClose={() => setAlertMessage("")} />
             <div className='form-title'>{t("new_vote")}</div>
             <form onSubmit={handleSubmit}>
                 <div className='form-case'>

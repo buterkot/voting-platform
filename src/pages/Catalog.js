@@ -4,7 +4,7 @@ import Header from "../components/Header.js";
 import CreateVote from "../components/forms/CreateVote.js";
 import VoteForm from "../components/forms/VoteForm.js";
 import MyVote from "../components/forms/MyVote.js";
-import Recom from "../components/forms/Recommendations.js";
+import Recom from "../components/Recommendations.js";
 import { useTranslation } from "react-i18next";
 import "../styles/App.css";
 

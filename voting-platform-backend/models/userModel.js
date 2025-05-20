@@ -157,6 +157,21 @@ const updateUserSettings = (id, settings) => {
     });
 };
 
+const addSearchQuery = (userId, query) => {
+    const sql = `
+        INSERT INTO user_search_history (user_id, query, searched_at)
+        VALUES (?, ?, NOW())
+    `;
+
+    return new Promise((resolve, reject) => {
+        db.query(sql, [userId, query], (error, results) => {
+            if (error) {
+                return reject(error);
+            }
+            resolve(results);
+        });
+    });
+};
 
 module.exports = {
     fetchAllUsers,
@@ -165,5 +180,6 @@ module.exports = {
     updateUserRole,
     updateLastOnline,
     updateUserData,
-    updateUserSettings
+    updateUserSettings,
+    addSearchQuery
 };

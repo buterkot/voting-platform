@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
@@ -10,9 +10,10 @@ const VoteForm = () => {
     const [myGroupsOnly, setMyGroupsOnly] = useState(false);
 
     const navigate = useNavigate();
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(sessionStorage.getItem("user"));
 
     const { t, i18n } = useTranslation();
+    const debounceTimer = useRef(null);
 
     useEffect(() => {
         axios.get("http://localhost:3000/votes")
@@ -30,6 +31,28 @@ const VoteForm = () => {
         const query = e.target.value.toLowerCase();
         setSearchQuery(query);
         setFilteredVotes(filterVotes(votes, query, myGroupsOnly));
+
+        if (debounceTimer.current) clearTimeout(debounceTimer.current);
+
+        if (user?.id && query.trim().length > 1) {
+            debounceTimer.current = setTimeout(() => {
+                const requestData = {
+                    userId: user.id,
+                    query,
+                };
+                console.log("Отправляемый запрос:", requestData);
+                axios.post("http://localhost:3000/users/search-history/add", requestData)
+                    .then(response => {
+                        console.log("Запрос успешно выполнен:", response);
+                    })
+                    .catch(err => {
+                        console.error("Ошибка при сохранении истории:", err);
+                    })
+                    .finally(() => {
+                        console.log(user);
+                    });
+            }, 1000);
+        }
     };
 
     const handleCheckboxChange = (e) => {

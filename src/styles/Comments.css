@@ -62,6 +62,7 @@ body {
     align-items: center;
     border-radius: 10px;
     margin-bottom: 20px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
 }
 
 #comment-add-button{
@@ -83,10 +84,6 @@ body {
 .no-comments {
     text-align: center;
 }
-
-/*.comment-area::placeholder {
-    font-size: 15px;
-}*/
 
 .comment-user-name {
     margin-left: 5px;
